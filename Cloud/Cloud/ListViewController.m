@@ -266,6 +266,7 @@
     allFileView = [[AllFileView alloc] initWithFrame:CGRectMake(0, statusBarHeight, rect.size.width, rect.size.height - statusBarHeight - 44) pullingDelegate:nil];
     allFileView.allDelegate = self;
     allFileView.categoryType = 1;
+    allFileView.tableFooterView = [UIView new];
     [allFileView setHeadViews:allFileView.frame];
     [self.view addSubview:allFileView];
     

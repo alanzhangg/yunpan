@@ -47,9 +47,9 @@
     [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
     NSLog(@"%@", NSHomeDirectory());
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    [ud setObject:@"https://192.168.1.183:443/portal/" forKey:@"server"];
-    [ud setObject:@"6a239cd3-86c5-419f-9474-83472b72874c" forKey:@"sid"];
-    [ud setObject:@"admin" forKey:@"uid"];
+    [ud setObject:@"https://www.actionsoft.com.cn/my/" forKey:@"server"];
+    [ud setObject:@"0355b782-4203-4961-9769-1be3c44b3ffe" forKey:@"sid"];
+    [ud setObject:@"zhy" forKey:@"uid"];
     [ud setObject:@"admin" forKey:@"securityKey"];
     [ud synchronize];
     [self layoutUploadView];
