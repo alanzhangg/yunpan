@@ -1,0 +1,30 @@
+//
+//  PrefixHeader.pch
+//  Cloud
+//
+//  Created by Team E Alanzhangg on 15/4/16.
+//  Copyright (c) 2015年 Team E Alanzhangg. All rights reserved.
+//
+
+#ifndef Cloud_PrefixHeader_pch
+#define Cloud_PrefixHeader_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#ifndef __IPHONE_5_0
+#warning "This project uses features only available in iOS SDK 5.0 and later."
+#endif
+
+#ifdef __OBJC__
+#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import <SystemConfiguration/SystemConfiguration.h>
+#import <MobileCoreServices/MobileCoreServices.h>
+#import "NormalNavigationController.h"
+
+#endif
+
+
+
+#endif
