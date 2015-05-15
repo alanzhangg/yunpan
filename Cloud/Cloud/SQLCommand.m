@@ -333,8 +333,8 @@
         data.createUser = [set objectForColumnName:@"CREATEUSER"];
         data.updateTime = [set objectForColumnName:@"UPDATETIME"];
         data.updateUser = [set objectForColumnName:@"UPDATEUSER"];
-        data.downloadUrl = [set objectForColumnName:@"DOWNLOADURL"];
-        data.thumDownloadUrl = [set objectForColumnName:@"THUMDOWNLOADURL"];
+        data.downloadUrl = [self exchangeDownloadListSid:[set objectForColumnName:@"DOWNLOADURL"]];
+        data.thumDownloadUrl = [self exchangeDownloadListSid:[set objectForColumnName:@"THUMDOWNLOADURL"]];
         if (![set columnIsNull:@"HASDOWNSIZE"]) {
             data.hasDownloadSize = [set objectForColumnName:@"HASDOWNSIZE"];
         }
@@ -344,7 +344,7 @@
         if (![set columnIsNull:@"DOWNLOADSTATUS"]) {
             data.downloadStatus = [set objectForColumnName:@"DOWNLOADSTATUS"];
         }
-        if ([set columnIsNull:@"DOWNLOADFOLDER"]) {
+        if (![set columnIsNull:@"DOWNLOADFOLDER"]) {
             data.downloadFolder = [set objectForColumnName:@"DOWNLOADFOLDER"];
         }
         if (![set columnIsNull:@"DOWNLOADQUANTITY"]) {
@@ -442,11 +442,12 @@
     for (FileData * data in array) {
         if ([data.isHasDownload intValue] == 0) {
             [errorArray addObject:data];
-        }else if ([data.isHasDownload intValue] == 1){
+        }if ([data.isHasDownload intValue] == 1 && [data.downloadQuantity intValue] >= 0){
             [downloadingArray addObject:data];
-        }else if ([data.isHasDownload intValue] == 2 || [data.downloadFolder intValue] == 1){
+        }if ([data.isHasDownload intValue] == 2 || [data.downloadFolder intValue] == 1){
             [downloadedArray addObject:data];
         }
+         NSLog(@"%@, %@", data.fileName, data.downloadFolder);
     }
     NSMutableArray * listArray = [NSMutableArray new];
     [listArray addObject:errorArray];
@@ -535,6 +536,17 @@
 - (void)closeDB{
     [db close];
     
+}
+
+- (NSString *)exchangeDownloadListSid:(NSString *)str{
+    if (str) {
+//        NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
+//        NSString * sidstr = [ud objectForKey:@"sid"];
+//        NSString * theStr = [NSString stringWithFormat:@"sid=%@&", sidstr];
+//        NSRegularExpression * regex = [NSRegularExpression regularExpressionWithPattern:@"sid=[\\S\\s]{1,}&" options:0 error:nil];
+//        str = [regex stringByReplacingMatchesInString:str options:0 range:NSMakeRange(0, str.length) withTemplate:theStr];
+    }
+    return str;
 }
 
 @end

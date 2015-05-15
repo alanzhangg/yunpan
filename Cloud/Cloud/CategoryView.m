@@ -23,6 +23,10 @@
 #import "SelectedTableViewCell.h"
 #import "ShareToNetworkViewController.h"
 #import "DocumentsViewController.h"
+#import "FilesDownloadManager.h"
+#import "VideoShowViewController.h"
+#import "VideoNavigationController.h"
+#import "VideoData.h"
 
 @interface CategoryView ()<PullingRefreshTableViewDelegate, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, UISearchDisplayDelegate, ListTableViewCellDelegate, ListFunctionTableViewCellDelegate>
 
@@ -360,13 +364,52 @@
         [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     }else{
         FileData * data;
+        NSArray * selctArray;
         if (tableView == self) {
             data = _listArray[indexPath.section];
+            selctArray = _listArray;
         }else{
+            selctArray = filterData;
             data = filterData[indexPath.row];
         }
         NSMutableArray * array = [[CategoryData shareCategoryData] categoryArray];
         NSMutableString * categoryStr = [NSMutableString new];
+//        if ([data.fileFormat isEqualToString:@"f"]) {
+//            if (_allDelegate && [_allDelegate respondsToSelector:@selector(openFolder:)]) {
+//                [_allDelegate openFolder:data];
+//            }
+//            return;
+//        }
+        
+        for (NSDictionary * dic in array) {
+            if ([dic[@"categoryName"] isEqualToString:@"图片"]) {
+                for (NSString * str in dic[@"categoryList"]) {
+                    [categoryStr appendFormat:@"%@,", str];
+                }
+            }
+        }
+        NSRange range = [categoryStr rangeOfString:data.fileFormat];
+        NSLog(@"%lu", (unsigned long)range.length);
+        if (range.length != 0){
+            NSMutableArray * picArray = [NSMutableArray new];
+            for (FileData * data in selctArray) {
+                NSRange picRange = [categoryStr rangeOfString:data.fileFormat];
+                //            NSLog(@"%@  %@   %d", categoryStr, data.fileFormat, picRange.length);
+                if (picRange.length != 0 && ![data.fileFormat isEqualToString:@"f"]) {
+                    [picArray addObject:data];
+                }
+            }
+            
+            PictureBigShowViewController * picVC = [[PictureBigShowViewController alloc] init];
+            picVC.pictureArray = picArray;
+            picVC.fileData = data;
+            UIViewController * con = (UIViewController *)_allDelegate;
+            picVC.hidesBottomBarWhenPushed = YES;
+            [con.navigationController pushViewController:picVC animated:YES];
+            return;
+        }
+        
+        
         [categoryStr deleteCharactersInRange:NSMakeRange(0, categoryStr.length)];
         for (NSDictionary * dic in array) {
             if ([dic[@"categoryName"] isEqualToString:@"文档"]) {
@@ -376,7 +419,7 @@
             }
         }
         
-        NSRange range = [categoryStr rangeOfString:data.fileFormat];
+        range = [categoryStr rangeOfString:data.fileFormat];
         NSLog(@"%lu", (unsigned long)range.length);
         if (range.length != 0){
             UIStoryboard * storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
@@ -387,49 +430,32 @@
             UIViewController * con = (UIViewController *)_allDelegate;
             [con.navigationController pushViewController:dvc animated:YES];
         }
+        
+        [categoryStr deleteCharactersInRange:NSMakeRange(0, categoryStr.length)];
+        for (NSDictionary * dic in array) {
+            if ([dic[@"categoryName"] isEqualToString:@"视频"]) {
+                for (NSString * str in dic[@"categoryList"]) {
+                    [categoryStr appendFormat:@"%@,", str];
+                }
+            }
+        }
+        
+        range = [categoryStr rangeOfString:data.fileFormat];
+        NSLog(@"%lu", (unsigned long)range.length);
+        if (range.length != 0){
+            VideoShowViewController * dvc = [[VideoShowViewController alloc] init];
+            VideoNavigationController * vnav = [[VideoNavigationController alloc] initWithRootViewController:dvc];
+            VideoData * vData = [[VideoData alloc] init];
+            vData.resouceName = data.fileName;
+            vData.resourceURL = data.downloadUrl;
+            dvc.videoData = vData;
+            dvc.hidesBottomBarWhenPushed = YES;
+            UIViewController * con = (UIViewController *)_allDelegate;
+            [con.navigationController presentViewController:vnav animated:NO completion:nil];
+        }
     }
-    
-//    FileData * data;
-//    NSArray * selctArray;
-//    if (tableView == self) {
-//        data = _listArray[indexPath.section];
-//        selctArray = _listArray;
-//    }else{
-//        selctArray = filterData;
-//        data = filterData[indexPath.row];
-//    }
-//    
-//    NSMutableArray * array = [[CategoryData shareCategoryData] categoryArray];
-//    NSMutableString * categoryStr = [NSMutableString new];
-//    for (NSDictionary * dic in array) {
-//        if ([dic[@"categoryName"] isEqualToString:@"图片"]) {
-//            for (NSString * str in dic[@"categoryList"]) {
-//                [categoryStr appendFormat:@"%@,", str];
-//            }
-//        }
-//    }
-//    NSRange range = [categoryStr rangeOfString:data.fileFormat];
-//    NSLog(@"%d", range.length);
-//    if (range.length != 0){
-//        NSMutableArray * picArray = [NSMutableArray new];
-//        for (FileData * data in selctArray) {
-//            NSRange picRange = [categoryStr rangeOfString:data.fileFormat];
-//            NSLog(@"%@  %@   %d", categoryStr, data.fileFormat, picRange.length);
-//            if (picRange.length != 0 && ![data.fileFormat isEqualToString:@"f"]) {
-//                [picArray addObject:data];
-//            }
-//        }
-//        
-//        PictureBigShowViewController * picVC = [[PictureBigShowViewController alloc] init];
-//        picVC.pictureArray = picArray;
-//        picVC.fileData = data;
-//        UIViewController * con = (UIViewController *)_allDelegate;
-//        picVC.hidesBottomBarWhenPushed = YES;
-//        [con.navigationController pushViewController:picVC animated:YES];
-//        return;
-//    }
-    
 }
+
 
 #pragma mark - ListTableViewCellDelegate
 
@@ -471,7 +497,57 @@
     NSLog(@"%ld", (long)tag);
     
     if (tag == 100) {
+        FileData * data = _listArray[indexPath.section];
         
+        if ([[SQLCommand shareSQLCommand] checkIsAddDownloadList:data.fileID]) {
+            [Alert showHUDWihtTitle:@"已在下载队列"];
+            return;
+        }
+        data.filePID = @"";
+        data.isHasDownload = @(1);
+        data.hasDownloadSize = @"0";
+        data.downloadStatus = @(0);
+        data.downloadFolder = @"0";
+        data.downloadQuantity = @(0);
+        NSMutableArray * downArray = [NSMutableArray new];
+        [downArray addObject:data];
+        if (![data.fileFormat isEqualToString:@"f"]) {
+            [[SQLCommand shareSQLCommand] insertDownloadData:downArray];
+        }else{
+            NSArray * array = [[SQLCommand shareSQLCommand] getCloudTableFolderData:data.fileID];
+            int quantity = 0;
+            for (FileData * downdata in array) {
+                if ([downdata.fileFormat isEqualToString:@"f"]) {
+                    downdata.isHasDownload = @(2);
+                }else
+                    downdata.isHasDownload = @(1);
+                
+                downdata.hasDownloadSize = @"0";
+                downdata.downloadStatus = @(0);
+                downdata.downloadFolder = @"0";
+                downdata.downloadQuantity = @(0);
+                if (![downdata.fileFormat isEqualToString:@"f"]) {
+                    quantity++;
+                }
+            }
+            data.downloadQuantity = @(quantity);
+            [downArray addObjectsFromArray:array];
+            [[SQLCommand shareSQLCommand] insertDownloadData:downArray];
+        }
+        
+        int status = [AFHTTPAPIClient checkNetworkStatus];
+        if (status == 1 || status == 2) {
+            
+            [[FilesDownloadManager sharedFilesDownManage] getSqlData];
+            [Alert showHUDWihtTitle:@"已加入下载队列"];
+        }else{
+            UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"提示"
+                                                               message:@"网络不通，请检查网路"
+                                                              delegate:nil
+                                                     cancelButtonTitle:@"确定"
+                                                     otherButtonTitles: nil];
+            [alertView show];
+        }
     }else if (tag == 200){
         FileData * data = _listArray[indexPath.section];
         [self removeFiles:@[data]];

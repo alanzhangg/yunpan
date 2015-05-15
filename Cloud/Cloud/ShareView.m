@@ -206,6 +206,9 @@
         [data transformDictionary:trashData.dict];
         NSMutableArray * array = [[CategoryData shareCategoryData] categoryArray];
         NSMutableString * categoryStr = [NSMutableString new];
+        
+        
+        
         [categoryStr deleteCharactersInRange:NSMakeRange(0, categoryStr.length)];
         for (NSDictionary * dic in array) {
             if ([dic[@"categoryName"] isEqualToString:@"文档"]) {
@@ -310,6 +313,7 @@
 #pragma mark - ListTableViewCellDelegate
 
 - (void)settingFunction:(NSIndexPath *)index{
+    
     for (int i = 0; i < listArray.count; i++) {
         TrashData * data = listArray[i];
         if (data.function && i != index.section) {

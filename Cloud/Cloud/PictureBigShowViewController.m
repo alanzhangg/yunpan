@@ -13,6 +13,7 @@
 #import "FileData.h"
 #import "UIImageView+WebCache.h"
 #import "MBProgressHUD.h"
+#import "UploadData.h"
 
 @interface PictureBigShowViewController ()<UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
@@ -86,9 +87,13 @@
     [self.view addSubview:pictureCollectView];
     if (!_isUpload) {
         [self addTabbarView];
+        NSUInteger index = [_pictureArray indexOfObject:_fileData];
+        pictureCollectView.contentOffset = CGPointMake(index * rect.size.width, 0);
+    }else{
+        NSUInteger index = [_uploadArray indexOfObject:_uploadData];
+        pictureCollectView.contentOffset = CGPointMake(index * rect.size.width, 0);
     }
-    NSUInteger index = [_pictureArray indexOfObject:_fileData];
-    pictureCollectView.contentOffset = CGPointMake(index * rect.size.width, 0);
+    
     
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
     [self.navigationController setNavigationBarHidden:NO animated:NO];
@@ -122,11 +127,19 @@
     [super viewWillAppear:animated];
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-    self.navigationItem.title = [NSString stringWithFormat:@"1/%lu", (unsigned long)_pictureArray.count];
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
-    NSUInteger index = [_pictureArray indexOfObject:_fileData];
-    NSString * str = [NSString stringWithFormat:@"%d/%lu", index + 1, (unsigned long)_pictureArray.count];
-    self.navigationItem.title = str;
+    if (!_isUpload) {
+        self.navigationItem.title = [NSString stringWithFormat:@"1/%lu", (unsigned long)_pictureArray.count];
+        NSUInteger index = [_pictureArray indexOfObject:_fileData];
+        NSString * str = [NSString stringWithFormat:@"%d/%lu", index + 1, (unsigned long)_pictureArray.count];
+        self.navigationItem.title = str;
+    }else{
+        self.navigationItem.title = [NSString stringWithFormat:@"1/%lu", (unsigned long)_uploadArray.count];
+        NSUInteger index = [_uploadArray indexOfObject:_uploadData];
+        NSString * str = [NSString stringWithFormat:@"%d/%lu", index + 1, (unsigned long)_uploadArray.count];
+        self.navigationItem.title = str;
+    }
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -150,7 +163,11 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-    return _pictureArray.count;
+    if (!_isUpload) {
+        return _pictureArray.count;
+    }else
+        return _uploadArray.count;
+    
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
@@ -159,51 +176,48 @@
         
     }
 //    indexP = indexPath;
-    FileData * data = _pictureArray[indexPath.row];
-    
-    NSString * lenstr = data.downloadUrl;
-    NSLog(@"%@", lenstr);
-    NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
-//    NSString * typeStr = @"png,gif,jpg,jpeg,psd,bmp,pcx,pic";
-//    NSRange range = [typeStr rangeOfString:data.fileFormat];
-    if (lenstr.length > 3) {
-        NSString * urlstr;
-        if ([[lenstr substringToIndex:2] isEqualToString:@".."]) {
-            urlstr = [NSString stringWithFormat:@"%@%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
-        }else{
-            urlstr = [NSString stringWithFormat:@"%@/r/%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
-        }
-        UIView * view = [cell.scrollView viewWithTag:333];
-        [view removeFromSuperview];
-        MBProgressHUD * hud = [[MBProgressHUD alloc] initWithView:self.view];
-        [hud setCenter:CGPointMake(self.view.frame.size.width/2, self.view.frame.size.height / 2)] ;
-        hud.tag = 333;
-        [cell.scrollView addSubview:hud];
-        cell.scrollView.zoomScale = 1;
-        [hud show:YES];
-        NSLog(@"%@", urlstr);
-        [cell.imageView sd_setImageWithURL:[NSURL URLWithString:urlstr] placeholderImage:nil options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+    if (!_isUpload) {
+        FileData * data = _pictureArray[indexPath.row];
+        
+        NSString * lenstr = data.downloadUrl;
+        NSLog(@"%@", lenstr);
+        NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
+        //    NSString * typeStr = @"png,gif,jpg,jpeg,psd,bmp,pcx,pic";
+        //    NSRange range = [typeStr rangeOfString:data.fileFormat];
+        if (lenstr.length > 3) {
+            NSString * urlstr;
+            if ([[lenstr substringToIndex:2] isEqualToString:@".."]) {
+                urlstr = [NSString stringWithFormat:@"%@%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
+            }else{
+                urlstr = [NSString stringWithFormat:@"%@/r/%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
+            }
+            UIView * view = [cell.scrollView viewWithTag:333];
+            [view removeFromSuperview];
+            MBProgressHUD * hud = [[MBProgressHUD alloc] initWithView:self.view];
+            [hud setCenter:CGPointMake(self.view.frame.size.width/2, self.view.frame.size.height / 2)] ;
+            hud.tag = 333;
+            [cell.scrollView addSubview:hud];
+            cell.scrollView.zoomScale = 1;
+            [hud show:YES];
+            NSLog(@"%@", urlstr);
+            [cell.imageView sd_setImageWithURL:[NSURL URLWithString:urlstr] placeholderImage:nil options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                [cell settingFrame:CGRectMake(0, 0, collectionView.frame.size.width, collectionView.frame.size.height) withInter:0];
+                [hud removeFromSuperview];
+            }];
+            
             [cell settingFrame:CGRectMake(0, 0, collectionView.frame.size.width, collectionView.frame.size.height) withInter:0];
-            [hud removeFromSuperview];
-        }];
-
+        }
+        [cell settingFrame:CGRectMake(0, 0, collectionView.frame.size.width, collectionView.frame.size.height) withInter:0];
+    }else{
+        UploadData * uploadData = _uploadArray[indexPath.row];
+        NSString * path = NSHomeDirectory();
+        NSString * pathstr = [NSString stringWithFormat:@"Documents/upload/%@", uploadData.fileName];
+        path = [path stringByAppendingPathComponent:pathstr];
+        cell.imageView.image = [UIImage imageWithContentsOfFile:path];
+        
         [cell settingFrame:CGRectMake(0, 0, collectionView.frame.size.width, collectionView.frame.size.height) withInter:0];
     }
-//    NSUserDefaults * def = [NSUserDefaults standardUserDefaults];
-//    NSDictionary * userDic = [def objectForKey:@"userinfo"];
-//    NSString * str = @"%@/workflow/downfile.wf?sid=%@&";
-//    str = [NSString stringWithFormat:str, [def objectForKey:@"network"], [userDic objectForKey:@"sid"]];
-//    str = [str stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-//    NSURL * url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", str, [dict objectForKey:@"fileUrl"]]];
-//    NSLog(@"%@", url);
-//    //    MBProgressHUD * hud = [MBProgressHUD]
-//    UIView * view = [cell.scrollView viewWithTag:333];
-//    [view removeFromSuperview];
-//    [cell.imageView sd_setImageWithURL:url placeholderImage:nil options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-//    }];
-    [cell settingFrame:CGRectMake(0, 0, collectionView.frame.size.width, collectionView.frame.size.height) withInter:0];
     return cell;
-    
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
@@ -233,9 +247,16 @@
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)sscrollView{
-    int scrollViewIndex = sscrollView.contentOffset.x/sscrollView.frame.size.width;
-    NSString * str = [NSString stringWithFormat:@"%d/%lu", scrollViewIndex + 1, (unsigned long)_pictureArray.count];
-    self.navigationItem.title = str;
+    if (!_isUpload) {
+        int scrollViewIndex = sscrollView.contentOffset.x/sscrollView.frame.size.width;
+        NSString * str = [NSString stringWithFormat:@"%d/%lu", scrollViewIndex + 1, (unsigned long)_pictureArray.count];
+        self.navigationItem.title = str;
+    }else{
+        int scrollViewIndex = sscrollView.contentOffset.x/sscrollView.frame.size.width;
+        NSString * str = [NSString stringWithFormat:@"%d/%lu", scrollViewIndex + 1, (unsigned long)_uploadArray.count];
+        self.navigationItem.title = str;
+    }
+    
     [self hiddenNav];
 }
 

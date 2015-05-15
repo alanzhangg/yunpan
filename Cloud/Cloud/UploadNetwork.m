@@ -43,6 +43,7 @@ static UploadNetwork * uploadNetwork = nil;
         NSArray * array = _listArray[1];
         if (array.count > 0) {
             UploadData * data = array[0];
+            _uploadData = data;
             data.isUploading = YES;
             if (!uploadFileClient) {
                 
@@ -156,6 +157,10 @@ static UploadNetwork * uploadNetwork = nil;
         [uploadNetwork getUploadData];
         [uploadNetwork startUpload];
     }];
+}
+
+- (void)cancleUpload{
+    [fileUploadOp cancel];
 }
 
 @end

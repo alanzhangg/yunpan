@@ -13,6 +13,7 @@
 #import "DownloadListView.h"
 #import "AppDelegate.h"
 #import "UploadListView.h"
+#import "FilesDownloadManager.h"
 
 @interface DownAndLoadViewController ()<XHScrollMenuDelegate, UIScrollViewDelegate>
 
@@ -37,6 +38,7 @@
 
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
+    [[FilesDownloadManager sharedFilesDownManage] startRequest:nil];
     DownloadListView * leftView = (DownloadListView *)[menuScrollView viewWithTag:200];
     [leftView reloadDatas];
     UploadListView * rightView = (UploadListView *)[menuScrollView viewWithTag:300];

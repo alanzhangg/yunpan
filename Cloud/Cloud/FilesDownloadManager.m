@@ -310,8 +310,10 @@ static double zhongjianshijian = 0;
 }
 
 - (void)startRequest:(FileData *)fileData{
-    fileData.downloadStatus = @(0);
-    [[SQLCommand shareSQLCommand] updateDownloadData:@[fileData]];
+    if (fileData) {
+        fileData.downloadStatus = @(0);
+        [[SQLCommand shareSQLCommand] updateDownloadData:@[fileData]];
+    }
     NSArray * array = [queue operations];
     if (array.count == 0) {
         [self getSqlData];

@@ -279,7 +279,11 @@
             cell.titleLabel.text = data.fileName;
             cell.indexPath = indexPath;
             cell.timeLabel.text = [NSString stringWithFormat:@"%@", data.updateTime];
-            cell.sizeLabel.text = [CommonHelper setLength:[data.fileSize floatValue]];
+            if (![data.fileFormat isEqualToString:@"f"]) {
+                cell.sizeLabel.text = [CommonHelper setLength:[data.fileSize floatValue]];
+            }else
+                cell.sizeLabel.text = @"";
+            
             [cell layoutSubview:dic];
             return cell;
         }

@@ -279,8 +279,9 @@
                 }
                 
                 PictureBigShowViewController * picVC = [[PictureBigShowViewController alloc] init];
-                picVC.pictureArray = picArray;
-                //        picVC.fileData = data;
+                picVC.uploadArray = picArray;
+                picVC.uploadData = data;
+                picVC.isUpload = YES;
                 UIViewController * con = (UIViewController *)_parentVc;
                 picVC.hidesBottomBarWhenPushed = YES;
                 [con.navigationController pushViewController:picVC animated:YES];
@@ -330,13 +331,21 @@
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         
         NSString * headStr = headerArray[indexPath.section];
-        if ([headStr isEqualToString:@"上传失败"] || [headStr isEqualToString:@"上传完成"]) {
-            if ([[SQLCommand shareSQLCommand] checkFileOnly:data]) {
-                [self shanchuData:data];
+        if ([UploadNetwork shareUploadNetwork].uploadData) {
+            UploadData * upData = [UploadNetwork shareUploadNetwork].uploadData;
+            if ([upData.fileID isEqualToString:data.fileID]) {
+                [[UploadNetwork shareUploadNetwork] cancleUpload];
             }
-            [[SQLCommand shareSQLCommand] deleteUploadData:@[data]];
-            [array removeObject:data];
+        }
+        if ([[SQLCommand shareSQLCommand] checkFileOnly:data]) {
+            [self shanchuData:data];
+        }
+        [[SQLCommand shareSQLCommand] deleteUploadData:@[data]];
+        [array removeObject:data];
+        if (array.count > 0) {
             [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        }else{
+            [tableView reloadData];
         }
     }
 }

@@ -226,8 +226,6 @@
             secretkey = [paArr objectAtIndex:3];
         }
     }
-    
-    
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     [ud setObject:secretkey forKey:@"securityKey"];
     [ud setObject:ip forKey:@"server"];

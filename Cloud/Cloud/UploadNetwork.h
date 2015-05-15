@@ -19,9 +19,11 @@
 
 @property (nonatomic, assign) id<UploadNetworkDelegate> delegate;
 @property (nonatomic, strong) NSMutableArray * listArray;
+@property (nonatomic, strong) UploadData * uploadData;
 
 + (UploadNetwork *)shareUploadNetwork;
 - (void)getUploadData;
 - (void)startUpload;
+- (void)cancleUpload;
 
 @end

@@ -47,6 +47,8 @@
 - (NSArray *)getSubfolders:(NSString *)fileId;
 - (NSMutableArray *)getSubFilesUndownload:(NSString *)fileId;
 
+- (NSString *)exchangeDownloadListSid:(NSString *)str;
+
 //upload
 - (void)insertUploadData:(NSArray *)array;
 - (void)updateUploadData:(UploadData *)data;
