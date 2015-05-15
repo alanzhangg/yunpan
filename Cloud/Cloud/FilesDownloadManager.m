@@ -14,10 +14,13 @@
 
 #define TEMPPATH [CommonHelper getTempFolderPathWithBasepath:_basePath]
 
+
 @implementation FilesDownloadManager{
     ASINetworkQueue * queue;
     NSMutableArray * downinglist;
 }
+
+NSString * const DownloadDataChange = @"DownloadDataChange";
 
 @synthesize basePath = _basePath, targetSubPath = _targetSubPath;
 
@@ -44,7 +47,7 @@ static FilesDownloadManager * sharedFilesDownManage = nil;
 
 - (void)getSqlData{
     _downloadListArray = [[SQLCommand shareSQLCommand] getDownloadListData];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"DownloadDataChange" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:DownloadDataChange object:nil];
     [self addRequest];
 }
 

@@ -18,7 +18,9 @@
 #import "UploadNetwork.h"
 #import "FilesDownloadManager.h"
 
-@interface AppDelegate ()
+@interface AppDelegate (){
+    Reachability *hostReach;
+}
 
 @end
 
@@ -47,8 +49,8 @@
     [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
     NSLog(@"%@", NSHomeDirectory());
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    [ud setObject:@"https://www.actionsoft.com.cn/my/" forKey:@"server"];
-    [ud setObject:@"0355b782-4203-4961-9769-1be3c44b3ffe" forKey:@"sid"];
+    [ud setObject:@"https://192.168.1.183:443/portal/" forKey:@"server"];
+    [ud setObject:@"8cad9059-c1a0-4a52-b46c-4f6b379898c1" forKey:@"sid"];
     [ud setObject:@"zhy" forKey:@"uid"];
     [ud setObject:@"admin" forKey:@"securityKey"];
     [ud synchronize];
@@ -183,7 +185,6 @@
 
 -(void)paramsHandle:(NSString*)url
 {
-    
     
     NSLog(@"%@    %@    %@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), url);
     url = [url stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];

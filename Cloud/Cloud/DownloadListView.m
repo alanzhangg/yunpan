@@ -48,7 +48,7 @@
         listArray = [NSMutableArray new];
         headerArray = [NSMutableArray new];
         [self initSubViews];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadDatas) name:@"DownloadDataChange" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadDatas) name:DownloadDataChange object:nil];
         [FilesDownloadManager sharedFilesDownManage].downloadDelegate = self;
     }
     return self;

@@ -61,6 +61,7 @@ static UploadNetwork * uploadNetwork = nil;
             NSString * strPath = [NSString stringWithFormat:@"Documents/upload/%@", data.fileName];
             path = [path stringByAppendingPathComponent:strPath];
             NSLog(@"path = %@", [NSURL URLWithString:path]);
+            
             NSMutableURLRequest * request = [uploadFileClient multipartFormRequestWithMethod:@"POST" path:string parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
                 NSError * err = nil;
                 
@@ -75,6 +76,7 @@ static UploadNetwork * uploadNetwork = nil;
             fileUploadOp = [[AFHTTPRequestOperation alloc] initWithRequest:request];
             __weak UploadNetwork * weakSelf = self;
             __block double zhongjianshijian = 0;
+            
             [fileUploadOp setUploadProgressBlock:^(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) {
                 
                 if (zhongjianshijian == 0) {
