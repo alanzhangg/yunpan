@@ -50,7 +50,7 @@
     NSLog(@"%@", NSHomeDirectory());
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     [ud setObject:@"https://192.168.1.183:443/portal/" forKey:@"server"];
-    [ud setObject:@"8cad9059-c1a0-4a52-b46c-4f6b379898c1" forKey:@"sid"];
+    [ud setObject:@"f659268c-d644-49af-98b1-594c5d629e0d" forKey:@"sid"];
     [ud setObject:@"zhy" forKey:@"uid"];
     [ud setObject:@"admin" forKey:@"securityKey"];
     [ud synchronize];

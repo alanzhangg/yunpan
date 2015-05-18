@@ -398,7 +398,7 @@
     [dbQueue inDatabase:^(FMDatabase *dbs) {
         [dbs open];
         for (FileData * data in array) {
-            [db executeUpdate:@"UPDATE DOWNLOADLIST SET ISHAVEDONE = ?, HASDOWNSIZE = ?,DOWNLOADSTATUS = ?, DOWNLOADFOLDER = ?, DOWNLOADQUANTITY = ? WHERE ID = ?", data.isHasDownload, data.hasDownloadSize, data.downloadStatus, data.downloadFolder, data.downloadQuantity, data.fileID];
+            [db executeUpdate:@"UPDATE DOWNLOADLIST SET HASDOWNSIZE = ?, ISHAVEDONE = ?, HASDOWNSIZE = ?,DOWNLOADSTATUS = ?, DOWNLOADFOLDER = ?, DOWNLOADQUANTITY = ? WHERE ID = ?", data.hasDownloadSize, data.isHasDownload, data.hasDownloadSize, data.downloadStatus, data.downloadFolder, data.downloadQuantity, data.fileID];
         }
         [dbs close];
     }];
@@ -447,7 +447,7 @@
         }if ([data.isHasDownload intValue] == 2 || [data.downloadFolder intValue] == 1){
             [downloadedArray addObject:data];
         }
-         NSLog(@"%@, %@", data.fileName, data.downloadFolder);
+//         NSLog(@"%@, %@", data.fileName, data.downloadFolder);
     }
     NSMutableArray * listArray = [NSMutableArray new];
     [listArray addObject:errorArray];
@@ -462,7 +462,7 @@
         if ([data.fileFormat isEqualToString:@"f"]) {
             NSArray * array = [self getFolderData:data.fileID];
             [self deleteFileData:array];
-            return;
+//            return;
         }
         @autoreleasepool {
             NSLog(@"%d", [db executeUpdate:@"DELETE FROM DOWNLOADLIST WHERE ID = ?", data.fileID]);
@@ -503,19 +503,17 @@
     return [self getFileData:set];
 }
 
-- (NSMutableArray *)getSubFilesUndownload:(NSString *)fileId{
-    FMResultSet * set = [db executeQuery:@"SELECT * FROM DOWNLOADLIST WHERE PID = ? AND (ISHAVEDONE = 1 OR ISHAVEDONE = 0) AND FILEFORMAT != 'f' ORDER BY FILETYPE DESC, UPDATETIME DESC", fileId];
-    NSArray * array = [self getFileData:set];
-    NSMutableArray * errorArray = [NSMutableArray new];
-    NSMutableArray * downloadingArray = [NSMutableArray new];
-    for (FileData * data in array) {
-        if ([data.isHasDownload intValue] == 0) {
-            [errorArray addObject:data];
-        }else if ([data.isHasDownload intValue] == 1){
-            [downloadingArray addObject:data];
+- (NSMutableArray *)getSubFilesUndownload:(FileData *)fileData{
+    NSMutableArray * array = [NSMutableArray new];
+    FMResultSet * set = [db executeQuery:@"SELECT * FROM DOWNLOADLIST WHERE PID = ? ORDER BY FILETYPE DESC, UPDATETIME DESC", fileData.fileID];
+    [array addObjectsFromArray:[self getFileData:set]];
+    for (int i = 0; i < array.count; i++) {
+        FileData * data = array[i];
+        if ([data.fileFormat isEqualToString:@"f"]) {
+            [array addObjectsFromArray:[self getSubFilesUndownload:data]];
         }
     }
-    return [NSMutableArray arrayWithObjects:errorArray, downloadingArray, nil];
+    return array;
 }
 
 - (BOOL)checkIsAddDownloadList:(NSString *)fileId{

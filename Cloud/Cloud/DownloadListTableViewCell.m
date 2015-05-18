@@ -84,12 +84,12 @@
 - (void)showSetting:(UIButton *)sender{
     if (_functionButton.selected) {//将文件状态由暂停改为下载
         _functionButton.selected = NO;
-        [self downloadFile];
-//        _timeLabel.text = @"";
+        [self stopDownloadFile];
+        _timeLabel.text = @"";
     }else{//将文件状态由下载改为暂停
         _functionButton.selected = YES;
-        [self stopDownloadFile];
-//        _timeLabel.text = @"暂停";
+        [self downloadFile];
+        _timeLabel.text = @"暂停";
     }
 }
 

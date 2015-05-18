@@ -675,7 +675,7 @@
         int status = [AFHTTPAPIClient checkNetworkStatus];
         if (status == 1 || status == 2) {
             
-            [[FilesDownloadManager sharedFilesDownManage] getSqlData];
+            [[FilesDownloadManager sharedFilesDownManage] startRequest:nil];
             [Alert showHUDWihtTitle:@"已加入下载队列"];
         }else{
             UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"提示"

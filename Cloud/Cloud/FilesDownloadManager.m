@@ -53,18 +53,20 @@ static FilesDownloadManager * sharedFilesDownManage = nil;
 
 - (void)addRequest{
     NSMutableArray * array = _downloadListArray[1];
-    FileData * fileData;
     for (FileData * data in array) {
-        if ([data.downloadStatus intValue] == 0 && ![data.fileFormat isEqualToString:@"f"]) {
-            fileData = data;
-            break;
-        }
-    }
-    if (fileData) {
-        if (queue && queue.requestsCount == 0) {
-            [self downloadFile:fileData];
-        }else{
-            [self downloadFile:fileData];
+        if (![data.fileFormat isEqualToString:@"f"]) {
+            NSArray * array = [queue operations];
+            int i = 0;
+            for (i = 0; i < array.count; i++) {
+                ASIHTTPRequest * req = array[i];
+                FileData * fileData = [req.userInfo objectForKey:@"File"];
+                if ([fileData.fileID isEqualToString:data.fileID]) {
+                    break;
+                }
+            }
+            if (i >= array.count) {
+                [self downloadFile:data];
+            }
         }
     }
 }
@@ -150,23 +152,27 @@ static FilesDownloadManager * sharedFilesDownManage = nil;
 //初始化队列，并向队列加入任务
 - (void)newASINetworkQueueWithUrl:(FileData *)fileInfo
 {
-//    if(queue==nil)
+    if(queue==nil){
         queue = [[ASINetworkQueue alloc]init];
-    [queue setDownloadProgressDelegate:self];
-    [queue setShowAccurateProgress:YES];
-    queue.maxConcurrentOperationCount = 1;
+        [queue setDownloadProgressDelegate:self];
+        [queue setShowAccurateProgress:YES];
+        queue.maxConcurrentOperationCount = 1;
+    }
+    
     ASIHTTPRequest *request=[[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:fileInfo.fileURL]];
+    
     request.delegate=self;
     [request setDownloadDestinationPath:[fileInfo targetPath]];
     [request setTemporaryFileDownloadPath:fileInfo.tempPath];
+     [request setAllowResumeForFileDownloads:YES];
     [request setDownloadProgressDelegate:self];
     [request setNumberOfTimesToRetryOnTimeout:2];
     [request setShowAccurateProgress:YES];
-    [request setAllowResumeForFileDownloads:YES];//支持断点续传
+    [request setAllowResumeForFileDownloads:YES]; //支持断点续传
     NSLog(@"%lld", [fileInfo.fileSize longLongValue]);
-    [request setContentLength:[fileInfo.fileSize longLongValue]];
-    [request setUserInfo:[NSDictionary dictionaryWithObject:fileInfo forKey:@"File"]];//设置上下文的文件基本信
     
+    [request setUserInfo:[NSDictionary dictionaryWithObject:fileInfo forKey:@"File"]];//设置上下文的文件基本信
+    [request setContentLength:[fileInfo.fileSize longLongValue]];
     [queue addOperation:request];
 //    [downinglist addObject:request];
     [queue setShouldCancelAllRequestsOnFailure:NO];
@@ -179,12 +185,14 @@ static FilesDownloadManager * sharedFilesDownManage = nil;
 //向队列中加入任务
 - (void)addNewRequestWithGuid:(FileData *)fileInfo
 {
-//    if(queue==nil)
+    if(queue==nil){
         queue = [[ASINetworkQueue alloc]init];
-    [queue setDownloadProgressDelegate:self];
-    [queue setShowAccurateProgress:YES];
-    queue.maxConcurrentOperationCount = 1;
+        [queue setDownloadProgressDelegate:self];
+        [queue setShowAccurateProgress:YES];
+        queue.maxConcurrentOperationCount = 1;
+    }
     ASIHTTPRequest *request=[[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:fileInfo.fileURL]];
+    
     request.delegate=self;
     [request setDownloadDestinationPath:[fileInfo targetPath]];
     [request setTemporaryFileDownloadPath:fileInfo.tempPath];
@@ -197,7 +205,7 @@ static FilesDownloadManager * sharedFilesDownManage = nil;
     NSLog(@"%lld", [fileInfo.fileSize longLongValue]);
     [queue addOperation:request];
 //    [downinglist addObject:request];
-    [queue go];
+//    [queue go];
     
 }
 
@@ -237,6 +245,8 @@ static FilesDownloadManager * sharedFilesDownManage = nil;
     NSLog(@"%@", responseHeaders);
     
     NSString *len = [NSString stringWithFormat:@"%@", fileInfo.fileSize];//
+    
+    [request setContentLength:[fileInfo.fileSize longLongValue]];
     
     NSLog(@"============================================>%@的大小为:%@",fileInfo.fileName,len );
     if ([fileInfo.fileSize longLongValue]> [len longLongValue])
@@ -289,13 +299,13 @@ static double zhongjianshijian = 0;
         [self.downloadDelegate finishedDownload:request];
     }
     [self getSqlData];
-    
     NSLog(@"%@ ============> 下载结束了！",fileInfo.fileName);
     // NSLog(@"下载结束了");
+//    [[NSNotificationCenter defaultCenter] postNotificationName:DownloadDataChange object:nil];
 }
 
 - (void)setProgress:(float)newProgress{
-//    NSLog(@"%f", newProgress);
+    NSLog(@"%f", newProgress);
     
 }
 
@@ -317,10 +327,10 @@ static double zhongjianshijian = 0;
         fileData.downloadStatus = @(0);
         [[SQLCommand shareSQLCommand] updateDownloadData:@[fileData]];
     }
-    NSArray * array = [queue operations];
-    if (array.count == 0) {
-        [self getSqlData];
-    }
+//    NSArray * array = [queue operations];
+//    if (array.count <= 0) {
+    [self getSqlData];
+//    }
 }
 
 - (void)deleteRequest:(FileData *)fileData{

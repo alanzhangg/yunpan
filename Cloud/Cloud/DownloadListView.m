@@ -225,7 +225,6 @@
                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
             }
             cell.fileInfo = data;
-            
             NSString * lenstr = data.thumDownloadUrl;
             NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
             NSString * typeStr = @"png,gif,jpg,jpeg,psd,bmp,pcx,pic";
@@ -507,6 +506,7 @@
             }
             
         }
+        [[SQLCommand shareSQLCommand] deleteDownloadData:@[array[0]]];
         dispatch_async(dispatch_get_main_queue(), ^{
             [listTableView reloadData];
         });
@@ -581,10 +581,9 @@
                 if ([fileData.fileID isEqualToString:data.fileID]) {
                     DownloadListTableViewCell * cell = (DownloadListTableViewCell *)[listTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:j inSection:i]];
                     if (cell) {
-                        cell.timeLabel.text = [NSString stringWithFormat:@"%@/%@", [CommonHelper setLength:[data.hasDownloadSize longLongValue]], [CommonHelper setLength:[data.fileSize longLongValue]]];
+                        cell.timeLabel.text = [NSString stringWithFormat:@"%@/%@", [CommonHelper setLength:[fileData.hasDownloadSize longLongValue]], [CommonHelper setLength:[data.fileSize longLongValue]]];
                         cell.sizeLabel.text = [NSString stringWithFormat:@"%@/s", [CommonHelper setLength:fileData.uploadSpeed]];
-//                        NSLog(@"%f", (float)data.uploadSize/(float)[data.fileSize longLongValue]);
-                        [cell.functionButton setProgress:(float)[data.hasDownloadSize longLongValue]/(float)[data.fileSize longLongValue]];
+                        [cell.functionButton setProgress:(float)[fileData.hasDownloadSize longLongValue]/(float)[data.fileSize longLongValue]];
                     }
                 }
             }

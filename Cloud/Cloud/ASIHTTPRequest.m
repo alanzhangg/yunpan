@@ -1,4 +1,4 @@
-
+//
 //  ASIHTTPRequest.m
 //
 //  Created by Ben Copsey on 04/10/2007.
@@ -392,7 +392,7 @@ static NSOperationQueue *sharedQueue = nil;
 	[connectionInfo release];
 	[requestID release];
 	[dataDecompressor release];
-	[userAgentString release];
+	[userAgent release];
 
 	#if NS_BLOCKS_AVAILABLE
 	[self releaseBlocksOnMainThread];
@@ -459,11 +459,6 @@ static NSOperationQueue *sharedQueue = nil;
 		[blocks addObject:authenticationNeededBlock];
 		[authenticationNeededBlock release];
 		authenticationNeededBlock = nil;
-	}
-	if (requestRedirectedBlock) {
-		[blocks addObject:requestRedirectedBlock];
-		[requestRedirectedBlock release];
-		requestRedirectedBlock = nil;
 	}
 	[[self class] performSelectorOnMainThread:@selector(releaseBlocks:) withObject:blocks waitUntilDone:[NSThread isMainThread]];
 }
@@ -578,7 +573,7 @@ static NSOperationQueue *sharedQueue = nil;
 		return;
 	}
 	if ([self shouldStreamPostDataFromDisk]) {
-		[[self postBodyWriteStream] write:(const uint8_t *)[data bytes] maxLength:[data length]];
+		[[self postBodyWriteStream] write:[data bytes] maxLength:[data length]];
 	} else {
 		[[self postBody] appendData:data];
 	}
@@ -848,20 +843,18 @@ static NSOperationQueue *sharedQueue = nil;
 		
 		#if TARGET_OS_IPHONE && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
 		if ([ASIHTTPRequest isMultitaskingSupported] && [self shouldContinueWhenAppEntersBackground]) {
-            if (!backgroundTask || backgroundTask == UIBackgroundTaskInvalid) {
-                backgroundTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
-                    // Synchronize the cleanup call on the main thread in case
-                    // the task actually finishes at around the same time.
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        if (backgroundTask != UIBackgroundTaskInvalid)
-                        {
-                            [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
-                            backgroundTask = UIBackgroundTaskInvalid;
-                            [self cancel];
-                        }
-                    });
-                }];
-            }
+			backgroundTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+				// Synchronize the cleanup call on the main thread in case
+				// the task actually finishes at around the same time.
+				dispatch_async(dispatch_get_main_queue(), ^{
+					if (backgroundTask != UIBackgroundTaskInvalid)
+					{
+						[[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
+						backgroundTask = UIBackgroundTaskInvalid;
+						[self cancel];
+					}
+				});
+			}];
 		}
 		#endif
 
@@ -1088,12 +1081,12 @@ static NSOperationQueue *sharedQueue = nil;
 	
 	// Build and set the user agent string if the request does not already have a custom user agent specified
 	if (![[self requestHeaders] objectForKey:@"User-Agent"]) {
-		NSString *tempUserAgentString = [self userAgentString];
-		if (!tempUserAgentString) {
-			tempUserAgentString = [ASIHTTPRequest defaultUserAgentString];
+		NSString *userAgentString = [self userAgent];
+		if (!userAgentString) {
+			userAgentString = [ASIHTTPRequest defaultUserAgentString];
 		}
-		if (tempUserAgentString) {
-			[self addRequestHeader:@"User-Agent" value:tempUserAgentString];
+		if (userAgentString) {
+			[self addRequestHeader:@"User-Agent" value:userAgentString];
 		}
 	}
 	
@@ -1152,7 +1145,7 @@ static NSOperationQueue *sharedQueue = nil;
 	}
 	
 	[self setLastBytesSent:0];
-//	[self setContentLength:0];
+	[self setContentLength:0];
 	[self setResponseHeaders:nil];
 	if (![self downloadDestinationPath]) {
 		[self setRawResponseData:[[[NSMutableData alloc] init] autorelease]];
@@ -1221,7 +1214,6 @@ static NSOperationQueue *sharedQueue = nil;
             CFReadStreamSetProperty((CFReadStreamRef)[self readStream], 
                                     kCFStreamPropertySSLSettings, 
                                     (CFTypeRef)sslProperties);
-            [sslProperties release];
         } 
         
         // Tell CFNetwork to use a client certificate
@@ -1661,6 +1653,7 @@ static NSOperationQueue *sharedQueue = nil;
 {
 	//Only update progress if this isn't a HEAD request used to preset the content-length
 	if (![self mainRequest]) {
+        NSLog(@"%hhd", [self showAccurateProgress]);
 		if ([self showAccurateProgress] || ([self complete] && ![self updatedProgress])) {
 			[self updateUploadProgress];
 			[self updateDownloadProgress];
@@ -2237,7 +2230,7 @@ static NSOperationQueue *sharedQueue = nil;
 
 			// Workaround for Apache HEAD requests for dynamically generated content returning the wrong Content-Length when using gzip
 			if ([self mainRequest] && [self allowCompressedResponse] && length == 20 && [self showAccurateProgress] && [self shouldResetDownloadProgress]) {
-				[[self mainRequest] setShowAccurateProgress:NO];
+//				[[self mainRequest] setShowAccurateProgress:NO];
 				[[self mainRequest] incrementDownloadSizeBy:1];
 
 			} else {
@@ -2248,7 +2241,7 @@ static NSOperationQueue *sharedQueue = nil;
 			}
 
 		} else if ([self showAccurateProgress] && [self shouldResetDownloadProgress]) {
-			[theRequest setShowAccurateProgress:NO];
+//			[theRequest setShowAccurateProgress:NO];
 			[theRequest incrementDownloadSizeBy:1];
 		}
 	}
@@ -3374,7 +3367,7 @@ static NSOperationQueue *sharedQueue = nil;
 					[[self inflatedFileDownloadOutputStream] open];
 				}
 
-				[[self inflatedFileDownloadOutputStream] write:(const uint8_t *)[inflatedData bytes] maxLength:[inflatedData length]];
+				[[self inflatedFileDownloadOutputStream] write:[inflatedData bytes] maxLength:[inflatedData length]];
 			}
 
 			
@@ -3450,7 +3443,6 @@ static NSOperationQueue *sharedQueue = nil;
 				[[[[NSFileManager alloc] init] autorelease] moveItemAtPath:[self temporaryUncompressedDataDownloadPath] toPath:[self downloadDestinationPath] error:&moveError];
 				if (moveError) {
 					fileError = [NSError errorWithDomain:NetworkRequestErrorDomain code:ASIFileManagementError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"Failed to move file from '%@' to '%@'",[self temporaryFileDownloadPath],[self downloadDestinationPath]],NSLocalizedDescriptionKey,moveError,NSUnderlyingErrorKey,nil]];
-                   
 				}
 				[self setTemporaryUncompressedDataDownloadPath:nil];
 
@@ -3468,11 +3460,9 @@ static NSOperationQueue *sharedQueue = nil;
 
 			//Move the temporary file to the destination path
 			if (!fileError) {
-                assert([[NSFileManager defaultManager]fileExistsAtPath:self.temporaryFileDownloadPath]);
 				[[[[NSFileManager alloc] init] autorelease] moveItemAtPath:[self temporaryFileDownloadPath] toPath:[self downloadDestinationPath] error:&moveError];
 				if (moveError) {
 					fileError = [NSError errorWithDomain:NetworkRequestErrorDomain code:ASIFileManagementError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"Failed to move file from '%@' to '%@'",[self temporaryFileDownloadPath],[self downloadDestinationPath]],NSLocalizedDescriptionKey,moveError,NSUnderlyingErrorKey,nil]];
-                     NSLog(@"reason:%@",moveError);
 				}
 				[self setTemporaryFileDownloadPath:nil];
 			}
@@ -3518,7 +3508,7 @@ static NSOperationQueue *sharedQueue = nil;
 		
 	// If request has asked delegate or ASIAuthenticationDialog for credentials
 	} else if ([self authenticationNeeded]) {
-        // Do nothing.
+		CFRunLoopStop(CFRunLoopGetCurrent());
 	}
 
 }
@@ -3557,6 +3547,8 @@ static NSOperationQueue *sharedQueue = nil;
         [self didChangeValueForKey:@"isExecuting"];
     if (!wasFinished)
         [self didChangeValueForKey:@"isFinished"];
+
+	CFRunLoopStop(CFRunLoopGetCurrent());
 
 	#if TARGET_OS_IPHONE && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
 	if ([ASIHTTPRequest isMultitaskingSupported] && [self shouldContinueWhenAppEntersBackground]) {
@@ -4796,7 +4788,7 @@ static NSOperationQueue *sharedQueue = nil;
     BOOL runAlways = YES; // Introduced to cheat Static Analyzer
 	while (runAlways) {
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-        CFRunLoopRunInMode(kCFRunLoopDefaultMode, 1.0e10, true);
+		CFRunLoopRun();
 		[pool drain];
 	}
 
@@ -5002,7 +4994,7 @@ static NSOperationQueue *sharedQueue = nil;
 
 @synthesize username;
 @synthesize password;
-@synthesize userAgentString;
+@synthesize userAgent;
 @synthesize domain;
 @synthesize proxyUsername;
 @synthesize proxyPassword;

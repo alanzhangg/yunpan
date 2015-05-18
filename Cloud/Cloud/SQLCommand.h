@@ -45,7 +45,7 @@
 - (NSArray *)getDeleteDownloadData:(NSString *)fileID;
 - (NSArray *)getCloudTableFolderData:(NSString *)fileId;
 - (NSArray *)getSubfolders:(NSString *)fileId;
-- (NSMutableArray *)getSubFilesUndownload:(NSString *)fileId;
+- (NSMutableArray *)getSubFilesUndownload:(FileData *)fileData;
 
 - (NSString *)exchangeDownloadListSid:(NSString *)str;
 

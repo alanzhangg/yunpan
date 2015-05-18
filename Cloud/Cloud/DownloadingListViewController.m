@@ -21,8 +21,9 @@
 #import "VideoNavigationController.h"
 #import "SQLCommand.h"
 #import "UploadFailTableViewCell.h"
+#import "FilesDownloadManager.h"
 
-@interface DownloadingListViewController ()<UITableViewDataSource, UITableViewDelegate, UploadFailTableViewCellDelegate>
+@interface DownloadingListViewController ()<UITableViewDataSource, UITableViewDelegate, UploadFailTableViewCellDelegate, DownloadDelegate>
 
 @end
 
@@ -36,6 +37,10 @@
     UIView * tabView;
 }
 
+- (void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -45,13 +50,34 @@
     self.view.backgroundColor = [UIColor whiteColor];
     self.navigationItem.title = _fileData.fileName;
     rectFrame = self.view.frame;
+    [FilesDownloadManager sharedFilesDownManage].downloadDelegate = self;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh:) name:DownloadDataChange object:nil];
     [self initSubViews];
+    [self getdata];
+}
+
+- (void)refresh:(NSNotification *)not{
     [self getdata];
 }
 
 - (void)getdata{
     [listArray removeAllObjects];
-    [listArray addObjectsFromArray:[[SQLCommand shareSQLCommand] getSubFilesUndownload:_fileData.fileID]];
+    secTitleArray = [NSMutableArray arrayWithObjects:@"下载失败", @"正在下载", nil];
+    NSMutableArray * array = [NSMutableArray new];
+    [array addObjectsFromArray:[[SQLCommand shareSQLCommand] getSubFilesUndownload:_fileData]];
+    NSMutableArray * errorArray = [NSMutableArray new];
+    NSMutableArray * downloadingArray = [NSMutableArray new];
+    for (FileData * data in array) {
+        if (![data.fileFormat isEqualToString:@"f"]) {
+            if ([data.isHasDownload intValue] == 0) {
+                [errorArray addObject:data];
+            }else if ([data.isHasDownload intValue] == 1){
+                [downloadingArray addObject:data];
+            }
+        }
+    }
+    [listArray addObject:errorArray];
+    [listArray addObject:downloadingArray];
     for (int i = 0; i < listArray.count; i++) {
         NSMutableArray * secarray = listArray[i];
         if (secarray.count == 0) {
@@ -401,6 +427,33 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         
+    }
+}
+
+- (void)updateCellProgress:(ASIHTTPRequest *)request{
+    FileData * fileData = [request.userInfo objectForKey:@"File"];
+    for (int i = 0; i < secTitleArray.count; i++) {
+        NSString * secstr = secTitleArray[i];
+        NSMutableArray * array = listArray[i];
+        if ([secstr isEqualToString:@"正在下载"]) {
+            for (int j = 0; j < array.count; j++) {
+                FileData * data = array[j];
+                if ([fileData.fileID isEqualToString:data.fileID]) {
+                    DownloadListTableViewCell * cell = (DownloadListTableViewCell *)[listTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:j inSection:i]];
+                    if (j != 0) {
+                        [array exchangeObjectAtIndex:j withObjectAtIndex:0];
+                        [listTableView moveRowAtIndexPath:[NSIndexPath indexPathForRow:j inSection:i] toIndexPath:[NSIndexPath indexPathForRow:0 inSection:i]];
+                    }
+                    if (cell) {
+                        cell.timeLabel.text = [NSString stringWithFormat:@"%@/%@", [CommonHelper setLength:[fileData.hasDownloadSize longLongValue]], [CommonHelper setLength:[data.fileSize longLongValue]]];
+                        cell.sizeLabel.text = [NSString stringWithFormat:@"%@/s", [CommonHelper setLength:fileData.uploadSpeed]];
+                        //                        NSLog(@"%f", (float)data.uploadSize/(float)[data.fileSize longLongValue]);
+                        [cell.functionButton setProgress:(float)[fileData.hasDownloadSize longLongValue]/(float)[data.fileSize longLongValue]];
+                    }
+                }
+            }
+            
+        }
     }
 }
 
