@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FunctionButton.h"
 
 @protocol ShareFunctionTableViewCellDelegate <NSObject>
 
@@ -18,7 +19,7 @@
 
 @property (nonatomic, assign) id<ShareFunctionTableViewCellDelegate> shareDelegate;
 @property (nonatomic, strong) NSIndexPath * indexPath;
-@property (nonatomic, strong) UIButton * deleteButton;
+@property (nonatomic, strong) FunctionButton * deleteButton;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier withFrame:(CGRect)frame;
 

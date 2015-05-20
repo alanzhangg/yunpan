@@ -70,9 +70,7 @@
     [super viewDidAppear:animated];
     [allFileView reloadDatas];
     [documentsView reloadDatas];
-    [UploadNetwork shareUploadNetwork];
-    [[UploadNetwork shareUploadNetwork] startUpload];
-    [[FilesDownloadManager sharedFilesDownManage] getSqlData];
+    
 }
 
 - (void)addCategory{

@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FunctionButton.h"
 
 @protocol TrachFunctionTableViewCellDelegate <NSObject>
 
@@ -17,8 +18,8 @@
 @interface TrachFunctionTableViewCell : UITableViewCell
 
 @property (nonatomic, assign) id<TrachFunctionTableViewCellDelegate> actionDelegate;
-@property (nonatomic, strong) UIButton * deleteButton;
-@property (nonatomic, strong) UIButton * returnButton;
+@property (nonatomic, strong) FunctionButton * deleteButton;
+@property (nonatomic, strong) FunctionButton * returnButton;
 @property (nonatomic, strong) NSIndexPath * indexPath;
 
 @end

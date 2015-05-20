@@ -269,9 +269,19 @@ static double zhongjianshijian = 0;
         zhongjianshijian = lingshishijian;
     }
     
+    
+    
     if (fileInfo.isFirstReceived) {
         fileInfo.isFirstReceived=NO;
-        fileInfo.hasDownloadSize =[NSString stringWithFormat:@"%lld",bytes];
+        NSFileManager * fileManage = [NSFileManager defaultManager];
+        if ([fileManage fileExistsAtPath:fileInfo.tempPath]) {
+            NSData * data = [NSData dataWithContentsOfFile:fileInfo.tempPath];
+            fileInfo.hasDownloadSize =[NSString stringWithFormat:@"%lu",(unsigned long)data.length];
+        }else{
+            fileInfo.hasDownloadSize =[NSString stringWithFormat:@"%lld", bytes];
+        }
+        
+        
     }
     else if(!fileInfo.isFirstReceived)
     {

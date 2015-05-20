@@ -8,7 +8,22 @@
 
 #import <Foundation/Foundation.h>
 
+typedef enum {
+    FileCategoryFolder,
+    FileCategoryPicture,
+    FileCategoryMovie,
+    FileCategoryPDF,
+    FileCategoryZIP,
+    FileCategoryMusic,
+    FileCategoryEXCEL,
+    FileCategoryPPT,
+    FileCategoryTXT,
+    FileCategoryWord,
+    FileCategoryOther
+} FileCategoryMenu;
 
 @interface FileCategory : NSObject
+
++ (FileCategoryMenu)fileInformation:(NSString *)format;
 
 @end

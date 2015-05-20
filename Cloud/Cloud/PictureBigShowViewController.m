@@ -88,7 +88,10 @@
     if (!_isUpload) {
         [self addTabbarView];
         NSUInteger index = [_pictureArray indexOfObject:_fileData];
-        pictureCollectView.contentOffset = CGPointMake(index * rect.size.width, 0);
+        if (index < _pictureArray.count) {
+            pictureCollectView.contentOffset = CGPointMake(index * rect.size.width, 0);
+        }
+        
     }else{
         NSUInteger index = [_uploadArray indexOfObject:_uploadData];
         pictureCollectView.contentOffset = CGPointMake(index * rect.size.width, 0);

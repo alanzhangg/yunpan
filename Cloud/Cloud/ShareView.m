@@ -20,6 +20,13 @@
 #import "FileData.h"
 #import "DocumentsViewController.h"
 #import "CategoryData.h"
+#import "FileCategory.h"
+#import "FolderViewController.h"
+#import "VideoShowViewController.h"
+#import "VideoNavigationController.h"
+#import "SQLCommand.h"
+#import "FilesDownloadManager.h"
+#import "PictureBigShowViewController.h"
 
 @interface ShareView ()<PullingRefreshTableViewDelegate, UITableViewDataSource, UITableViewDelegate, ListTableViewCellDelegate, ShareFunctionTableViewCellDelegate>
 
@@ -31,7 +38,7 @@
     NSMutableArray * listArray;
     NSMutableArray * heightArray;
 }
-    
+
 
 - (id)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
@@ -55,7 +62,7 @@
     listTableView.delegate = self;
     listTableView.dataSource = self;
     listTableView.headerOnly = YES;
-//    listTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    //    listTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     if ([listTableView respondsToSelector:@selector(setSeparatorInset:)]) {
         [listTableView setSeparatorInset:UIEdgeInsetsZero];
     }
@@ -63,7 +70,7 @@
         [listTableView setLayoutMargins:UIEdgeInsetsZero];
     }
     [self addSubview:listTableView];
-//    listTableView.separatorInset = 
+    //    listTableView.separatorInset =
     listTableView.tableFooterView = [UIView new];
 }
 
@@ -122,20 +129,55 @@
             }else{
                 cell.sizeLabel.text = nil;
             }
-            NSString * lenstr = [data.dict objectForKey:@"downloadUrl"];
-            NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
-            NSString * typeStr = @"png,gif,jpg,jpeg,psd,bmp,pcx,pic";
-            NSRange range = [typeStr rangeOfString:[data.dict objectForKey:@"fileFormat"]];
-            if (lenstr.length > 3 && range.location != NSNotFound) {
-                NSString * urlstr;
-                if ([[lenstr substringToIndex:2] isEqualToString:@".."]) {
-                    urlstr = [NSString stringWithFormat:@"%@%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
-                }else{
-                    urlstr = [NSString stringWithFormat:@"%@/r/%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
+            
+            switch ([FileCategory fileInformation:[data.dict objectForKey:@"fileFormat"]]) {
+                case FileCategoryPicture:{
+                    NSString * lenstr = [data.dict objectForKey:@"thumDownloadUrl"];
+                    NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
+                    NSString * typeStr = @"png,gif,jpg,jpeg,psd,bmp,pcx,pic";
+                    NSRange range = [typeStr rangeOfString:[data.dict objectForKey:@"fileFormat"]];
+                    if (lenstr.length > 3 && range.location != NSNotFound) {
+                        NSString * urlstr;
+                        if ([[lenstr substringToIndex:2] isEqualToString:@".."]) {
+                            urlstr = [NSString stringWithFormat:@"%@%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
+                        }else{
+                            urlstr = [NSString stringWithFormat:@"%@/r/%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
+                        }
+                        [cell.headPhoto sd_setImageWithURL:[NSURL URLWithString:urlstr] placeholderImage:nil options:SDWebImageRetryFailed];
+                    }
                 }
-                [cell.headPhoto sd_setImageWithURL:[NSURL URLWithString:urlstr] placeholderImage:nil options:SDWebImageRetryFailed];
-            }else
-                cell.headPhoto.image = [UIImage imageNamed:@"folder.png"];
+                    break;
+                case FileCategoryEXCEL:
+                    cell.headPhoto.image = [UIImage imageNamed:@"excel.png"];
+                    break;
+                case FileCategoryFolder:
+                    cell.headPhoto.image = [UIImage imageNamed:@"folder.png"];
+                    break;
+                case FileCategoryMovie:
+                    cell.headPhoto.image = [UIImage imageNamed:@"video.png"];
+                    break;
+                case FileCategoryMusic:
+                    cell.headPhoto.image = [UIImage imageNamed:@"audio.png"];
+                    break;
+                case FileCategoryPDF:
+                    cell.headPhoto.image = [UIImage imageNamed:@"pdf.png"];
+                    break;
+                case FileCategoryPPT:
+                    cell.headPhoto.image = [UIImage imageNamed:@"ppt.png"];
+                    break;
+                case FileCategoryTXT:
+                    cell.headPhoto.image = [UIImage imageNamed:@"txt.png"];
+                    break;
+                case FileCategoryWord:
+                    cell.headPhoto.image = [UIImage imageNamed:@"word.png"];
+                    break;
+                case FileCategoryZIP:
+                    cell.headPhoto.image = [UIImage imageNamed:@"zip.png"];
+                    break;
+                default:
+                    cell.headPhoto.image = nil;
+                    break;
+            }
             
             [cell layoutSubview:heightArray[indexPath.section]];
             //    FileData * data = listArray[indexPath.section];
@@ -151,8 +193,10 @@
             cell.indexPath = indexPath;
             if ([_shareCategory isEqualToString:@"myshare"]) {
                 [cell.deleteButton setTitle:@"取消分享" forState:UIControlStateNormal];
+                
             }else{
                 [cell.deleteButton setTitle:@"下载" forState:UIControlStateNormal];
+                [cell.deleteButton setImage:[UIImage imageNamed:@"download.png"] forState:UIControlStateNormal];
             }
             return cell;
         }
@@ -166,20 +210,54 @@
         TrashData * data = listArray[indexPath.section];
         cell.titleLabel.text = [data.dict objectForKey:@"fileName"];
         cell.timeLabel.text = [data.dict objectForKey:@"shareTime"];
-        NSString * lenstr = [data.dict objectForKey:@"downloadUrl"];
-        NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
-        NSString * typeStr = @"png,gif,jpg,jpeg,psd,bmp,pcx,pic";
-        NSRange range = [typeStr rangeOfString:[data.dict objectForKey:@"fileFormat"]];
-        if (lenstr.length > 3 && range.location != NSNotFound) {
-            NSString * urlstr;
-            if ([[lenstr substringToIndex:2] isEqualToString:@".."]) {
-                urlstr = [NSString stringWithFormat:@"%@%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
-            }else{
-                urlstr = [NSString stringWithFormat:@"%@/r/%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
+        switch ([FileCategory fileInformation:[data.dict objectForKey:@"fileFormat"]]) {
+            case FileCategoryPicture:{
+                NSString * lenstr = [data.dict objectForKey:@"thumDownloadUrl"];
+                NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
+                NSString * typeStr = @"png,gif,jpg,jpeg,psd,bmp,pcx,pic";
+                NSRange range = [typeStr rangeOfString:[data.dict objectForKey:@"fileFormat"]];
+                if (lenstr.length > 3 && range.location != NSNotFound) {
+                    NSString * urlstr;
+                    if ([[lenstr substringToIndex:2] isEqualToString:@".."]) {
+                        urlstr = [NSString stringWithFormat:@"%@%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
+                    }else{
+                        urlstr = [NSString stringWithFormat:@"%@/r/%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
+                    }
+                    [cell.headPhoto sd_setImageWithURL:[NSURL URLWithString:urlstr] placeholderImage:nil options:SDWebImageRetryFailed];
+                }
             }
-            [cell.headPhoto sd_setImageWithURL:[NSURL URLWithString:urlstr] placeholderImage:nil options:SDWebImageRetryFailed];
-        }else
-            cell.headPhoto.image = [UIImage imageNamed:@"folder.png"];
+                break;
+            case FileCategoryEXCEL:
+                cell.headPhoto.image = [UIImage imageNamed:@"excel.png"];
+                break;
+            case FileCategoryFolder:
+                cell.headPhoto.image = [UIImage imageNamed:@"folder.png"];
+                break;
+            case FileCategoryMovie:
+                cell.headPhoto.image = [UIImage imageNamed:@"video.png"];
+                break;
+            case FileCategoryMusic:
+                cell.headPhoto.image = [UIImage imageNamed:@"audio.png"];
+                break;
+            case FileCategoryPDF:
+                cell.headPhoto.image = [UIImage imageNamed:@"pdf.png"];
+                break;
+            case FileCategoryPPT:
+                cell.headPhoto.image = [UIImage imageNamed:@"ppt.png"];
+                break;
+            case FileCategoryTXT:
+                cell.headPhoto.image = [UIImage imageNamed:@"txt.png"];
+                break;
+            case FileCategoryWord:
+                cell.headPhoto.image = [UIImage imageNamed:@"word.png"];
+                break;
+            case FileCategoryZIP:
+                cell.headPhoto.image = [UIImage imageNamed:@"zip.png"];
+                break;
+            default:
+                cell.headPhoto.image = nil;
+                break;
+        }
         
         if (!data.isSelected) {
             cell.selectedImageView.image = [UIImage imageNamed:@"check-box-outline-blank.png"];
@@ -201,35 +279,99 @@
         data.isSelected = !data.isSelected;
         [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     }else{
-        FileData * data = [FileData new];
-        TrashData * trashData = listArray[indexPath.section];
-        [data transformDictionary:trashData.dict];
-        NSMutableArray * array = [[CategoryData shareCategoryData] categoryArray];
-        NSMutableString * categoryStr = [NSMutableString new];
-        
-        
-        
-        [categoryStr deleteCharactersInRange:NSMakeRange(0, categoryStr.length)];
-        for (NSDictionary * dic in array) {
-            if ([dic[@"categoryName"] isEqualToString:@"文档"]) {
-                for (NSString * str in dic[@"categoryList"]) {
-                    [categoryStr appendFormat:@"%@,", str];
+        if ([_shareCategory isEqualToString:@"shareme"]) {
+            FileData * data = [FileData new];
+            TrashData * trashData = listArray[indexPath.section];
+            [data transformDictionary:trashData.dict];
+            NSMutableArray * array = [[CategoryData shareCategoryData] categoryArray];
+            NSMutableString * categoryStr = [NSMutableString new];
+            
+            if ([data.fileFormat isEqualToString:@"f"]) {
+                FolderViewController * folderVC = [[FolderViewController alloc] init];
+                folderVC.fileDta = (FileData *)data;
+                UIViewController * con = (UIViewController *)_parentVC;
+                [con.navigationController pushViewController:folderVC animated:YES];
+                return;
+            }
+            
+            for (NSDictionary * dic in array) {
+                if ([dic[@"categoryName"] isEqualToString:@"图片"]) {
+                    for (NSString * str in dic[@"categoryList"]) {
+                        [categoryStr appendFormat:@"%@,", str];
+                    }
                 }
             }
-        }
-        
-        NSRange range = [categoryStr rangeOfString:data.fileFormat];
-        NSLog(@"%lu", (unsigned long)range.length);
-        if (range.length != 0){
-            UIStoryboard * storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-            DocumentsViewController * dvc = [storyBoard instantiateViewControllerWithIdentifier:@"documents"];
-            dvc.fileData = data;
-            dvc.isDownload = NO;
-            dvc.hidesBottomBarWhenPushed = YES;
-            UIViewController * con = (UIViewController *)_parentVC;
-            [con.navigationController pushViewController:dvc animated:YES];
+            NSRange range = [categoryStr rangeOfString:data.fileFormat];
+            NSLog(@"%lu", (unsigned long)range.length);
+            if (range.length != 0){
+                NSMutableArray * picArray = [NSMutableArray new];
+                for (TrashData * data in listArray) {
+                    FileData * fileData = [FileData new];
+                    [fileData transformDictionary:data.dict];
+                    NSRange picRange = [categoryStr rangeOfString:fileData.fileFormat];
+                    //            NSLog(@"%@  %@   %d", categoryStr, data.fileFormat, picRange.length);
+                    if (picRange.length != 0 && ![fileData.fileFormat isEqualToString:@"f"]) {
+                        [picArray addObject:fileData];
+                    }
+                }
+                
+                PictureBigShowViewController * picVC = [[PictureBigShowViewController alloc] init];
+                picVC.pictureArray = picArray;
+                picVC.fileData = data;
+                picVC.isUpload = NO;
+                UIViewController * con = (UIViewController *)_parentVC;
+                picVC.hidesBottomBarWhenPushed = YES;
+                [con.navigationController pushViewController:picVC animated:YES];
+                return;
+            }
+            
+            
+            [categoryStr deleteCharactersInRange:NSMakeRange(0, categoryStr.length)];
+            for (NSDictionary * dic in array) {
+                if ([dic[@"categoryName"] isEqualToString:@"文档"]) {
+                    for (NSString * str in dic[@"categoryList"]) {
+                        [categoryStr appendFormat:@"%@,", str];
+                    }
+                }
+            }
+            
+            range = [categoryStr rangeOfString:data.fileFormat];
+            NSLog(@"%lu", (unsigned long)range.length);
+            if (range.length != 0){
+                UIStoryboard * storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+                DocumentsViewController * dvc = [storyBoard instantiateViewControllerWithIdentifier:@"documents"];
+                dvc.fileData = data;
+                dvc.isDownload = NO;
+                dvc.hidesBottomBarWhenPushed = YES;
+                UIViewController * con = (UIViewController *)_parentVC;
+                [con.navigationController pushViewController:dvc animated:YES];
+            }
+            
+            [categoryStr deleteCharactersInRange:NSMakeRange(0, categoryStr.length)];
+            for (NSDictionary * dic in array) {
+                if ([dic[@"categoryName"] isEqualToString:@"视频"]) {
+                    for (NSString * str in dic[@"categoryList"]) {
+                        [categoryStr appendFormat:@"%@,", str];
+                    }
+                }
+            }
+            
+            range = [categoryStr rangeOfString:data.fileFormat];
+            NSLog(@"%lu", (unsigned long)range.length);
+            if (range.length != 0){
+                VideoShowViewController * dvc = [[VideoShowViewController alloc] init];
+                VideoNavigationController * vnav = [[VideoNavigationController alloc] initWithRootViewController:dvc];
+                VideoData * vData = [[VideoData alloc] init];
+                vData.resouceName = data.fileName;
+                vData.resourceURL = data.downloadUrl;
+                dvc.videoData = vData;
+                dvc.hidesBottomBarWhenPushed = YES;
+                UIViewController * con = (UIViewController *)_parentVC;
+                [con.navigationController presentViewController:vnav animated:NO completion:nil];
+            }
         }
     }
+    
 }
 
 - (BOOL)duoxuan:(BOOL)isYes{
@@ -409,7 +551,7 @@
                         NSLog(@"%@", error.description);
                     }else{
                         NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-//                        NSLog(@"%@", dic);
+                        //                        NSLog(@"%@", dic);
                         NSLog(@"%@", [dic objectForKey:@"msg"]);
                         if ([dic[@"result"] isEqualToString:@"ok"]) {
                             [Alert showHUDWihtTitle:@"取消成功"];
@@ -444,11 +586,11 @@
 
 
 /*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
+ // Only override drawRect: if you perform custom drawing.
+ // An empty implementation adversely affects performance during animation.
+ - (void)drawRect:(CGRect)rect {
+ // Drawing code
+ }
+ */
 
 @end

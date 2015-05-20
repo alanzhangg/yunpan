@@ -10,6 +10,7 @@
 #import "ListFunctionTableViewCell.h"
 #import "Global.h"
 #import "AppDelegate.h"
+#import "FunctionButton.h"
 
 @interface ListFunctionTableViewCell ()<UIActionSheetDelegate>
 
@@ -28,11 +29,17 @@
 }
 
 - (void)initSubViews{
+    CGRect rect = [[UIScreen mainScreen] bounds];
+    NSArray * imageArray = @[@"download.png", @"move.png", @"renaming.png", @""];
     NSArray * array = @[@"下载", @"移动", @"重命名", @"更多"];
     for (int i = 0; i < 4; i++) {
-        UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];
-        btn.frame = CGRectMake(10 * (i + 1) + 60 * i, 5, 60, 40);
+        FunctionButton * btn = [FunctionButton buttonWithType:UIButtonTypeCustom];
+        btn.frame = CGRectMake((rect.size.width - 200)/5 * (i + 1) + 50 * i, 0, 50, 50);
         btn.tag = 100 + (100 * i);
+        [btn setImage:[UIImage imageNamed:imageArray[i]] forState:UIControlStateNormal];
+        btn.titleLabel.textAlignment = NSTextAlignmentCenter;
+        [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        btn.titleLabel.font = [UIFont systemFontOfSize:13];
         [self.contentView addSubview:btn];
         [btn addTarget:self action:@selector(actionFunction:) forControlEvents:UIControlEventTouchUpInside];
         [btn setTitle:array[i] forState:UIControlStateNormal];

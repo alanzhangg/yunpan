@@ -27,6 +27,7 @@
 #import "VideoShowViewController.h"
 #import "DownloadFolderViewController.h"
 #import "DownloadingListViewController.h"
+#import "FileCategory.h"
 
 @interface DownloadListView ()<PullingRefreshTableViewDelegate, UITableViewDataSource, UITableViewDelegate, DownloadDelegate, UploadFailTableViewCellDelegate>
 
@@ -197,21 +198,55 @@
             }
             cell.delegate = self;
             [cell.functionButton setImage:[UIImage imageNamed:@"download.png"] forState:UIControlStateNormal];
-            NSString * lenstr = data.thumDownloadUrl;
-            NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
-            NSString * typeStr = @"png,gif,jpg,jpeg,psd,bmp,pcx,pic";
-            NSRange range = [typeStr rangeOfString:data.fileFormat];
-            cell.headPhoto.image = nil;
-            if (lenstr.length > 3 && range.location != NSNotFound) {
-                NSString * urlstr;
-                if ([[lenstr substringToIndex:2] isEqualToString:@".."]) {
-                    urlstr = [NSString stringWithFormat:@"%@%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
-                }else{
-                    urlstr = [NSString stringWithFormat:@"%@/r/%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
+            switch ([FileCategory fileInformation:data.fileFormat]) {
+                case FileCategoryPicture:{
+                    NSString * lenstr = data.thumDownloadUrl;
+                    NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
+                    NSString * typeStr = @"png,gif,jpg,jpeg,psd,bmp,pcx,pic";
+                    NSRange range = [typeStr rangeOfString:data.fileFormat];
+                    
+                    if (lenstr.length > 3 && range.location != NSNotFound) {
+                        NSString * urlstr;
+                        if ([[lenstr substringToIndex:2] isEqualToString:@".."]) {
+                            urlstr = [NSString stringWithFormat:@"%@%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
+                        }else{
+                            urlstr = [NSString stringWithFormat:@"%@/r/%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
+                        }
+                        [cell.headPhoto sd_setImageWithURL:[NSURL URLWithString:urlstr] placeholderImage:nil options:SDWebImageRetryFailed];
+                    }
                 }
-                [cell.headPhoto sd_setImageWithURL:[NSURL URLWithString:urlstr] placeholderImage:nil options:SDWebImageRetryFailed];
-            }else
-                cell.headPhoto.image = [UIImage imageNamed:@"folder.png"];
+                    break;
+                case FileCategoryEXCEL:
+                    cell.headPhoto.image = [UIImage imageNamed:@"excel.png"];
+                    break;
+                case FileCategoryFolder:
+                    cell.headPhoto.image = [UIImage imageNamed:@"folder.png"];
+                    break;
+                case FileCategoryMovie:
+                    cell.headPhoto.image = [UIImage imageNamed:@"video.png"];
+                    break;
+                case FileCategoryMusic:
+                    cell.headPhoto.image = [UIImage imageNamed:@"audio.png"];
+                    break;
+                case FileCategoryPDF:
+                    cell.headPhoto.image = [UIImage imageNamed:@"pdf.png"];
+                    break;
+                case FileCategoryPPT:
+                    cell.headPhoto.image = [UIImage imageNamed:@"ppt.png"];
+                    break;
+                case FileCategoryTXT:
+                    cell.headPhoto.image = [UIImage imageNamed:@"txt.png"];
+                    break;
+                case FileCategoryWord:
+                    cell.headPhoto.image = [UIImage imageNamed:@"word.png"];
+                    break;
+                case FileCategoryZIP:
+                    cell.headPhoto.image = [UIImage imageNamed:@"zip.png"];
+                    break;
+                default:
+                    cell.headPhoto.image = nil;
+                    break;
+            }
             cell.titleLabel.text = data.fileName;
             cell.indexPath = indexPath;
             [cell layoutSubview:dic];
@@ -225,21 +260,55 @@
                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
             }
             cell.fileInfo = data;
-            NSString * lenstr = data.thumDownloadUrl;
-            NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
-            NSString * typeStr = @"png,gif,jpg,jpeg,psd,bmp,pcx,pic";
-            NSRange range = [typeStr rangeOfString:data.fileFormat];
-            cell.headPhoto.image = nil;
-            if (lenstr.length > 3 && range.location != NSNotFound) {
-                NSString * urlstr;
-                if ([[lenstr substringToIndex:2] isEqualToString:@".."]) {
-                    urlstr = [NSString stringWithFormat:@"%@%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
-                }else{
-                    urlstr = [NSString stringWithFormat:@"%@/r/%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
+            switch ([FileCategory fileInformation:data.fileFormat]) {
+                case FileCategoryPicture:{
+                    NSString * lenstr = data.thumDownloadUrl;
+                    NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
+                    NSString * typeStr = @"png,gif,jpg,jpeg,psd,bmp,pcx,pic";
+                    NSRange range = [typeStr rangeOfString:data.fileFormat];
+                    
+                    if (lenstr.length > 3 && range.location != NSNotFound) {
+                        NSString * urlstr;
+                        if ([[lenstr substringToIndex:2] isEqualToString:@".."]) {
+                            urlstr = [NSString stringWithFormat:@"%@%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
+                        }else{
+                            urlstr = [NSString stringWithFormat:@"%@/r/%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
+                        }
+                        [cell.headPhoto sd_setImageWithURL:[NSURL URLWithString:urlstr] placeholderImage:nil options:SDWebImageRetryFailed];
+                    }
                 }
-                [cell.headPhoto sd_setImageWithURL:[NSURL URLWithString:urlstr] placeholderImage:nil options:SDWebImageRetryFailed];
-            }else
-                cell.headPhoto.image = [UIImage imageNamed:@"folder.png"];
+                    break;
+                case FileCategoryEXCEL:
+                    cell.headPhoto.image = [UIImage imageNamed:@"excel.png"];
+                    break;
+                case FileCategoryFolder:
+                    cell.headPhoto.image = [UIImage imageNamed:@"folder.png"];
+                    break;
+                case FileCategoryMovie:
+                    cell.headPhoto.image = [UIImage imageNamed:@"video.png"];
+                    break;
+                case FileCategoryMusic:
+                    cell.headPhoto.image = [UIImage imageNamed:@"audio.png"];
+                    break;
+                case FileCategoryPDF:
+                    cell.headPhoto.image = [UIImage imageNamed:@"pdf.png"];
+                    break;
+                case FileCategoryPPT:
+                    cell.headPhoto.image = [UIImage imageNamed:@"ppt.png"];
+                    break;
+                case FileCategoryTXT:
+                    cell.headPhoto.image = [UIImage imageNamed:@"txt.png"];
+                    break;
+                case FileCategoryWord:
+                    cell.headPhoto.image = [UIImage imageNamed:@"word.png"];
+                    break;
+                case FileCategoryZIP:
+                    cell.headPhoto.image = [UIImage imageNamed:@"zip.png"];
+                    break;
+                default:
+                    cell.headPhoto.image = nil;
+                    break;
+            }
             
             //        cell.headPhoto.image = [UIImage imageWithContentsOfFile:path];
             cell.titleLabel.text = data.fileName;
@@ -258,21 +327,55 @@
                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
             }
             
-            NSString * lenstr = data.thumDownloadUrl;
-            NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
-            NSString * typeStr = @"png,gif,jpg,jpeg,psd,bmp,pcx,pic";
-            NSRange range = [typeStr rangeOfString:data.fileFormat];
-            cell.headPhoto.image = nil;
-            if (lenstr.length > 3 && range.location != NSNotFound) {
-                NSString * urlstr;
-                if ([[lenstr substringToIndex:2] isEqualToString:@".."]) {
-                    urlstr = [NSString stringWithFormat:@"%@%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
-                }else{
-                    urlstr = [NSString stringWithFormat:@"%@/r/%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
+            switch ([FileCategory fileInformation:data.fileFormat]) {
+                case FileCategoryPicture:{
+                    NSString * lenstr = data.thumDownloadUrl;
+                    NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
+                    NSString * typeStr = @"png,gif,jpg,jpeg,psd,bmp,pcx,pic";
+                    NSRange range = [typeStr rangeOfString:data.fileFormat];
+                    
+                    if (lenstr.length > 3 && range.location != NSNotFound) {
+                        NSString * urlstr;
+                        if ([[lenstr substringToIndex:2] isEqualToString:@".."]) {
+                            urlstr = [NSString stringWithFormat:@"%@%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
+                        }else{
+                            urlstr = [NSString stringWithFormat:@"%@/r/%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
+                        }
+                        [cell.headPhoto sd_setImageWithURL:[NSURL URLWithString:urlstr] placeholderImage:nil options:SDWebImageRetryFailed];
+                    }
                 }
-                [cell.headPhoto sd_setImageWithURL:[NSURL URLWithString:urlstr] placeholderImage:nil options:SDWebImageRetryFailed];
-            }else
-                cell.headPhoto.image = [UIImage imageNamed:@"folder.png"];
+                    break;
+                case FileCategoryEXCEL:
+                    cell.headPhoto.image = [UIImage imageNamed:@"excel.png"];
+                    break;
+                case FileCategoryFolder:
+                    cell.headPhoto.image = [UIImage imageNamed:@"folder.png"];
+                    break;
+                case FileCategoryMovie:
+                    cell.headPhoto.image = [UIImage imageNamed:@"video.png"];
+                    break;
+                case FileCategoryMusic:
+                    cell.headPhoto.image = [UIImage imageNamed:@"audio.png"];
+                    break;
+                case FileCategoryPDF:
+                    cell.headPhoto.image = [UIImage imageNamed:@"pdf.png"];
+                    break;
+                case FileCategoryPPT:
+                    cell.headPhoto.image = [UIImage imageNamed:@"ppt.png"];
+                    break;
+                case FileCategoryTXT:
+                    cell.headPhoto.image = [UIImage imageNamed:@"txt.png"];
+                    break;
+                case FileCategoryWord:
+                    cell.headPhoto.image = [UIImage imageNamed:@"word.png"];
+                    break;
+                case FileCategoryZIP:
+                    cell.headPhoto.image = [UIImage imageNamed:@"zip.png"];
+                    break;
+                default:
+                    cell.headPhoto.image = nil;
+                    break;
+            }
             
             //        cell.headPhoto.image = [UIImage imageWithContentsOfFile:path];
             cell.titleLabel.text = data.fileName;
@@ -301,21 +404,55 @@
             cell = [[SelectedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"selectCell" withViewFrame:tableView.frame];
         }
         
-        NSString * lenstr = data.thumDownloadUrl;
-        NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
-        NSString * typeStr = @"png,gif,jpg,jpeg,psd,bmp,pcx,pic";
-        NSRange range = [typeStr rangeOfString:data.fileFormat];
-        cell.headPhoto.image = nil;
-        if (lenstr.length > 3 && range.location != NSNotFound) {
-            NSString * urlstr;
-            if ([[lenstr substringToIndex:2] isEqualToString:@".."]) {
-                urlstr = [NSString stringWithFormat:@"%@%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
-            }else{
-                urlstr = [NSString stringWithFormat:@"%@/r/%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
+        switch ([FileCategory fileInformation:data.fileFormat]) {
+            case FileCategoryPicture:{
+                NSString * lenstr = data.thumDownloadUrl;
+                NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
+                NSString * typeStr = @"png,gif,jpg,jpeg,psd,bmp,pcx,pic";
+                NSRange range = [typeStr rangeOfString:data.fileFormat];
+                
+                if (lenstr.length > 3 && range.location != NSNotFound) {
+                    NSString * urlstr;
+                    if ([[lenstr substringToIndex:2] isEqualToString:@".."]) {
+                        urlstr = [NSString stringWithFormat:@"%@%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
+                    }else{
+                        urlstr = [NSString stringWithFormat:@"%@/r/%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
+                    }
+                    [cell.headPhoto sd_setImageWithURL:[NSURL URLWithString:urlstr] placeholderImage:nil options:SDWebImageRetryFailed];
+                }
             }
-            [cell.headPhoto sd_setImageWithURL:[NSURL URLWithString:urlstr] placeholderImage:nil options:SDWebImageRetryFailed];
-        }else
-            cell.headPhoto.image = [UIImage imageNamed:@"folder.png"];
+                break;
+            case FileCategoryEXCEL:
+                cell.headPhoto.image = [UIImage imageNamed:@"excel.png"];
+                break;
+            case FileCategoryFolder:
+                cell.headPhoto.image = [UIImage imageNamed:@"folder.png"];
+                break;
+            case FileCategoryMovie:
+                cell.headPhoto.image = [UIImage imageNamed:@"video.png"];
+                break;
+            case FileCategoryMusic:
+                cell.headPhoto.image = [UIImage imageNamed:@"audio.png"];
+                break;
+            case FileCategoryPDF:
+                cell.headPhoto.image = [UIImage imageNamed:@"pdf.png"];
+                break;
+            case FileCategoryPPT:
+                cell.headPhoto.image = [UIImage imageNamed:@"ppt.png"];
+                break;
+            case FileCategoryTXT:
+                cell.headPhoto.image = [UIImage imageNamed:@"txt.png"];
+                break;
+            case FileCategoryWord:
+                cell.headPhoto.image = [UIImage imageNamed:@"word.png"];
+                break;
+            case FileCategoryZIP:
+                cell.headPhoto.image = [UIImage imageNamed:@"zip.png"];
+                break;
+            default:
+                cell.headPhoto.image = nil;
+                break;
+        }
         
         cell.indexPath = indexPath;
         cell.titleLabel.text = data.fileName;

@@ -13,6 +13,7 @@
 #import "DownloadListView.h"
 #import "AppDelegate.h"
 #import "UploadListView.h"
+#import "UploadNetwork.h"
 #import "FilesDownloadManager.h"
 
 @interface DownAndLoadViewController ()<XHScrollMenuDelegate, UIScrollViewDelegate>
@@ -44,6 +45,10 @@
     
     UploadListView * rightView = (UploadListView *)[menuScrollView viewWithTag:300];
     [rightView reloadDatas];
+    
+    [UploadNetwork shareUploadNetwork];
+    [[UploadNetwork shareUploadNetwork] startUpload];
+    [[FilesDownloadManager sharedFilesDownManage] getSqlData];
 }
 
 - (void)initSubViews{

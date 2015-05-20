@@ -18,18 +18,26 @@
 }
 
 - (void)initSubViews{
-    
-    _returnButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    _returnButton.frame = CGRectMake(40, 0, 50, 50);
+    CGRect rect = [[UIScreen mainScreen] bounds];
+    _returnButton = [FunctionButton buttonWithType:UIButtonTypeCustom];
+    _returnButton.frame = CGRectMake(rect.size.width/4 - 25, 5, 50, 50);
     [self.contentView addSubview:_returnButton];
+    [_returnButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    _returnButton.titleLabel.font = [UIFont systemFontOfSize:13];
+    [_returnButton setImage:[UIImage imageNamed:@"huanyuan.png"] forState:UIControlStateNormal];
     [_returnButton setTitle:@"还原" forState:UIControlStateNormal];
+    _returnButton.titleLabel.textAlignment = NSTextAlignmentCenter;
     [_returnButton addTarget:self action:@selector(setting:) forControlEvents:UIControlEventTouchUpInside];
     _returnButton.tag = 100;
     
-    _deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    _deleteButton.frame = CGRectMake(100, 0, 50, 50);
+    _deleteButton = [FunctionButton buttonWithType:UIButtonTypeCustom];
+    _deleteButton.frame = CGRectMake(rect.size.width * 3 / 4 - 25, 5, 50, 50);
+    [_deleteButton setImage:[UIImage imageNamed:@"chedishanchu.png"] forState:UIControlStateNormal];
     [self.contentView addSubview:_deleteButton];
+    _deleteButton.titleLabel.textAlignment = NSTextAlignmentCenter;
     [_deleteButton setTitle:@"删除" forState:UIControlStateNormal];
+    [_deleteButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    _deleteButton.titleLabel.font = [UIFont systemFontOfSize:13];
     [_deleteButton addTarget:self action:@selector(setting:) forControlEvents:UIControlEventTouchUpInside];
     _deleteButton.tag = 200;
     
