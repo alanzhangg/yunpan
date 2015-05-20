@@ -391,6 +391,7 @@
                 NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
                 NSString * typeStr = @"png,gif,jpg,jpeg,psd,bmp,pcx,pic";
                 NSRange range = [typeStr rangeOfString:data.fileFormat];
+                
                 if (lenstr.length > 3 && range.location != NSNotFound) {
                     NSString * urlstr;
                     if ([[lenstr substringToIndex:2] isEqualToString:@".."]) {
@@ -438,7 +439,7 @@
             cell.timeLabel.text = data.updateTime;
             NSString * lenstr = data.thumDownloadUrl;
             NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
-            NSString * typeStr = @"png,gif,jpg,jpeg,psd,bmp,pcx,pic";
+            NSString * typeStr = @"png,gif,jpg,jpeg,psd,bmp,  ,pic";
             NSRange range = [typeStr rangeOfString:data.fileFormat];
             cell.headPhoto.image = nil;
             if (lenstr.length > 3 && range.location != NSNotFound) {

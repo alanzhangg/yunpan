@@ -2,18 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "scale" : "1x",
-      "filename" : "transfer.png"
+      "scale" : "1x"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "transfer-1.png"
+      "filename" : "传输.png"
     },
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "transfer-2.png"
+      "filename" : "传输-1.png"
     }
   ],
   "info" : {

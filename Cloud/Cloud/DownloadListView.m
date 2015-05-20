@@ -49,7 +49,6 @@
         headerArray = [NSMutableArray new];
         [self initSubViews];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadDatas) name:DownloadDataChange object:nil];
-        [FilesDownloadManager sharedFilesDownManage].downloadDelegate = self;
     }
     return self;
 }
@@ -57,7 +56,7 @@
 - (void)reloadDatas{
     [listArray removeAllObjects];
     [headerArray removeAllObjects];
-    
+    [FilesDownloadManager sharedFilesDownManage].downloadDelegate = self;
     NSMutableArray * lisarray = [NSMutableArray new];
     [lisarray addObjectsFromArray:[FilesDownloadManager sharedFilesDownManage].downloadListArray];
     for (NSMutableArray * array in lisarray) {
@@ -82,6 +81,7 @@
     }
     [self getCellHeight:listArray];
     [listTableView reloadData];
+    
 }
 
 - (BOOL)duoxuan:(BOOL)isYes{
@@ -504,9 +504,8 @@
             if ([fileManager fileExistsAtPath:path]) {
                 [fileManager removeItemAtPath:path error:nil];
             }
-            
         }
-        [[SQLCommand shareSQLCommand] deleteDownloadData:@[array[0]]];
+//        [[SQLCommand shareSQLCommand] deleteDownloadData:@[array[0]]];
         dispatch_async(dispatch_get_main_queue(), ^{
             [listTableView reloadData];
         });
@@ -572,6 +571,10 @@
 
 - (void)updateCellProgress:(ASIHTTPRequest *)request{
     FileData * fileData = [request.userInfo objectForKey:@"File"];
+    FileData * downloadData = [request.userInfo objectForKey:@"File"];
+    if (fileData.filePID.length > 0) {
+        fileData = [[SQLCommand shareSQLCommand] getShangchengFolder:fileData];
+    }
     for (int i = 0; i < headerArray.count; i++) {
         NSString * secstr = headerArray[i];
         NSArray * array = listArray[i];
@@ -581,9 +584,9 @@
                 if ([fileData.fileID isEqualToString:data.fileID]) {
                     DownloadListTableViewCell * cell = (DownloadListTableViewCell *)[listTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:j inSection:i]];
                     if (cell) {
-                        cell.timeLabel.text = [NSString stringWithFormat:@"%@/%@", [CommonHelper setLength:[fileData.hasDownloadSize longLongValue]], [CommonHelper setLength:[data.fileSize longLongValue]]];
-                        cell.sizeLabel.text = [NSString stringWithFormat:@"%@/s", [CommonHelper setLength:fileData.uploadSpeed]];
-                        [cell.functionButton setProgress:(float)[fileData.hasDownloadSize longLongValue]/(float)[data.fileSize longLongValue]];
+                        cell.timeLabel.text = [NSString stringWithFormat:@"%@/%@", [CommonHelper setLength:[downloadData.hasDownloadSize longLongValue]], [CommonHelper setLength:[downloadData.fileSize longLongValue]]];
+                        cell.sizeLabel.text = [NSString stringWithFormat:@"%@/s", [CommonHelper setLength:downloadData.uploadSpeed]];
+                        [cell.functionButton setProgress:(float)[downloadData.hasDownloadSize longLongValue]/(float)[downloadData.fileSize longLongValue]];
                     }
                 }
             }

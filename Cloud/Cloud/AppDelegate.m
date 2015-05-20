@@ -20,6 +20,7 @@
 
 @interface AppDelegate (){
     Reachability *hostReach;
+    UILabel *label;
 }
 
 @end
@@ -30,31 +31,32 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
-//    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-//    //     Override point for customization after application launch.
-//    self.window.backgroundColor = [UIColor whiteColor];
-//    
-//    //    开启网络状况的监听
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name: kReachabilityChangedNotification object: nil];
-//    hostReach = [Reachability reachabilityWithHostName:@"www.baidu.com"];//可以以多种形式初始化
-//    [hostReach startNotifier];  //开始监听,会启动一个run loop
-//    
-//    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.window.frame.size.width, 30)];
-//    [label setText:@   "请从移动门户启动"];
-//    [label setTextAlignment:NSTextAlignmentCenter];
-//    [label setBackgroundColor:[UIColor clearColor]];
-//    [label setCenter:self.window.center];
-//    [self.window addSubview:label];
-//    [self.window makeKeyAndVisible];
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    //     Override point for customization after application launch.
+    self.window.backgroundColor = [UIColor whiteColor];
+    
+    //    开启网络状况的监听
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name: kReachabilityChangedNotification object: nil];
+    hostReach = [Reachability reachabilityWithHostName:@"www.baidu.com"];//可以以多种形式初始化
+    [hostReach startNotifier];  //开始监听,会启动一个run loop
+    
+    label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.window.frame.size.width, 30)];
+    [label setText:@"请从移动门户启动"];
+    [label setTextAlignment:NSTextAlignmentCenter];
+    [label setBackgroundColor:[UIColor clearColor]];
+    [label setCenter:self.window.center];
+    [self.window addSubview:label];
+    [self.window makeKeyAndVisible];
+    
+//    NSLog(@"%@", NSHomeDirectory());
+//    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+//    [ud setObject:@"https://192.168.1.183:443/portal/" forKey:@"server"];
+//    [ud setObject:@"8b420225-4016-43c9-8b59-1a35376d44b6" forKey:@"sid"];
+//    [ud setObject:@"zhy" forKey:@"uid"];
+//    [ud setObject:@"admin" forKey:@"securityKey"];
+//    [ud synchronize];
+//    [self layoutUploadView];
     [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
-    NSLog(@"%@", NSHomeDirectory());
-    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    [ud setObject:@"https://192.168.1.183:443/portal/" forKey:@"server"];
-    [ud setObject:@"f659268c-d644-49af-98b1-594c5d629e0d" forKey:@"sid"];
-    [ud setObject:@"zhy" forKey:@"uid"];
-    [ud setObject:@"admin" forKey:@"securityKey"];
-    [ud synchronize];
-    [self layoutUploadView];
     return YES;
 }
 
@@ -179,7 +181,11 @@
     NSString *params = [url absoluteString];
     //    NSString *params = [[url query] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSLog(@"params from portal is:%@", params);
+    [label removeFromSuperview];
+    [self layoutUploadView];
+    [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
     [self paramsHandle:params];
+    
     return YES;
 }
 
@@ -265,21 +271,20 @@
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-    [[SQLCommand shareSQLCommand] openDB];
+//    [[SQLCommand shareSQLCommand] openDB];
     [CommonHelper createShowFolder];
-    [UploadNetwork shareUploadNetwork];
-    [[UploadNetwork shareUploadNetwork] startUpload];
-    [[FilesDownloadManager sharedFilesDownManage] getSqlData];
+//    [CommonHelper createShowFolder];
+//    [UploadNetwork shareUploadNetwork];
+//    [[UploadNetwork shareUploadNetwork] startUpload];
+    
     
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-    [[SQLCommand shareSQLCommand] openDB];
+//    [[SQLCommand shareSQLCommand] openDB];
     [CommonHelper createShowFolder];
-    [UploadNetwork shareUploadNetwork];
-    [[UploadNetwork shareUploadNetwork] startUpload];
-    [[FilesDownloadManager sharedFilesDownManage] getSqlData];
+//    [[FilesDownloadManager sharedFilesDownManage] getSqlData];
 
 }
 

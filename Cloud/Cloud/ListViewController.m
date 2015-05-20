@@ -19,6 +19,9 @@
 #import "CategoryData.h"
 #import "FolderViewController.h"
 #import "AppDelegate.h"
+#import "FilesDownloadManager.h"
+#import "CommonHelper.h"
+#import "UploadNetwork.h"
 
 @interface ListViewController ()<AllFileViewDelegate>
 
@@ -36,6 +39,7 @@
     UIButton * rightBtn;
     int currentPage;
     NSString * titleString;
+    BOOL isDownloadAllData;
 }
 
 - (void)viewDidLoad {
@@ -61,11 +65,15 @@
     [self addCategory];
 }
 
+
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     [allFileView reloadDatas];
     [documentsView reloadDatas];
-}           
+    [UploadNetwork shareUploadNetwork];
+    [[UploadNetwork shareUploadNetwork] startUpload];
+    [[FilesDownloadManager sharedFilesDownManage] getSqlData];
+}
 
 - (void)addCategory{
     int status = [AFHTTPAPIClient checkNetworkStatus];
@@ -81,7 +89,7 @@
             }else{
                 //            NSLog(@"%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
                 NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-//                NSLog(@"%@", dic);
+                NSLog(@"%@", dic);
 //                NSLog(@"%@", [dic objectForKey:@"msg"]);
                 dic = [dic objectForKey:@"data"];
                 NSArray * array = [dic objectForKey:@"categoryList"];
@@ -186,6 +194,7 @@
         NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
         BOOL appFirst = [ud boolForKey:@"appfirst"];
         if (!appFirst) {
+            isDownloadAllData = YES;
             NSString * param = [NSString stringWithFormat:@"params={}"];
             NSDictionary * dic = @{@"param":param, @"aslp":QUERY_ALL_FILE};
             
@@ -213,8 +222,6 @@
                                 [allFileView reloadDatas];
                             });
                         });
-                        
-                        
                     }
                 }
             }];

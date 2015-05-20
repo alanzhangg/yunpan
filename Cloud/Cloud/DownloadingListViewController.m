@@ -56,6 +56,11 @@
     [self getdata];
 }
 
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [FilesDownloadManager sharedFilesDownManage].downloadDelegate = nil;
+}
+
 - (void)refresh:(NSNotification *)not{
     [self getdata];
 }
@@ -426,8 +431,53 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        
+        NSMutableArray * secArray = listArray[indexPath.section];
+        NSMutableArray * secHeiArray = [NSMutableArray arrayWithArray:heiArray[indexPath.section]];
+        FileData * fileData = secArray[indexPath.row];
+        NSMutableArray * delArray = [NSMutableArray new];
+        if ([fileData.fileFormat isEqualToString:@"f"]) {
+            [delArray addObject:fileData];
+            [delArray addObjectsFromArray:[[SQLCommand shareSQLCommand] getDeleteDownloadData:fileData.fileID]];
+        }else{
+            [delArray addObject:fileData];
+        }
+        [secArray removeObjectAtIndex:indexPath.row];
+        [secHeiArray removeObjectAtIndex:indexPath.row];
+        //        [listArray insertObject:@{@"name":dic[@"name"], @"list":secArray} atIndex:indexPath.section];
+        //        [heightArray removeObjectAtIndex:indexPath.section];
+        //        [heightArray insertObject:secHeiArray atIndex:indexPath.section];
+        [tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self shanchudata:delArray];
     }
+}
+
+- (void)shanchudata:(NSMutableArray *)array{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        [[SQLCommand shareSQLCommand] deleteDownloadData:array];
+        FilesDownloadManager *filedownmanage=[FilesDownloadManager sharedFilesDownManage];
+        for (int i = 0; i < array.count; i++) {
+            FileData * data = array[i];
+            [filedownmanage deleteRequest:data];
+            NSFileManager * fileManager = [NSFileManager defaultManager];
+            NSString * path= [CommonHelper getTargetPathWithBasepath:filedownmanage.basePath subpath:filedownmanage.targetSubPath];
+            path = [path stringByAppendingPathComponent:data.fileName];
+            if ([fileManager fileExistsAtPath:path]) {
+                [fileManager removeItemAtPath:path error:nil];
+            }
+            path = [CommonHelper getTempFolderPathWithBasepath:filedownmanage.basePath];
+            path = [path stringByAppendingPathComponent: data.fileName];
+            if ([fileManager fileExistsAtPath:path]) {
+                [fileManager removeItemAtPath:path error:nil];
+            }
+        }
+        //        [[SQLCommand shareSQLCommand] deleteDownloadData:@[array[0]]];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [listTableView reloadData];
+        });
+        
+    });
+    
 }
 
 - (void)updateCellProgress:(ASIHTTPRequest *)request{
@@ -435,14 +485,17 @@
     for (int i = 0; i < secTitleArray.count; i++) {
         NSString * secstr = secTitleArray[i];
         NSMutableArray * array = listArray[i];
+        NSMutableArray * secHeiArray = heiArray[i];
         if ([secstr isEqualToString:@"正在下载"]) {
             for (int j = 0; j < array.count; j++) {
                 FileData * data = array[j];
                 if ([fileData.fileID isEqualToString:data.fileID]) {
                     DownloadListTableViewCell * cell = (DownloadListTableViewCell *)[listTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:j inSection:i]];
                     if (j != 0) {
+                        [secHeiArray exchangeObjectAtIndex:j withObjectAtIndex:0];
                         [array exchangeObjectAtIndex:j withObjectAtIndex:0];
                         [listTableView moveRowAtIndexPath:[NSIndexPath indexPathForRow:j inSection:i] toIndexPath:[NSIndexPath indexPathForRow:0 inSection:i]];
+                        
                     }
                     if (cell) {
                         cell.timeLabel.text = [NSString stringWithFormat:@"%@/%@", [CommonHelper setLength:[fileData.hasDownloadSize longLongValue]], [CommonHelper setLength:[data.fileSize longLongValue]]];
@@ -450,6 +503,7 @@
                         //                        NSLog(@"%f", (float)data.uploadSize/(float)[data.fileSize longLongValue]);
                         [cell.functionButton setProgress:(float)[fileData.hasDownloadSize longLongValue]/(float)[data.fileSize longLongValue]];
                     }
+                    [listTableView reloadData];
                 }
             }
             

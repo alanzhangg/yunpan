@@ -61,7 +61,7 @@
             [deleteArray addObject:data];
         }
     }
-    [[SQLCommand shareSQLCommand] updateFileData:updateArray];
+//    [[SQLCommand shareSQLCommand] updateFileData:updateArray];
     [[SQLCommand shareSQLCommand] insertData:insertArray];
     [[SQLCommand shareSQLCommand] deleteFileData:deleteArray];
     
@@ -109,36 +109,26 @@
 }
 
 - (void)insertUploadData:(NSArray *)array{
-    [dbQueue inDatabase:^(FMDatabase *dbs) {
-        [dbs open];
-        for (UploadData * data in array) {
-            @autoreleasepool {
-                [db executeUpdate:@"INSERT INTO UPLOAD VALUES(?,?,?,?,?,?,?)", data.fileID, data.fileName, data.status, data.fileSize, data.UPLOADtIME, data.thumbNail, data.parentID];
-            }
+    
+    for (UploadData * data in array) {
+        @autoreleasepool {
+            [db executeUpdate:@"INSERT INTO UPLOAD VALUES(?,?,?,?,?,?,?)", data.fileID, data.fileName, data.status, data.fileSize, data.UPLOADtIME, data.thumbNail, data.parentID];
         }
-        [dbs close];
-    }];
+    }
     
 }
 
 - (void)updateUploadData:(UploadData *)data{
-    [dbQueue inDatabase:^(FMDatabase *dbs) {
-        [dbs open];
-        [db executeUpdate:@"UPDATE UPLOAD SET STATUS = ?, UPLOADTIME = ? WHERE ID = ?", data.status, data.UPLOADtIME, data.fileID];
-        [dbs open];
-    }];
+    
+    [db executeUpdate:@"UPDATE UPLOAD SET STATUS = ?, UPLOADTIME = ? WHERE ID = ?", data.status, data.UPLOADtIME, data.fileID];
 }
 
 - (void)deleteUploadData:(NSArray *)array{
-    [dbQueue inDatabase:^(FMDatabase *dbs) {
-        [dbs open];
-        for (FileData * data in array) {
-            @autoreleasepool {
-                NSLog(@"%d", [db executeUpdate:@"DELETE FROM UPLOAD WHERE ID = ?", data.fileID]);
-            }
+    for (FileData * data in array) {
+        @autoreleasepool {
+            NSLog(@"%d", [db executeUpdate:@"DELETE FROM UPLOAD WHERE ID = ?", data.fileID]);
         }
-        [dbs open];
-    }];
+    }
 }
 
 - (BOOL)checkFileOnly:(UploadData *)data{
@@ -188,41 +178,25 @@
 
 - (void)insertData:(NSArray *)array{
     
-    [dbQueue inDatabase:^(FMDatabase *dbs) {
-        [dbs open];
-        for (FileData * data in array) {
-            @autoreleasepool {
-                [db executeUpdate:@"INSERT INTO CLOUD VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", data.fileID, data.filePID, data.fileType, data.fileName, data.fileOldName, data.fileTimeStr, data.fileFormat, data.fileSize, data.fileDeepPath, data.fileDirLevel, data.fileOrgid, data.fileIsdel, data.createTime, data.createUser, data.updateTime, data.updateUser, data.downloadUrl, data.thumDownloadUrl];
-                
-            }
+    for (FileData * data in array) {
+        @autoreleasepool {
+            [db executeUpdate:@"INSERT INTO CLOUD VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", data.fileID, data.filePID, data.fileType, data.fileName, data.fileOldName, data.fileTimeStr, data.fileFormat, data.fileSize, data.fileDeepPath, data.fileDirLevel, data.fileOrgid, data.fileIsdel, data.createTime, data.createUser, data.updateTime, data.updateUser, data.downloadUrl, data.thumDownloadUrl];
+            
         }
-        [dbs open];
-    }];
-    
-    
+    }
 }
 
 - (void)updateFileName:(FileData *)fileData{
-    
-    [dbQueue inDatabase:^(FMDatabase *dbs) {
-        [dbs open];
-        [db executeUpdate:@"UPDATE CLOUD SET FILENAME = ? WHERE ID = ?", fileData.fileName, fileData.fileID];
-        [dbs open];
-    }];
+    [db executeUpdate:@"UPDATE CLOUD SET FILENAME = ? WHERE ID = ?", fileData.fileName, fileData.fileID];
 }
 
 - (void)updateFileData:(NSArray *)array{
     
-    [dbQueue inDatabase:^(FMDatabase *dbs) {
-        [dbs open];
-        for (FileData * data in array) {
-            @autoreleasepool {
-                [db executeUpdate:@"UPDATE CLOUD SET ID = ?, PID = ?, FILETYPE = ?, FILENAME = ?, FILEOLDNAME = ?, TIMESTR = ?, FILEFORMAT = ?, FILESIZE = ?, DEEPPATH = ?, DIRLEVEL = ?, ORGID = ?, ISDEL = ?, CREATETIME = ?, CREATEUSER = ?, UPDATETIME = ?, UPDATEUSER = ?, DOWNLOADURL = ?, THUMDOWNLOADURL = ? WHERE ID = ?", data.fileID, data.filePID, data.fileType, data.fileName, data.fileOldName, data.fileTimeStr, data.fileFormat, data.fileSize, data.fileDeepPath, data.fileDirLevel, data.fileOrgid, data.fileIsdel, data.createTime, data.createUser, data.updateTime, data.updateUser, data.downloadUrl, data.thumDownloadUrl, data.fileID];
-            }
+    for (FileData * data in array) {
+        @autoreleasepool {
+            [db executeUpdate:@"UPDATE CLOUD SET ID = ?, PID = ?, FILETYPE = ?, FILENAME = ?, FILEOLDNAME = ?, TIMESTR = ?, FILEFORMAT = ?, FILESIZE = ?, DEEPPATH = ?, DIRLEVEL = ?, ORGID = ?, ISDEL = ?, CREATETIME = ?, CREATEUSER = ?, UPDATETIME = ?, UPDATEUSER = ?, DOWNLOADURL = ?, THUMDOWNLOADURL = ? WHERE ID = ?", data.fileID, data.filePID, data.fileType, data.fileName, data.fileOldName, data.fileTimeStr, data.fileFormat, data.fileSize, data.fileDeepPath, data.fileDirLevel, data.fileOrgid, data.fileIsdel, data.createTime, data.createUser, data.updateTime, data.updateUser, data.downloadUrl, data.thumDownloadUrl, data.fileID];
         }
-        [dbs open];
-    }];
-    
+    }
     
 }
 
@@ -303,14 +277,9 @@
 }
 
 - (void)moveFile:(NSArray *)array toTargetFolder:(NSString *)dataid{
-    
-    [dbQueue inDatabase:^(FMDatabase *dbs) {
-        [dbs open];
-        for (FileData * data in array) {
-            [db executeUpdate:@"UPDATE CLOUD SET PID = ? WHERE ID = ?", dataid, data.fileID];
-        }
-        [dbs close];
-    }];
+    for (FileData * data in array) {
+        [db executeUpdate:@"UPDATE CLOUD SET PID = ? WHERE ID = ?", dataid, data.fileID];
+    }
 }
 
 - (NSMutableArray *)getFileData:(FMResultSet *)set{
@@ -358,50 +327,29 @@
 #pragma mark - download
 
 - (void)insertDownloadData:(NSArray *)array{
-    
-    [dbQueue inDatabase:^(FMDatabase *dbs) {
-        [dbs open];
-        for (FileData * data in array) {
-            @autoreleasepool {
-                [db executeUpdate:@"INSERT INTO DOWNLOADLIST VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", data.fileID, data.filePID, data.fileType, data.fileName, data.fileOldName, data.fileTimeStr, data.fileFormat, data.fileSize, data.fileDeepPath, data.fileDirLevel, data.fileOrgid, data.fileIsdel, data.createTime, data.createUser, data.updateTime, data.updateUser, data.downloadUrl, data.thumDownloadUrl, data.hasDownloadSize, data.isHasDownload, data.downloadStatus, data.downloadFolder, data.downloadQuantity];
-            }
+    for (FileData * data in array) {
+        @autoreleasepool {
+            [db executeUpdate:@"INSERT INTO DOWNLOADLIST VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", data.fileID, data.filePID, data.fileType, data.fileName, data.fileOldName, data.fileTimeStr, data.fileFormat, data.fileSize, data.fileDeepPath, data.fileDirLevel, data.fileOrgid, data.fileIsdel, data.createTime, data.createUser, data.updateTime, data.updateUser, data.downloadUrl, data.thumDownloadUrl, data.hasDownloadSize, data.isHasDownload, data.downloadStatus, data.downloadFolder, data.downloadQuantity];
         }
-        [dbs close];
-    }];
+    }
 }
 
 - (void)updateDownloadDataStatus:(NSArray *)array{
-    
-    [dbQueue inDatabase:^(FMDatabase *dbs) {
-        [dbs open];
-        for (FileData * data in array) {
-            [db executeUpdate:@"UPDATE DOWNLOADLIST SET DOWNLOADSTATUS = ?, HASDOWNSIZE = ? WHERE ID = ?", data.downloadStatus, data.hasDownloadSize, data.fileID];
-        }
-        [dbs close];
-    }];
+    for (FileData * data in array) {
+        [db executeUpdate:@"UPDATE DOWNLOADLIST SET DOWNLOADSTATUS = ?, HASDOWNSIZE = ? WHERE ID = ?", data.downloadStatus, data.hasDownloadSize, data.fileID];
+    }
 }
 
 - (void)updateDownloadDataHaveDown:(NSArray *)array{
-    
-    [dbQueue inDatabase:^(FMDatabase *dbs) {
-        [dbs open];
-        for (FileData * data in array) {
-            [db executeUpdate:@"UPDATE DOWNLOADLIST SET ISHAVEDONE = ?, HASDOWNSIZE = ? WHERE ID = ?", data.isHasDownload, data.hasDownloadSize, data.fileID];
-        }
-        [dbs close];
-    }];
-    
-    
+    for (FileData * data in array) {
+        [db executeUpdate:@"UPDATE DOWNLOADLIST SET ISHAVEDONE = ?, HASDOWNSIZE = ? WHERE ID = ?", data.isHasDownload, data.hasDownloadSize, data.fileID];
+    }
 }
 
 - (void)updateDownloadData:(NSArray *)array{
-    [dbQueue inDatabase:^(FMDatabase *dbs) {
-        [dbs open];
-        for (FileData * data in array) {
-            [db executeUpdate:@"UPDATE DOWNLOADLIST SET HASDOWNSIZE = ?, ISHAVEDONE = ?, HASDOWNSIZE = ?,DOWNLOADSTATUS = ?, DOWNLOADFOLDER = ?, DOWNLOADQUANTITY = ? WHERE ID = ?", data.hasDownloadSize, data.isHasDownload, data.hasDownloadSize, data.downloadStatus, data.downloadFolder, data.downloadQuantity, data.fileID];
-        }
-        [dbs close];
-    }];
+    for (FileData * data in array) {
+        [db executeUpdate:@"UPDATE DOWNLOADLIST SET HASDOWNSIZE = ?, ISHAVEDONE = ?, HASDOWNSIZE = ?,DOWNLOADSTATUS = ?, DOWNLOADFOLDER = ?, DOWNLOADQUANTITY = ? WHERE ID = ?", data.hasDownloadSize, data.isHasDownload, data.hasDownloadSize, data.downloadStatus, data.downloadFolder, data.downloadQuantity, data.fileID];
+    }
 }
 
 - (void)updateDownloadFolderQuantity:(FileData *)data{
@@ -432,8 +380,21 @@
     return nil;
 }
 
+- (FileData *)getShangchengFolder:(FileData *)fileData{
+    FMResultSet * set = [db executeQuery:@"SELECT * FROM DOWNLOADLIST WHERE ID = ?", fileData.filePID];
+    NSArray * array = [self getFileData:set];
+    if (array.count > 0) {
+        FileData * data = array[0];
+        if (data.filePID.length > 0) {
+            fileData = [self getShangchengFolder:data];
+        }else{
+            fileData = data;
+        }
+    }
+    return fileData;
+}
+
 - (NSMutableArray *)getDownloadListData{
-    
     FMResultSet * set = [db executeQuery:@"SELECT * FROM DOWNLOADLIST ORDER BY ISHAVEDONE DESC"];
     NSArray * array = [self getFileData:set];
     NSMutableArray * errorArray = [NSMutableArray new];
@@ -459,16 +420,10 @@
 - (void)deleteDownloadData:(NSArray *)array{
     
     for (FileData * data in array) {
-        if ([data.fileFormat isEqualToString:@"f"]) {
-            NSArray * array = [self getFolderData:data.fileID];
-            [self deleteFileData:array];
-//            return;
-        }
         @autoreleasepool {
             NSLog(@"%d", [db executeUpdate:@"DELETE FROM DOWNLOADLIST WHERE ID = ?", data.fileID]);
         }
     }
-    
 }
 
 - (NSArray *)getDeleteDownloadData:(NSString *)fileID{

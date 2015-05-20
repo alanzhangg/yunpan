@@ -41,6 +41,7 @@
     [[FilesDownloadManager sharedFilesDownManage] startRequest:nil];
     DownloadListView * leftView = (DownloadListView *)[menuScrollView viewWithTag:200];
     [leftView reloadDatas];
+    
     UploadListView * rightView = (UploadListView *)[menuScrollView viewWithTag:300];
     [rightView reloadDatas];
 }

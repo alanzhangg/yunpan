@@ -46,7 +46,7 @@
 - (NSArray *)getCloudTableFolderData:(NSString *)fileId;
 - (NSArray *)getSubfolders:(NSString *)fileId;
 - (NSMutableArray *)getSubFilesUndownload:(FileData *)fileData;
-
+- (FileData *)getShangchengFolder:(FileData *)fileData;
 - (NSString *)exchangeDownloadListSid:(NSString *)str;
 
 //upload

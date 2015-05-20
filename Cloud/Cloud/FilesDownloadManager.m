@@ -47,8 +47,8 @@ static FilesDownloadManager * sharedFilesDownManage = nil;
 
 - (void)getSqlData{
     _downloadListArray = [[SQLCommand shareSQLCommand] getDownloadListData];
-    [[NSNotificationCenter defaultCenter] postNotificationName:DownloadDataChange object:nil];
     [self addRequest];
+    [[NSNotificationCenter defaultCenter] postNotificationName:DownloadDataChange object:nil];
 }
 
 - (void)addRequest{

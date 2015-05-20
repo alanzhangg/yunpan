@@ -18,6 +18,7 @@
 #import "DocumentsViewController.h"
 #import "VideoShowViewController.h"
 #import "VideoNavigationController.h"
+#import "FilesDownloadManager.h"
 
 @interface DownloadFolderViewController ()<UITableViewDataSource, UITableViewDelegate>
 
@@ -161,10 +162,25 @@
 }
 
 - (void)quanxuan:(UIButton *)sender{
-    
+    if ([sender.currentTitle isEqualToString:@"全选"]) {
+        [sender setTitle:@"全不选" forState:UIControlStateNormal];
+        for (FileData * data in listArray) {
+            data.isSelected = YES;
+        }
+    }else if([sender.currentTitle isEqualToString:@"全不选"]) {
+        for (FileData * data in listArray) {
+            data.isSelected = NO;
+        }
+        [sender setTitle:@"全选" forState:UIControlStateNormal];
+    }
+    [listTableView reloadData];
 }
 
 - (void)deleteOrReturn:(UIButton *)sender{
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"确定删除吗？" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确认", nil];
+    [alert show];
+    alert.tag = sender.tag;
+    
     
 }
 
@@ -356,6 +372,80 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
     if (editingStyle == UITableViewCellEditingStyleDelete) {
+//        NSMutableArray * secArray = listArray[indexPath.row];
+//        NSMutableArray * secHeiArray = [NSMutableArray arrayWithArray:heiArray[indexPath.row]];
+        FileData * fileData = listArray[indexPath.row];
+        NSMutableArray * delArray = [NSMutableArray new];
+        if ([fileData.fileFormat isEqualToString:@"f"]) {
+            [delArray addObject:fileData];
+            [delArray addObjectsFromArray:[[SQLCommand shareSQLCommand] getDeleteDownloadData:fileData.fileID]];
+        }else{
+            [delArray addObject:fileData];
+        }
+        [listArray removeObjectAtIndex:indexPath.row];
+        [heiArray removeObjectAtIndex:indexPath.row];
+        //        [listArray insertObject:@{@"name":dic[@"name"], @"list":secArray} atIndex:indexPath.section];
+        //        [heightArray removeObjectAtIndex:indexPath.section];
+        //        [heightArray insertObject:secHeiArray atIndex:indexPath.section];
+        [tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self shanchudata:delArray];
+    }
+}
+
+- (void)shanchudata:(NSMutableArray *)array{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        [[SQLCommand shareSQLCommand] deleteDownloadData:array];
+        FilesDownloadManager *filedownmanage=[FilesDownloadManager sharedFilesDownManage];
+        for (int i = 0; i < array.count; i++) {
+            FileData * data = array[i];
+            [filedownmanage deleteRequest:data];
+            NSFileManager * fileManager = [NSFileManager defaultManager];
+            NSString * path= [CommonHelper getTargetPathWithBasepath:filedownmanage.basePath subpath:filedownmanage.targetSubPath];
+            path = [path stringByAppendingPathComponent:data.fileName];
+            if ([fileManager fileExistsAtPath:path]) {
+                [fileManager removeItemAtPath:path error:nil];
+            }
+            path = [CommonHelper getTempFolderPathWithBasepath:filedownmanage.basePath];
+            path = [path stringByAppendingPathComponent: data.fileName];
+            if ([fileManager fileExistsAtPath:path]) {
+                [fileManager removeItemAtPath:path error:nil];
+            }
+        }
+        //        [[SQLCommand shareSQLCommand] deleteDownloadData:@[array[0]]];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [listTableView reloadData];
+        });
+        
+    });
+    
+}
+
+#pragma mark - UIAlertViewDelegete
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if (alertView.cancelButtonIndex != buttonIndex) {
+        for (int i = 0; i < listArray.count; i++) {
+            FileData * fileData = listArray[i];
+            if (fileData.isSelected) {
+                NSMutableArray * delArray = [NSMutableArray new];
+                if ([fileData.fileFormat isEqualToString:@"f"]) {
+                    [delArray addObject:fileData];
+                    [delArray addObjectsFromArray:[[SQLCommand shareSQLCommand] getDeleteDownloadData:fileData.fileID]];
+                }else{
+                    [delArray addObject:fileData];
+                }
+                [listArray removeObjectAtIndex:i];
+                [heiArray removeObjectAtIndex:i];
+                //        [listArray insertObject:@{@"name":dic[@"name"], @"list":secArray} atIndex:indexPath.section];
+                //        [heightArray removeObjectAtIndex:indexPath.section];
+                //        [heightArray insertObject:secHeiArray atIndex:indexPath.section];
+                
+                [self shanchudata:delArray];
+                --i;
+            }
+        }
+        [listTableView reloadData];
         
     }
 }
