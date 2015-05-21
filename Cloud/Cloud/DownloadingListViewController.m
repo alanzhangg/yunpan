@@ -495,7 +495,6 @@
                         [secHeiArray exchangeObjectAtIndex:j withObjectAtIndex:0];
                         [array exchangeObjectAtIndex:j withObjectAtIndex:0];
                         [listTableView moveRowAtIndexPath:[NSIndexPath indexPathForRow:j inSection:i] toIndexPath:[NSIndexPath indexPathForRow:0 inSection:i]];
-                        
                     }
                     if (cell) {
                         cell.timeLabel.text = [NSString stringWithFormat:@"%@/%@", [CommonHelper setLength:[fileData.hasDownloadSize longLongValue]], [CommonHelper setLength:[data.fileSize longLongValue]]];

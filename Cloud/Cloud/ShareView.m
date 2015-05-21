@@ -52,6 +52,9 @@
 - (void)layoutSubviews{
     [super layoutSubviews];
     listTableView.frame = CGRectMake(0, 0, rectFrame.size.width, rectFrame.size.height);
+    for (TrashData * data in listArray) {
+        data.function = NO;
+    }
     [listTableView reloadData];
 }
 
@@ -515,8 +518,101 @@
             alertView.indexPath = indexPath;
         }
     }else{
+        FileData * filedata = [FileData new];
+        TrashData * trashData = listArray[indexPath.section];
+        [filedata transformDictionary:trashData.dict];
         
+        if ([[SQLCommand shareSQLCommand] checkIsAddDownloadList:filedata.fileID]) {
+            [Alert showHUDWihtTitle:@"已在下载队列"];
+            return;
+        }
         
+        filedata.filePID = @"";
+        filedata.isHasDownload = @(1);
+        filedata.hasDownloadSize = @"0";
+        filedata.downloadStatus = @(0);
+        filedata.downloadFolder = @"0";
+        filedata.downloadQuantity = @(0);
+        NSMutableArray * downArray = [NSMutableArray new];
+        [downArray addObject:filedata];
+        if (![filedata.fileFormat isEqualToString:@"f"]) {
+            [[SQLCommand shareSQLCommand] insertDownloadData:downArray];
+            [self startDownload];
+        }else{
+            
+            int status = [AFHTTPAPIClient checkNetworkStatus];
+            if (status == 1 || status == 2) {
+                NSString * param = [NSString stringWithFormat:@"params={\"categoryName\":\"shareme\",\"dirId\":\"%@\",\"searchValue\":\"\"}", filedata.fileID];
+                NSDictionary * dic = @{@"param":param, @"aslp":QUERY_FILE_BY_SEARCH};
+                
+                [NetWorkingRequest synthronizationWithString:dic andBlock:^(id data, NSError *error) {
+                    if (error) {
+                        NSLog(@"%@", error.description);
+                        [Alert showHUDWihtTitle:error.localizedDescription];
+                    }else{
+                        NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+                        NSLog(@"%@", dic);
+                        NSLog(@"%@", [dic objectForKey:@"msg"]);
+                        if ([dic[@"result"] isEqualToString:@"ok"]) {
+                            dic = [dic objectForKey:@"data"];
+                            NSArray * array = [dic objectForKey:@"fileList"];
+                            if (array) {
+                                NSMutableArray * downloadArray = [NSMutableArray new];
+                                for (NSDictionary * dict in array) {
+                                    FileData * data = [[FileData alloc] init];
+                                    [data transformDictionary:dict];
+                                    [downloadArray addObject:data];
+                                }
+                                
+                                int quantity = 0;
+                                for (FileData * downdata in downloadArray) {
+                                    if ([downdata.fileFormat isEqualToString:@"f"]) {
+                                        downdata.isHasDownload = @(2);
+                                    }else
+                                        downdata.isHasDownload = @(1);
+                                    
+                                    downdata.hasDownloadSize = @"0";
+                                    downdata.downloadStatus = @(0);
+                                    downdata.downloadFolder = @"0";
+                                    downdata.downloadQuantity = @(0);
+                                    if (![downdata.fileFormat isEqualToString:@"f"]) {
+                                        quantity++;
+                                    }
+                                }
+                                filedata.downloadQuantity = @(quantity);
+                                [downArray addObjectsFromArray:downloadArray];
+                                [[SQLCommand shareSQLCommand] insertDownloadData:downArray];
+                                [self startDownload];
+                            }
+                        }else{
+                            [Alert showHUDWihtTitle:dic[@"msg"]];
+                        }
+                        
+                        // NSArray * array = [dic objectForKey:@"fileList"];
+                        
+                    }
+                }];
+            }else{
+                [Alert showHUDWihtTitle:@"无网络"];
+            }
+            
+        }
+    }
+}
+
+- (void)startDownload{
+    int status = [AFHTTPAPIClient checkNetworkStatus];
+    if (status == 1 || status == 2) {
+        
+        [[FilesDownloadManager sharedFilesDownManage] startRequest:nil];
+        [Alert showHUDWihtTitle:@"已加入下载队列"];
+    }else{
+        UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"提示"
+                                                           message:@"网络不通，请检查网路"
+                                                          delegate:nil
+                                                 cancelButtonTitle:@"确定"
+                                                 otherButtonTitles: nil];
+        [alertView show];
     }
 }
 

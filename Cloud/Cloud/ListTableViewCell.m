@@ -65,8 +65,8 @@
     lineview.frame = rect;
     
     _titleLabel.frame = CGRectMake(70, 10, rectFrame.size.width - 130, [[dic objectForKey:@"titleheight"] floatValue]);
-    _timeLabel.frame = CGRectMake(70, 10 + _titleLabel.frame.size.height, rectFrame.size.width - 190, 20);
-    _sizeLabel.frame = CGRectMake(_timeLabel.frame.size.width + _timeLabel.frame.origin.x + 10, _timeLabel.frame.origin.y, 70, 20);
+    _timeLabel.frame = CGRectMake(70, 10 + _titleLabel.frame.size.height, rectFrame.size.width - 180, 20);
+    _sizeLabel.frame = CGRectMake(_timeLabel.frame.size.width + _timeLabel.frame.origin.x, _timeLabel.frame.origin.y, 70, 20);
     _functionButton.frame = CGRectMake(rect.size.width - 50, [[dic objectForKey:@"cellheight"] floatValue]/2 - 20, 40, 40);
     
 }

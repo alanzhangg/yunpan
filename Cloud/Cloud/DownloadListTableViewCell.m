@@ -96,6 +96,7 @@
 - (void)stopDownloadFile
 {
     if(_fileInfo==nil)return;
+    _timeLabel.text = @"暂停";
     [[FilesDownloadManager sharedFilesDownManage] stopRequest:_fileInfo];
 //    [(DownloadListView*)self.parentVC removeASIRequst:_request];
     //  [self.parentVC reloadData];

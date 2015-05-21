@@ -226,8 +226,11 @@
             cell = [[SelectedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"selectCell" withViewFrame:tableView.frame];
         }
         cell.indexPath = indexPath;
+        NSLog(@"%@   %@", data.fileName, data.UPLOADtIME);
         cell.titleLabel.text = data.fileName;
-        cell.timeLabel.text = data.UPLOADtIME;
+        if (![data.UPLOADtIME isEqual:[NSNull null]]) {
+            cell.timeLabel.text = data.UPLOADtIME;
+        }
         cell.headPhoto.image = [UIImage imageWithContentsOfFile:path];
         if (!data.isSelected) {
             cell.selectedImageView.image = [UIImage imageNamed:@"check-box-outline-blank.png"];
@@ -330,7 +333,7 @@
     UploadData * data = array[indexPath.row];
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         
-        NSString * headStr = headerArray[indexPath.section];
+//        NSString * headStr = headerArray[indexPath.section];
         if ([UploadNetwork shareUploadNetwork].uploadData) {
             UploadData * upData = [UploadNetwork shareUploadNetwork].uploadData;
             if ([upData.fileID isEqualToString:data.fileID]) {

@@ -140,11 +140,9 @@
 }
 
 - (IBAction)cancel:(UIBarButtonItem *)sender {
-    
     [self dismissViewControllerAnimated:YES completion:^{
         
     }];
-    
 }
 
 - (void)didReceiveMemoryWarning {

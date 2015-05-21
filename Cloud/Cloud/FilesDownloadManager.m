@@ -36,7 +36,7 @@ static FilesDownloadManager * sharedFilesDownManage = nil;
 }
 
 - (id)init{
-    if ([super init]) {
+    if (self =[super init]) {
         downinglist = [NSMutableArray new];
         _basePath = @"Download";
         _targetSubPath = @"folder";
@@ -54,7 +54,7 @@ static FilesDownloadManager * sharedFilesDownManage = nil;
 - (void)addRequest{
     NSMutableArray * array = _downloadListArray[1];
     for (FileData * data in array) {
-        if (![data.fileFormat isEqualToString:@"f"]) {
+        if (![data.fileFormat isEqualToString:@"f"] && [data.downloadStatus intValue] == 0) {
             NSArray * array = [queue operations];
             int i = 0;
             for (i = 0; i < array.count; i++) {
@@ -168,6 +168,8 @@ static FilesDownloadManager * sharedFilesDownManage = nil;
     [request setDownloadProgressDelegate:self];
     [request setNumberOfTimesToRetryOnTimeout:2];
     [request setShowAccurateProgress:YES];
+    [request setAuthenticationScheme:@"https"];
+    [request setValidatesSecureCertificate:NO];
     [request setAllowResumeForFileDownloads:YES]; //支持断点续传
     NSLog(@"%lld", [fileInfo.fileSize longLongValue]);
     
@@ -198,6 +200,8 @@ static FilesDownloadManager * sharedFilesDownManage = nil;
     [request setTemporaryFileDownloadPath:fileInfo.tempPath];
     [request setDownloadProgressDelegate:self];
     [request setNumberOfTimesToRetryOnTimeout:2];
+    [request setAuthenticationScheme:@"https"];
+    [request setValidatesSecureCertificate:NO];
     [request setAllowResumeForFileDownloads:YES];//支持断点续传
     [request setShowAccurateProgress:YES];
     [request setUserInfo:[NSDictionary dictionaryWithObject:fileInfo forKey:@"File"]];//设置上下文的文件基本信

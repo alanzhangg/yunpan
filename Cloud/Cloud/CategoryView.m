@@ -41,7 +41,7 @@
 }
 
 - (id)initWithFrame:(CGRect)frame pullingDelegate:(id<PullingRefreshTableViewDelegate>)aPullingDelegate{
-    if ([super initWithFrame:frame pullingDelegate:aPullingDelegate]) {
+    if (self = [super initWithFrame:frame pullingDelegate:aPullingDelegate]) {
         rectFrame = frame;
         self.separatorStyle = UITableViewCellSeparatorStyleNone;
         self.delegate = self;

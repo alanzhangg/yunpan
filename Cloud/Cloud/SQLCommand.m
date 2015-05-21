@@ -493,11 +493,13 @@
 
 - (NSString *)exchangeDownloadListSid:(NSString *)str{
     if (str) {
-//        NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
-//        NSString * sidstr = [ud objectForKey:@"sid"];
-//        NSString * theStr = [NSString stringWithFormat:@"sid=%@&", sidstr];
-//        NSRegularExpression * regex = [NSRegularExpression regularExpressionWithPattern:@"sid=[\\S\\s]{1,}&" options:0 error:nil];
-//        str = [regex stringByReplacingMatchesInString:str options:0 range:NSMakeRange(0, str.length) withTemplate:theStr];
+//        NSLog(@"%s  %@", __func__, str);
+        NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
+        NSString * sidstr = [ud objectForKey:@"sid"];
+        NSString * theStr = [NSString stringWithFormat:@"sid=%@&", sidstr];
+        NSRegularExpression * regex = [NSRegularExpression regularExpressionWithPattern:@"sid=[a-z0-9-]{1,}&" options:0 error:nil];
+        str = [regex stringByReplacingMatchesInString:str options:0 range:NSMakeRange(0, str.length) withTemplate:theStr];
+//        NSLog(@"%s  %@", __func__, str);
     }
     return str;
 }

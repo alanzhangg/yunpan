@@ -113,7 +113,7 @@
             if ([[lenstr substringToIndex:2] isEqualToString:@".."]) {
                 urlstr = [NSString stringWithFormat:@"%@%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
             }else{
-                urlstr = [NSString stringWithFormat:@"%@r/%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
+                urlstr = [NSString stringWithFormat:@"%@/r/%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
             }
             fileURL = [NSURL URLWithString:urlstr];
         }

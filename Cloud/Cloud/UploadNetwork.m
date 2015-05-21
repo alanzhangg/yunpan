@@ -54,7 +54,7 @@ static UploadNetwork * uploadNetwork = nil;
             [dateFormatter setDateFormat:@"yyyyM"];
             NSString * timeString = [dateFormatter stringFromDate:[NSDate date]];
             NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
-            NSString * string = [NSString stringWithFormat:@"%@r/uf?sid=%@&groupValue=%@&repositoryName=-myfile&appId=com.actionsoft.apps.mydriver&fileValue=%@", [ud objectForKey:@"server"], [ud objectForKey:@"sid"], [ud objectForKey:@"uid"], timeString];
+            NSString * string = [NSString stringWithFormat:@"%@/r/uf?sid=%@&groupValue=%@&repositoryName=-myfile&appId=com.actionsoft.apps.mydriver&fileValue=%@", [ud objectForKey:@"server"], [ud objectForKey:@"sid"], [ud objectForKey:@"uid"], timeString];
             //            NSString * string = @"http://www.baidu.com";
             NSLog(@"%@", string);
             NSString * path = NSHomeDirectory();

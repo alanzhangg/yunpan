@@ -55,7 +55,7 @@
 
 
 - (void)layoutSubview:(NSDictionary *)dic{
-    CGRect rect = lineview.frame;
+//    CGRect rect = lineview.frame;
 //    rect.origin.y = [[dic objectForKey:@"cellheight"] floatValue] - 1;
 //    lineview.frame = rect;
     
