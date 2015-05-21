@@ -310,6 +310,7 @@
                     <connections>
                         <segue destination="Z36-42-Sla" kind="relationship" relationship="viewControllers" id="QvY-P3-cVS"/>
                         <segue destination="tJF-0c-kRy" kind="relationship" relationship="viewControllers" id="fqN-f8-SDS"/>
+                        <segue destination="g0Z-gx-KBA" kind="relationship" relationship="viewControllers" id="cz0-oP-lYG"/>
                         <segue destination="tgs-Bn-wbx" kind="relationship" relationship="viewControllers" id="ojl-LP-qVp"/>
                         <segue destination="BHt-Ix-Vn6" kind="relationship" relationship="viewControllers" id="qwS-R9-I2l"/>
                     </connections>
@@ -317,6 +318,25 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3aD-zv-M8O" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1055" y="313"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="Fvy-gU-rQt">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="XgJ-7W-75W" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <viewController id="g0Z-gx-KBA" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="ofu-IZ-tDe"/>
+                        <viewControllerLayoutGuide type="bottom" id="jMY-ly-H1O"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="yqS-WJ-qCx">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="" id="kdM-92-T6U"/>
+                </viewController>
+            </objects>
+            <point key="canvasLocation" x="-1079" y="1119"/>
         </scene>
         <!--网盘-->
         <scene sceneID="fHq-7y-v8s">
@@ -801,10 +821,10 @@
         </scene>
     </scenes>
     <resources>
-        <image name="folder.png" width="111" height="120"/>
+        <image name="folder.png" width="80" height="80"/>
         <image name="tabCloud" width="30" height="30"/>
         <image name="tabShare" width="30" height="30"/>
         <image name="tabTransfer" width="30" height="30"/>
-        <image name="tabTrash" width="24" height="30"/>
+        <image name="tabTrash" width="30" height="30"/>
     </resources>
 </document>

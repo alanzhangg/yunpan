@@ -201,7 +201,7 @@
 //    [cell.selectedBtn addTarget:self action:@selector(selectedImages:) forControlEvents:UIControlEventTouchUpInside];
     cell.selectedBtn.tag = indexPath.row + 200;
     if (data.isSelected) {
-        [cell.selectedBtn setImage:[UIImage imageNamed:@"untitled2.png"] forState:UIControlStateNormal];
+        [cell.selectedBtn setImage:[UIImage imageNamed:@"check-box.png"] forState:UIControlStateNormal];
     }else{
         [cell.selectedBtn setImage:[UIImage imageNamed:@"untitled.png"] forState:UIControlStateNormal];
     }

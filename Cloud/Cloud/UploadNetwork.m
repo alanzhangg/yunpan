@@ -19,6 +19,7 @@ static UploadNetwork * uploadNetwork = nil;
 @implementation UploadNetwork{
     AFHTTPClient * uploadFileClient;
     AFHTTPRequestOperation * fileUploadOp;
+    NSTimer * statusTimer;
 }
 
 + (UploadNetwork *)shareUploadNetwork{
@@ -129,6 +130,20 @@ static UploadNetwork * uploadNetwork = nil;
         [Alert showHUDWihtTitle:@"无网络"];
     }
 }
+
+//- (void)updateStatus:(NSTimer *)time{
+//    
+//}
+//
+//- (void)setStatusTimer:(NSTimer *)timer
+//{
+//    // We must invalidate the old timer here, not before we've created and scheduled a new timer
+//    // This is because the timer may be the only thing retaining an asynchronous request
+//    if (statusTimer && timer != statusTimer) {
+//        [statusTimer invalidate];
+//    }
+//    statusTimer = timer;
+//}
 
 - (void)updateServer:(UploadData *)pdata withDic:(NSDictionary *)dict{
     NSDateFormatter * formatter = [[NSDateFormatter alloc] init];

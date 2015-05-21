@@ -134,7 +134,7 @@
     if (!_isUpload) {
         self.navigationItem.title = [NSString stringWithFormat:@"1/%lu", (unsigned long)_pictureArray.count];
         NSUInteger index = [_pictureArray indexOfObject:_fileData];
-        NSString * str = [NSString stringWithFormat:@"%d/%lu", index + 1, (unsigned long)_pictureArray.count];
+        NSString * str = [NSString stringWithFormat:@"%lu/%lu", index + 1, (unsigned long)_pictureArray.count];
         self.navigationItem.title = str;
     }else{
         self.navigationItem.title = [NSString stringWithFormat:@"1/%lu", (unsigned long)_uploadArray.count];

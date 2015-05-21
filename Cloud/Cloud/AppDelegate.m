@@ -123,13 +123,15 @@
     [functionView addSubview:titleLabel];
     
     NSArray * array = @[@"上传图片", @"上传视频"];
+    NSArray * picArray = @[@"selectVideo.png", @"selectPicture.png"];
     for (int i = 0; i < 2; i++) {
         UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];
         btn.layer.masksToBounds = YES;
         btn.layer.cornerRadius = 5;
         [functionView addSubview:btn];
         btn.frame = CGRectMake((functionView.frame.size.width - 100) / 3 * (i + 1) + 50 * i, 90, 50, 50);
-        btn.backgroundColor = [UIColor redColor];
+        btn.backgroundColor = [UIColor clearColor];
+        [btn setImage:[UIImage imageNamed:picArray[i]] forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(uploadFiles:) forControlEvents:UIControlEventTouchUpInside];
         btn.tag = 100 + 100 * i;
         
@@ -251,7 +253,7 @@
     
     UIStoryboard * storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     self.window.rootViewController = [storyBoard instantiateInitialViewController];
-    self.window.backgroundColor = [UIColor whiteColor];
+    self.window.backgroundColor = [UIColor blackColor];
     [self.window makeKeyAndVisible];
 }
 

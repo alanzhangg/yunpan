@@ -25,11 +25,17 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    
+    UITabBar * tabbar = self.tabBar;
+    NSMutableArray * array = [NSMutableArray arrayWithArray:tabbar.items];
+    UITabBarItem * item = array[2];
+    item.enabled = NO;
 }
 
 - (void)didReceiveMemoryWarning {
