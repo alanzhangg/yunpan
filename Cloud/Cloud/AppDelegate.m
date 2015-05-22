@@ -123,7 +123,8 @@
     [functionView addSubview:titleLabel];
     
     NSArray * array = @[@"上传图片", @"上传视频"];
-    NSArray * picArray = @[@"selectVideo.png", @"selectPicture.png"];
+    NSArray * picArray = @[@"selectPicture.png", @"selectVideo.png"];
+    NSArray * lightArray = @[@"pictureLight.png", @"videoLight.png"];
     for (int i = 0; i < 2; i++) {
         UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];
         btn.layer.masksToBounds = YES;
@@ -132,6 +133,7 @@
         btn.frame = CGRectMake((functionView.frame.size.width - 100) / 3 * (i + 1) + 50 * i, 90, 50, 50);
         btn.backgroundColor = [UIColor clearColor];
         [btn setImage:[UIImage imageNamed:picArray[i]] forState:UIControlStateNormal];
+        [btn setImage:[UIImage imageNamed:lightArray[i]] forState:UIControlStateHighlighted];
         [btn addTarget:self action:@selector(uploadFiles:) forControlEvents:UIControlEventTouchUpInside];
         btn.tag = 100 + 100 * i;
         
@@ -152,7 +154,6 @@
     }else{
         pvc.isVideo = YES;
     }
-    
     UINavigationController * nav = [[UINavigationController alloc] initWithRootViewController:pvc];
     UIViewController * root = self.window.rootViewController;
     [root presentViewController:nav animated:YES completion:^{
@@ -254,10 +255,36 @@
     UIStoryboard * storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     self.window.rootViewController = [storyBoard instantiateInitialViewController];
     self.window.backgroundColor = [UIColor blackColor];
+    CGRect rect = self.window.frame;
+    UITabBarController * tabCon = (UITabBarController *)self.window.rootViewController;
+    UITabBar * tabbar = tabCon.tabBar;
+    UIButton * plusButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    plusButton.frame = CGRectMake(rect.size.width / 2 - 20, 5, 40, 40);
+    [tabbar addSubview:plusButton];
+    [plusButton setImage:[UIImage imageNamed:@"plus.png"] forState:UIControlStateNormal];
+    [plusButton setImage:[UIImage imageNamed:@"plushight.png"] forState:UIControlStateNormal];
     [self.window makeKeyAndVisible];
+    [plusButton addTarget:self action:@selector(upload:) forControlEvents:UIControlEventTouchUpInside];
 }
 
-
+- (void)upload:(UIButton *)sender{
+    AppDelegate * delegate = [[UIApplication sharedApplication] delegate];
+    UIWindow * window = delegate.window;
+    UIViewController * con = window.rootViewController;
+    [window bringSubviewToFront:delegate.uploadView];
+    delegate.uploadView.hidden = NO;
+    UIView * view = [delegate.uploadView viewWithTag:100];
+    
+    [UIView animateWithDuration:0.3 animations:^{
+        CGRect rect = view.frame;
+        rect.origin.y = 0;
+        view.frame = rect;
+        CGAffineTransform scaleTransform = CGAffineTransformMakeScale(0.9, 0.9);
+        con.view.transform = scaleTransform;
+    } completion:^(BOOL finished) {
+        
+    }];
+}
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

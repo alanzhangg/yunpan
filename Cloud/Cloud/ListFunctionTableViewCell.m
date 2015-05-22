@@ -30,7 +30,7 @@
 
 - (void)initSubViews{
     CGRect rect = [[UIScreen mainScreen] bounds];
-    NSArray * imageArray = @[@"download.png", @"move.png", @"renaming.png", @""];
+    NSArray * imageArray = @[@"download.png", @"move.png", @"renaming.png", @"more.png"];
     NSArray * array = @[@"下载", @"移动", @"重命名", @"更多"];
     for (int i = 0; i < 4; i++) {
         FunctionButton * btn = [FunctionButton buttonWithType:UIButtonTypeCustom];

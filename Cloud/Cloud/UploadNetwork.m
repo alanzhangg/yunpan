@@ -39,6 +39,11 @@ static UploadNetwork * uploadNetwork = nil;
 }
 
 - (void)startUpload{
+    
+    if ([fileUploadOp isExecuting]) {
+        return;
+    }
+    
     NSLog(@"%d", uploadFileClient.networkReachabilityStatus);
     if (uploadFileClient.networkReachabilityStatus) {
         NSArray * array = _listArray[1];
@@ -89,11 +94,7 @@ static UploadNetwork * uploadNetwork = nil;
                     zhongjianshijian = lingshishijian;
                 }
                 
-                
                 data.uploadSize = totalBytesWritten;
-                if (_delegate && [_delegate respondsToSelector:@selector(updatingCellData:)]) {
-                    [weakSelf.delegate updatingCellData:data];
-                }
                 NSLog(@"上传大小 ＝ %lu   %lld     %lld  ", (unsigned long)bytesWritten, totalBytesWritten, totalBytesExpectedToWrite);
             }];
             
@@ -122,6 +123,8 @@ static UploadNetwork * uploadNetwork = nil;
                 [[UploadNetwork shareUploadNetwork] getUploadData];
                 NSLog(@"op =  %@", error.localizedDescription);
             }];
+            [self setStatusTimer:[NSTimer timerWithTimeInterval:0.25 target:self selector:@selector(updateStatus:) userInfo:nil repeats:YES]];
+            [[NSRunLoop currentRunLoop] addTimer:statusTimer forMode:NSRunLoopCommonModes];
             [fileUploadOp start];
         }else{
             [fileUploadOp cancel];
@@ -131,19 +134,21 @@ static UploadNetwork * uploadNetwork = nil;
     }
 }
 
-//- (void)updateStatus:(NSTimer *)time{
-//    
-//}
-//
-//- (void)setStatusTimer:(NSTimer *)timer
-//{
-//    // We must invalidate the old timer here, not before we've created and scheduled a new timer
-//    // This is because the timer may be the only thing retaining an asynchronous request
-//    if (statusTimer && timer != statusTimer) {
-//        [statusTimer invalidate];
-//    }
-//    statusTimer = timer;
-//}
+- (void)updateStatus:(NSTimer *)time{
+    if (_delegate && [_delegate respondsToSelector:@selector(updatingCellData:)]) {
+        [self.delegate updatingCellData:_uploadData];
+    }
+}
+
+- (void)setStatusTimer:(NSTimer *)timer
+{
+    // We must invalidate the old timer here, not before we've created and scheduled a new timer
+    // This is because the timer may be the only thing retaining an asynchronous request
+    if (statusTimer && timer != statusTimer) {
+        [statusTimer invalidate];
+    }
+    statusTimer = timer;
+}
 
 - (void)updateServer:(UploadData *)pdata withDic:(NSDictionary *)dict{
     NSDateFormatter * formatter = [[NSDateFormatter alloc] init];

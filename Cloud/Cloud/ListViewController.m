@@ -265,8 +265,8 @@
     [uploadBtn addTarget:self action:@selector(shangchuan:) forControlEvents:UIControlEventTouchUpInside];
     
     UIBarButtonItem * rightItem = [[UIBarButtonItem alloc] initWithCustomView:rightBtn];
-    UIBarButtonItem * uploadItem = [[UIBarButtonItem alloc] initWithCustomView:uploadBtn];
-    self.navigationItem.rightBarButtonItems = @[rightItem, uploadItem];
+//    UIBarButtonItem * uploadItem = [[UIBarButtonItem alloc] initWithCustomView:uploadBtn];
+    self.navigationItem.rightBarButtonItem = rightItem;
     
     allFileView = [[AllFileView alloc] initWithFrame:CGRectMake(0, statusBarHeight, rect.size.width, rect.size.height - statusBarHeight - 44) pullingDelegate:nil];
     allFileView.allDelegate = self;

@@ -405,13 +405,26 @@
 
 - (void)updatingCellData:(UploadData *)data{
     
-    UploadingTableViewCell * cell = (UploadingTableViewCell *)[listTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:uploadingSec]];
-    if (cell) {
-        cell.timeLabel.text = [NSString stringWithFormat:@"%@/%@", [CommonHelper setLength:data.uploadSize], [CommonHelper setLength:[data.fileSize longLongValue]]];
-        cell.sizeLabel.text = [NSString stringWithFormat:@"%@/s", [CommonHelper setLength:data.uploadSpeed]];
-        NSLog(@"%f", (float)data.uploadSize/(float)[data.fileSize longLongValue]);
-        [cell.functionButton setProgress:(float)data.uploadSize/(float)[data.fileSize longLongValue]];
+    for (int i = 0; i < headerArray.count; i++) {
+        NSString * secString = headerArray[i];
+        if ([secString isEqualToString:@"正在上传"]) {
+            for (int j = 0; j < [listArray[i] count]; j++) {
+                UploadData * updata = listArray[i][j];
+                if ([data.fileID isEqualToString:updata.fileID]) {
+                    UploadingTableViewCell * cell = (UploadingTableViewCell *)[listTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:j inSection:i]];
+                    
+                    if (cell) {
+                        cell.timeLabel.text = [NSString stringWithFormat:@"%@/%@", [CommonHelper setLength:data.uploadSize], [CommonHelper setLength:[data.fileSize longLongValue]]];
+                        cell.sizeLabel.text = [NSString stringWithFormat:@"%@/s", [CommonHelper setLength:data.uploadSpeed]];
+                        NSLog(@"%f", (float)data.uploadSize/(float)[data.fileSize longLongValue]);
+                        [cell.functionButton setProgress:(float)data.uploadSize/(float)[data.fileSize longLongValue]];
+                    }
+                }
+            }
+        }
     }
+    
+    
 }
 
 /*

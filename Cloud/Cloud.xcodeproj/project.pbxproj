@@ -43,6 +43,11 @@
 		D56885501B058DD800C14DEC /* libCyberPlayerUtils.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D568854B1B058DD800C14DEC /* libCyberPlayerUtils.a */; };
 		D56885511B058DD800C14DEC /* libGzipCompressor.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D568854C1B058DD800C14DEC /* libGzipCompressor.a */; };
 		D56885521B058DD800C14DEC /* libSBJSON.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D568854D1B058DD800C14DEC /* libSBJSON.a */; };
+		D56B6FFC1B0EDE460061C197 /* plus.png in Resources */ = {isa = PBXBuildFile; fileRef = D56B6FFA1B0EDE460061C197 /* plus.png */; };
+		D56B6FFD1B0EDE460061C197 /* plushight.png in Resources */ = {isa = PBXBuildFile; fileRef = D56B6FFB1B0EDE460061C197 /* plushight.png */; };
+		D56B6FFF1B0F0A190061C197 /* more.png in Resources */ = {isa = PBXBuildFile; fileRef = D56B6FFE1B0F0A190061C197 /* more.png */; };
+		D56B70031B0F17BA0061C197 /* videoLight.png in Resources */ = {isa = PBXBuildFile; fileRef = D56B70011B0F17BA0061C197 /* videoLight.png */; };
+		D56B70051B0F1B090061C197 /* pictureLight.png in Resources */ = {isa = PBXBuildFile; fileRef = D56B70041B0F1B090061C197 /* pictureLight.png */; };
 		D56B9D1C1AFCB2200070F74C /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = D56B9D1A1AFCB2200070F74C /* pause.png */; };
 		D56B9D1D1AFCB2200070F74C /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = D56B9D1B1AFCB2200070F74C /* play.png */; };
 		D576EA7E1ADBC4DB006B8CB6 /* DownloadListView.m in Sources */ = {isa = PBXBuildFile; fileRef = D576EA7D1ADBC4DB006B8CB6 /* DownloadListView.m */; };
@@ -253,6 +258,11 @@
 		D568854B1B058DD800C14DEC /* libCyberPlayerUtils.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libCyberPlayerUtils.a; sourceTree = "<group>"; };
 		D568854C1B058DD800C14DEC /* libGzipCompressor.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGzipCompressor.a; sourceTree = "<group>"; };
 		D568854D1B058DD800C14DEC /* libSBJSON.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libSBJSON.a; sourceTree = "<group>"; };
+		D56B6FFA1B0EDE460061C197 /* plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plus.png; sourceTree = "<group>"; };
+		D56B6FFB1B0EDE460061C197 /* plushight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plushight.png; sourceTree = "<group>"; };
+		D56B6FFE1B0F0A190061C197 /* more.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = more.png; sourceTree = "<group>"; };
+		D56B70011B0F17BA0061C197 /* videoLight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = videoLight.png; sourceTree = "<group>"; };
+		D56B70041B0F1B090061C197 /* pictureLight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pictureLight.png; sourceTree = "<group>"; };
 		D56B9D1A1AFCB2200070F74C /* pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pause.png; sourceTree = "<group>"; };
 		D56B9D1B1AFCB2200070F74C /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = play.png; sourceTree = "<group>"; };
 		D576EA7C1ADBC4DB006B8CB6 /* DownloadListView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownloadListView.h; sourceTree = "<group>"; };
@@ -823,6 +833,11 @@
 		D5A265421AC3F6FD003789A8 /* resources */ = {
 			isa = PBXGroup;
 			children = (
+				D56B70041B0F1B090061C197 /* pictureLight.png */,
+				D56B70011B0F17BA0061C197 /* videoLight.png */,
+				D56B6FFE1B0F0A190061C197 /* more.png */,
+				D56B6FFA1B0EDE460061C197 /* plus.png */,
+				D56B6FFB1B0EDE460061C197 /* plushight.png */,
 				D59C8C331B0DE5CB00DFDBD2 /* selectPicture.png */,
 				D59C8C341B0DE5CB00DFDBD2 /* selectVideo.png */,
 				D59C8C371B0DE8B900DFDBD2 /* move.png */,
@@ -1143,6 +1158,7 @@
 				D5ED172C1ABBAFCE00CC4A93 /* Main.storyboard in Resources */,
 				D56B9D1D1AFCB2200070F74C /* play.png in Resources */,
 				D5E9518B1B0C5D9700DC0FD5 /* audio.png in Resources */,
+				D56B70051B0F1B090061C197 /* pictureLight.png in Resources */,
 				D584E3681ABFC5D60033083D /* blueArrowDown.png in Resources */,
 				D5A265501AC40A14003789A8 /* arrow-down.png in Resources */,
 				D5FED9E51AE79C9900DE5D39 /* lef01.png in Resources */,
@@ -1155,6 +1171,8 @@
 				D5D86C0E1ACA9FD200785A4C /* check-box.png in Resources */,
 				D59C8C321B0DCFC400DFDBD2 /* out.png in Resources */,
 				D59C8C361B0DE5CB00DFDBD2 /* selectVideo.png in Resources */,
+				D56B6FFC1B0EDE460061C197 /* plus.png in Resources */,
+				D56B6FFD1B0EDE460061C197 /* plushight.png in Resources */,
 				D5E9519F1B0C753300DC0FD5 /* renaming.png in Resources */,
 				D584E3671ABFC5D60033083D /* blueArrow@2x.png in Resources */,
 				D5ED172E1ABBAFCE00CC4A93 /* Images.xcassets in Resources */,
@@ -1165,6 +1183,7 @@
 				D52E67B71B0B22AB0014F49E /* download360.png in Resources */,
 				D59C8C381B0DE8B900DFDBD2 /* move.png in Resources */,
 				D5E9518D1B0C5D9700DC0FD5 /* pdf.png in Resources */,
+				D56B70031B0F17BA0061C197 /* videoLight.png in Resources */,
 				D5F74B941AEE1CD800B88BF9 /* untitled.png in Resources */,
 				D59C8C351B0DE5CB00DFDBD2 /* selectPicture.png in Resources */,
 				D584E3661ABFC5D60033083D /* blueArrow.png in Resources */,
@@ -1172,6 +1191,7 @@
 				D5D86C001ACA39B700785A4C /* chevron-with-circle-down.png in Resources */,
 				D5A265441AC3F720003789A8 /* arrowww.png in Resources */,
 				D5FED9E01AE79B7700DE5D39 /* lef02.png in Resources */,
+				D56B6FFF1B0F0A190061C197 /* more.png in Resources */,
 				D5E9518F1B0C5D9700DC0FD5 /* txt.png in Resources */,
 				D59CFE911AF8B1850029A713 /* DroidSansFallback.ttf in Resources */,
 				D58A149D1AC8FC3E00724D97 /* folder.png in Resources */,
