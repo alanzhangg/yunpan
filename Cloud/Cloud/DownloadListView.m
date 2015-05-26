@@ -513,7 +513,6 @@
                 }
                 return;
             }
-            
             for (NSDictionary * dic in array) {
                 if ([dic[@"categoryName"] isEqualToString:@"图片"]) {
                     for (NSString * str in dic[@"categoryList"]) {
@@ -527,13 +526,14 @@
                 NSMutableArray * picArray = [NSMutableArray new];
                 for (FileData * data in lsarray) {
                     NSRange picRange = [categoryStr rangeOfString:data.fileFormat];
-                    //            NSLog(@"%@  %@   %d", categoryStr, data.fileFormat, picRange.length);
                     if (picRange.length != 0 && ![data.fileFormat isEqualToString:@"f"]) {
                         [picArray addObject:data];
                     }
                 }
                 
                 PictureBigShowViewController * picVC = [[PictureBigShowViewController alloc] init];
+                picVC.isDownload = YES;
+//                picVC.isUpload = YES;
                 picVC.pictureArray = picArray;
                 picVC.fileData = data;
                 UIViewController * con = (UIViewController *)_parentVC;
@@ -558,7 +558,7 @@
                 UIStoryboard * storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
                 DocumentsViewController * dvc = [storyBoard instantiateViewControllerWithIdentifier:@"documents"];
                 dvc.fileData = data;
-                dvc.isDownload = NO;
+                dvc.isDownload = YES;
                 dvc.hidesBottomBarWhenPushed = YES;
                 UIViewController * con = (UIViewController *)_parentVC;
                 [con.navigationController pushViewController:dvc animated:YES];

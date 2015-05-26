@@ -45,92 +45,99 @@ static UploadNetwork * uploadNetwork = nil;
     }
     
     NSLog(@"%d", uploadFileClient.networkReachabilityStatus);
-    if (uploadFileClient.networkReachabilityStatus) {
-        NSArray * array = _listArray[1];
-        if (array.count > 0) {
-            UploadData * data = array[0];
-            _uploadData = data;
-            data.isUploading = YES;
-            if (!uploadFileClient) {
-                
-                uploadFileClient = [AFHTTPClient clientWithBaseURL:[NSURL URLWithString:@""]];
-                uploadFileClient.allowsInvalidSSLCertificate = YES;
-            }
-            NSDateFormatter * dateFormatter = [[NSDateFormatter alloc] init];
-            [dateFormatter setDateFormat:@"yyyyM"];
-            NSString * timeString = [dateFormatter stringFromDate:[NSDate date]];
-            NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
-            NSString * string = [NSString stringWithFormat:@"%@/r/uf?sid=%@&groupValue=%@&repositoryName=-myfile&appId=com.actionsoft.apps.mydriver&fileValue=%@", [ud objectForKey:@"server"], [ud objectForKey:@"sid"], [ud objectForKey:@"uid"], timeString];
-            //            NSString * string = @"http://www.baidu.com";
-            NSLog(@"%@", string);
-            NSString * path = NSHomeDirectory();
-            NSString * strPath = [NSString stringWithFormat:@"Documents/upload/%@", data.fileName];
-            path = [path stringByAppendingPathComponent:strPath];
-            NSLog(@"path = %@", [NSURL URLWithString:path]);
-            
-            NSMutableURLRequest * request = [uploadFileClient multipartFormRequestWithMethod:@"POST" path:string parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
-                NSError * err = nil;
-                
-                NSLog(@"%@", [[NSURL fileURLWithPath:path] pathExtension]);
-                [formData appendPartWithFileURL:[NSURL fileURLWithPath:path] name:data.fileName error:&err];
-                
-                if (err) {
-                    NSLog(@"file = %@", [err localizedDescription]);
-                }
-            }];
-            NSLog(@"%@", request);
-            fileUploadOp = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-            __weak UploadNetwork * weakSelf = self;
-            __block double zhongjianshijian = 0;
-            
-            [fileUploadOp setUploadProgressBlock:^(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) {
-                
-                if (zhongjianshijian == 0) {
-                    zhongjianshijian = [[NSDate date] timeIntervalSince1970];
-                }else{
-                    double lingshishijian = [[NSDate date] timeIntervalSince1970];
-                    NSLog(@"下载速度 ＝＝》 %f", lingshishijian - zhongjianshijian);
-                    data.uploadSpeed = bytesWritten / (lingshishijian - zhongjianshijian);
-                    zhongjianshijian = lingshishijian;
-                }
-                
-                data.uploadSize = totalBytesWritten;
-                NSLog(@"上传大小 ＝ %lu   %lld     %lld  ", (unsigned long)bytesWritten, totalBytesWritten, totalBytesExpectedToWrite);
-            }];
-            
-            [fileUploadOp setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-                data.isUploading = NO;
-                NSDateFormatter * formatter = [[NSDateFormatter alloc] init];
-                [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-                data.UPLOADtIME = [formatter stringFromDate:[NSDate date]];
-                
-                NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
-                //        [[UploadNetwork shareUploadNetwork] updateServer:data];
-                NSLog(@"res = %@", responseObject);
-                NSLog(@"dic = %@", dic);
-                if (dic) {
-                    [[UploadNetwork shareUploadNetwork] updateServer:data withDic:dic];
-                }else{
-                    data.status = @(0);
-                    [[SQLCommand shareSQLCommand] updateUploadData:data];
-                    [[UploadNetwork shareUploadNetwork] getUploadData];
-                }
-                
-            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                data.status = @(0);
-                data.isUploading = NO;
-                [[SQLCommand shareSQLCommand] updateUploadData:data];
-                [[UploadNetwork shareUploadNetwork] getUploadData];
-                NSLog(@"op =  %@", error.localizedDescription);
-            }];
-            [self setStatusTimer:[NSTimer timerWithTimeInterval:0.25 target:self selector:@selector(updateStatus:) userInfo:nil repeats:YES]];
-            [[NSRunLoop currentRunLoop] addTimer:statusTimer forMode:NSRunLoopCommonModes];
-            [fileUploadOp start];
-        }else{
-            [fileUploadOp cancel];
-        }
+    
+    if (uploadFileClient.networkReachabilityStatus == AFNetworkReachabilityStatusReachableViaWWAN) {
+        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"非wifi环境确认上传" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"上传", nil];
+        [alertView show];
+    }else if (uploadFileClient.networkReachabilityStatus == AFNetworkReachabilityStatusReachableViaWiFi || uploadFileClient.networkReachabilityStatus == AFNetworkReachabilityStatusUnknown) {
+        [self upload];
     }else{
         [Alert showHUDWihtTitle:@"无网络"];
+    }
+}
+
+- (void)upload{
+    NSArray * array = _listArray[1];
+    if (array.count > 0) {
+        UploadData * data = array[0];
+        _uploadData = data;
+        data.isUploading = YES;
+        if (!uploadFileClient) {
+            uploadFileClient = [AFHTTPClient clientWithBaseURL:[NSURL URLWithString:@""]];
+            uploadFileClient.allowsInvalidSSLCertificate = YES;
+        }
+        NSDateFormatter * dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"yyyyM"];
+        NSString * timeString = [dateFormatter stringFromDate:[NSDate date]];
+        NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
+        NSString * string = [NSString stringWithFormat:@"%@/r/uf?sid=%@&groupValue=%@&repositoryName=-myfile&appId=com.actionsoft.apps.mydriver&fileValue=%@", [ud objectForKey:@"server"], [ud objectForKey:@"sid"], [ud objectForKey:@"uid"], timeString];
+        //            NSString * string = @"http://www.baidu.com";
+        NSLog(@"%@", string);
+        NSString * path = NSHomeDirectory();
+        NSString * strPath = [NSString stringWithFormat:@"Documents/upload/%@", data.fileName];
+        path = [path stringByAppendingPathComponent:strPath];
+        NSLog(@"path = %@", [NSURL URLWithString:path]);
+        
+        NSMutableURLRequest * request = [uploadFileClient multipartFormRequestWithMethod:@"POST" path:string parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+            NSError * err = nil;
+            
+            NSLog(@"%@", [[NSURL fileURLWithPath:path] pathExtension]);
+            [formData appendPartWithFileURL:[NSURL fileURLWithPath:path] name:data.fileName error:&err];
+            
+            if (err) {
+                NSLog(@"file = %@", [err localizedDescription]);
+            }
+        }];
+        NSLog(@"%@", request);
+        fileUploadOp = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+        __weak UploadNetwork * weakSelf = self;
+        __block double zhongjianshijian = 0;
+        
+        [fileUploadOp setUploadProgressBlock:^(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) {
+            
+            if (zhongjianshijian == 0) {
+                zhongjianshijian = [[NSDate date] timeIntervalSince1970];
+            }else{
+                double lingshishijian = [[NSDate date] timeIntervalSince1970];
+                NSLog(@"下载速度 ＝＝》 %f", lingshishijian - zhongjianshijian);
+                data.uploadSpeed = bytesWritten / (lingshishijian - zhongjianshijian);
+                zhongjianshijian = lingshishijian;
+            }
+            
+            data.uploadSize = totalBytesWritten;
+            NSLog(@"上传大小 ＝ %lu   %lld     %lld  ", (unsigned long)bytesWritten, totalBytesWritten, totalBytesExpectedToWrite);
+        }];
+        
+        [fileUploadOp setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+            data.isUploading = NO;
+            NSDateFormatter * formatter = [[NSDateFormatter alloc] init];
+            [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+            data.UPLOADtIME = [formatter stringFromDate:[NSDate date]];
+            
+            NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
+            //        [[UploadNetwork shareUploadNetwork] updateServer:data];
+            NSLog(@"res = %@", responseObject);
+            NSLog(@"dic = %@", dic);
+            if (dic) {
+                [[UploadNetwork shareUploadNetwork] updateServer:data withDic:dic];
+            }else{
+                data.status = @(0);
+                [[SQLCommand shareSQLCommand] updateUploadData:data];
+                [[UploadNetwork shareUploadNetwork] getUploadData];
+            }
+            
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            data.status = @(0);
+            data.isUploading = NO;
+            [[SQLCommand shareSQLCommand] updateUploadData:data];
+            [[UploadNetwork shareUploadNetwork] getUploadData];
+            NSLog(@"op =  %@", error.localizedDescription);
+        }];
+        [self setStatusTimer:[NSTimer timerWithTimeInterval:0.25 target:self selector:@selector(updateStatus:) userInfo:nil repeats:YES]];
+        [[NSRunLoop currentRunLoop] addTimer:statusTimer forMode:NSRunLoopCommonModes];
+        [fileUploadOp start];
+    }else{
+        [fileUploadOp cancel];
     }
 }
 
@@ -183,6 +190,14 @@ static UploadNetwork * uploadNetwork = nil;
 
 - (void)cancleUpload{
     [fileUploadOp cancel];
+}
+
+#pragma mark - UIAlertView
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if (alertView.cancelButtonIndex != buttonIndex) {
+        [self upload];
+    }
 }
 
 @end

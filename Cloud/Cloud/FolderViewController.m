@@ -61,6 +61,11 @@
     [self getNetworkingData];
 }
 
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self reloadDataList];
+}
+
 - (void)getData{
     [listArray removeAllObjects];
     [listArray addObjectsFromArray:[[SQLCommand shareSQLCommand] getFolderData:_fileDta.fileID]];

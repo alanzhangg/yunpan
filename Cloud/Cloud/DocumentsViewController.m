@@ -11,6 +11,10 @@
 #import "CommonHelper.h"
 #import "Alert.h"
 #import "MBProgressHUD.h"
+#import "ALAlertView.h"
+#import "NetWorkingRequest.h"
+#import "SQLCommand.h"
+#import "FilesDownloadManager.h"
 
 @interface DocumentsViewController ()<UIWebViewDelegate>
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
@@ -26,13 +30,14 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    // Do any additional setup after loading the view
     if (_isDownload) {
-        _downloadFunction.hidden = NO;
-        _networkFunction.hidden = YES;
-    }else{
         _downloadFunction.hidden = YES;
         _networkFunction.hidden = NO;
+
+    }else{
+        _downloadFunction.hidden = NO;
+        _networkFunction.hidden = YES;
     }
     
     
@@ -96,7 +101,7 @@
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
-
+    
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
@@ -113,15 +118,77 @@
 }
 
 - (IBAction)download:(id)sender {
+    NSLog(@"download");
+    FileData * data = _fileData;
     
+    if ([[SQLCommand shareSQLCommand] checkIsAddDownloadList:data.fileID]) {
+        [Alert showHUDWihtTitle:@"已在下载队列"];
+        return;
+    }
+    data.filePID = @"";
+    data.isHasDownload = @(1);
+    data.hasDownloadSize = @"0";
+    data.downloadStatus = @(0);
+    data.downloadFolder = @"0";
+    data.downloadQuantity = @(0);
+    NSMutableArray * downArray = [NSMutableArray new];
+    [downArray addObject:data];
+    [[SQLCommand shareSQLCommand] insertDownloadData:downArray];
+    int status = [AFHTTPAPIClient checkNetworkStatus];
+    if (status == 1 || status == 2) {
+        [[FilesDownloadManager sharedFilesDownManage] startRequest:nil];
+        [Alert showHUDWihtTitle:@"已加入下载队列"];
+    }else{
+        UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"提示"
+                                                           message:@"网络不通，请检查网路"
+                                                          delegate:nil
+                                                 cancelButtonTitle:@"确定"
+                                                 otherButtonTitles: nil];
+        [alertView show];
+    }
 }
 
 - (IBAction)delete:(id)sender {
+    FileData * fileData = _fileData;
+    NSMutableArray * delArray = [NSMutableArray new];
+    [delArray addObject:fileData];
+    [self shanchudata:delArray];
+}
 
+- (void)shanchudata:(NSMutableArray *)array{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        [[SQLCommand shareSQLCommand] deleteDownloadData:array];
+        FilesDownloadManager *filedownmanage=[FilesDownloadManager sharedFilesDownManage];
+        for (int i = 0; i < array.count; i++) {
+            FileData * data = array[i];
+            [filedownmanage deleteRequest:data];
+            NSFileManager * fileManager = [NSFileManager defaultManager];
+            NSString * path= [CommonHelper getTargetPathWithBasepath:filedownmanage.basePath subpath:filedownmanage.targetSubPath];
+            path = [path stringByAppendingPathComponent:data.fileName];
+            if ([fileManager fileExistsAtPath:path]) {
+                [fileManager removeItemAtPath:path error:nil];
+            }
+            path = [CommonHelper getTempFolderPathWithBasepath:filedownmanage.basePath];
+            path = [path stringByAppendingPathComponent: data.fileName];
+            if ([fileManager fileExistsAtPath:path]) {
+                [fileManager removeItemAtPath:path error:nil];
+            }
+        }
+        //        [[SQLCommand shareSQLCommand] deleteDownloadData:@[array[0]]];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.navigationController popViewControllerAnimated:YES];
+        });
+        
+    });
+    
 }
 
 - (IBAction)shanChuBendi:(id)sender {
-    
+    NSLog(@"shanchu");
+    ALAlertView * alertView = [[ALAlertView alloc] initWithTitle:@"删除后可以在回收站恢复" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+    [alertView show];
+    alertView.tag = 400;
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView{
@@ -129,6 +196,44 @@
     [hud removeFromSuperview];
 }
 
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(ALAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if (alertView.tag == 400 && alertView.cancelButtonIndex != buttonIndex) {
+        NSMutableString * idstr = [NSMutableString new];
+        [idstr appendFormat:@"%@,", _fileData.fileID];
+        [idstr deleteCharactersInRange:NSMakeRange(idstr.length - 1, 1)];
+        int status = [AFHTTPAPIClient checkNetworkStatus];
+        if (status == 1 || status == 2) {
+            NSString * param = [NSString stringWithFormat:@"params={\"fileId\":\"%@\"}", idstr];
+            NSDictionary * dic = @{@"param":param, @"aslp":DELETE_FILE};
+            
+            [NetWorkingRequest synthronizationWithString:dic andBlock:^(id data, NSError *error) {
+                if (error) {
+                    NSLog(@"%@", error.description);
+                    [Alert showHUDWihtTitle:error.localizedDescription];
+                }else{
+                    NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+                    //                    NSLog(@"%@", dic);
+                    NSLog(@"%@", [dic objectForKey:@"msg"]);
+                    //                    dic = [dic objectForKey:@"data"];
+                    if ([dic[@"result"] isEqualToString:@"ok"]) {
+                        
+                        [[SQLCommand shareSQLCommand] deleteFileData:@[_fileData]];
+                        if (_block) {
+                            _block();
+                        }
+                        [self.navigationController popViewControllerAnimated:YES];
+                    }else{
+                        [Alert showHUDWihtTitle:[dic objectForKey:@"msg"]];
+                    }
+                }
+            }];
+        }else{
+            [Alert showHUDWihtTitle:@"无网络"];
+        }
+    }
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

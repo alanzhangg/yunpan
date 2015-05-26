@@ -285,6 +285,7 @@
                 picVC.uploadArray = picArray;
                 picVC.uploadData = data;
                 picVC.isUpload = YES;
+                picVC.isDownload = YES;
                 UIViewController * con = (UIViewController *)_parentVc;
                 picVC.hidesBottomBarWhenPushed = YES;
                 [con.navigationController pushViewController:picVC animated:YES];

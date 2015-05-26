@@ -8,7 +8,6 @@
 
 #import "AFHTTPAPIClient.h"
 #import "AFHTTPRequestOperation.h"
-#import "Reachability.h"
 
 @implementation AFHTTPAPIClient
 

@@ -48,6 +48,8 @@
     [self.window addSubview:label];
     [self.window makeKeyAndVisible];
     
+    [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
+    
 //    NSLog(@"%@", NSHomeDirectory());
 //    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
 //    [ud setObject:@"https://192.168.1.183:443/portal/" forKey:@"server"];
@@ -56,7 +58,8 @@
 //    [ud setObject:@"admin" forKey:@"securityKey"];
 //    [ud synchronize];
 //    [self layoutUploadView];
-    [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
+
+    
     return YES;
 }
 
@@ -300,7 +303,7 @@
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-//    [[SQLCommand shareSQLCommand] openDB];
+    [[SQLCommand shareSQLCommand] openDB];
     [CommonHelper createShowFolder];
 //    [CommonHelper createShowFolder];
 //    [UploadNetwork shareUploadNetwork];
@@ -311,7 +314,7 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-//    [[SQLCommand shareSQLCommand] openDB];
+    [[SQLCommand shareSQLCommand] openDB];
     [CommonHelper createShowFolder];
 //    [[FilesDownloadManager sharedFilesDownManage] getSqlData];
 

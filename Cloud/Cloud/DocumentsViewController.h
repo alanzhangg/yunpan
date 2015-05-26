@@ -9,8 +9,11 @@
 #import <UIKit/UIKit.h>
 @class FileData;
 
+typedef void (^DocumentsViewControllerBlock) ();
+
 @interface DocumentsViewController : UIViewController
 
+@property (nonatomic, copy) DocumentsViewControllerBlock block;
 @property (nonatomic, strong) FileData * fileData;
 @property (nonatomic, assign) BOOL isDownload;
 

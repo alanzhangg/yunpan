@@ -11,6 +11,7 @@
 #import "FileData.h"
 #import "CommonHelper.h"
 #import "SQLCommand.h"
+#import "AFHTTPAPIClient.h"
 
 #define TEMPPATH [CommonHelper getTempFolderPathWithBasepath:_basePath]
 
@@ -46,6 +47,15 @@ static FilesDownloadManager * sharedFilesDownManage = nil;
 }
 
 - (void)getSqlData{
+    if ([AFHTTPAPIClient checkNetworkStatus] == ReachableViaWWAN) {
+        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"非wifi环境确认上传" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"上传", nil];
+        [alertView show];
+    }else{
+        [self download];
+    }
+}
+
+- (void)download{
     _downloadListArray = [[SQLCommand shareSQLCommand] getDownloadListData];
     [self addRequest];
     [[NSNotificationCenter defaultCenter] postNotificationName:DownloadDataChange object:nil];
@@ -354,6 +364,14 @@ static double zhongjianshijian = 0;
         if ([data.fileID isEqualToString:fileData.fileID]) {
             [resquest cancel];
         }
+    }
+}
+
+#pragma mark - UIAlertView
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if (alertView.cancelButtonIndex != buttonIndex) {
+        [self download];
     }
 }
 

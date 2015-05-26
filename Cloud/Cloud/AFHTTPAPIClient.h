@@ -7,6 +7,7 @@
 //
 
 #import "AFHTTPClient.h"
+#import "Reachability.h"
 
 @interface AFHTTPAPIClient : AFHTTPClient
 

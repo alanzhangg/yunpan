@@ -663,6 +663,9 @@
             DocumentsViewController * dvc = [storyBoard instantiateViewControllerWithIdentifier:@"documents"];
             dvc.fileData = data;
             dvc.isDownload = NO;
+            dvc.block = ^(){
+                [self reloadDatas];
+            };
             dvc.hidesBottomBarWhenPushed = YES;
             UIViewController * con = (UIViewController *)_allDelegate;
             [con.navigationController pushViewController:dvc animated:YES];

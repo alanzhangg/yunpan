@@ -14,7 +14,7 @@
 
 @property (nonatomic, strong) FileData * fileData;
 @property (nonatomic, strong) NSMutableArray * pictureArray;
-
+@property (nonatomic, assign) BOOL isDownload;
 @property (nonatomic, strong) UploadData * uploadData;
 @property (nonatomic, strong) NSMutableArray * uploadArray;
 @property (nonatomic, assign) BOOL isUpload;

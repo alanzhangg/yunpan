@@ -322,7 +322,6 @@
         <!--View Controller-->
         <scene sceneID="Fvy-gU-rQt">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="XgJ-7W-75W" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController id="g0Z-gx-KBA" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="ofu-IZ-tDe"/>
@@ -335,6 +334,7 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="" id="kdM-92-T6U"/>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="XgJ-7W-75W" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1079" y="1119"/>
         </scene>
@@ -520,7 +520,7 @@
                                             <constraint firstAttribute="width" constant="60" id="ZyW-ot-kiQ"/>
                                             <constraint firstAttribute="height" constant="39" id="r3M-zh-iO0"/>
                                         </constraints>
-                                        <state key="normal" title="分享">
+                                        <state key="normal" title="下载">
                                             <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -529,6 +529,9 @@
                                                 <exclude reference="ZyW-ot-kiQ"/>
                                             </mask>
                                         </variation>
+                                        <connections>
+                                            <action selector="download:" destination="sRY-90-ECd" eventType="touchUpInside" id="nZL-x0-Jva"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RCU-xO-pZk">
                                         <rect key="frame" x="305" y="5" width="285" height="39"/>
@@ -571,22 +574,10 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wUC-3o-BK2">
                                 <rect key="frame" x="0.0" y="551" width="600" height="49"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KzY-6j-tab">
-                                        <rect key="frame" x="10" y="5" width="187" height="39"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="39" id="71i-H4-nMS"/>
-                                        </constraints>
-                                        <state key="normal" title="分享">
-                                            <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="share:" destination="sRY-90-ECd" eventType="touchUpInside" id="wJm-5P-29n"/>
-                                        </connections>
-                                    </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wja-wj-gWZ">
-                                        <rect key="frame" x="403" y="5" width="187" height="39"/>
+                                        <rect key="frame" x="250" y="5" width="100" height="39"/>
                                         <constraints>
+                                            <constraint firstAttribute="width" constant="100" id="Xzo-BV-b0v"/>
                                             <constraint firstAttribute="height" constant="39" id="hy9-DH-s3m"/>
                                         </constraints>
                                         <state key="normal" title="删除">
@@ -597,39 +588,13 @@
                                             <action selector="delete:" destination="sRY-90-ECd" eventType="touchUpInside" id="26f-Ro-zlM"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1YD-Zh-UAj">
-                                        <rect key="frame" x="207" y="5" width="186" height="39"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="39" id="Rgk-rI-6NC"/>
-                                        </constraints>
-                                        <state key="normal" title="下载">
-                                            <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="download:" destination="sRY-90-ECd" eventType="touchUpInside" id="BzP-WJ-fw3"/>
-                                        </connections>
-                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" red="0.16470588235294117" green="0.16470588235294117" blue="0.16470588235294117" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstItem="wja-wj-gWZ" firstAttribute="top" secondItem="wUC-3o-BK2" secondAttribute="top" constant="5" id="1ug-hI-aPm"/>
-                                    <constraint firstAttribute="trailing" secondItem="wja-wj-gWZ" secondAttribute="trailing" constant="10" id="2ia-aw-m1s"/>
-                                    <constraint firstItem="1YD-Zh-UAj" firstAttribute="top" secondItem="wUC-3o-BK2" secondAttribute="top" constant="5" id="BwQ-BA-K8X"/>
-                                    <constraint firstItem="KzY-6j-tab" firstAttribute="width" secondItem="wja-wj-gWZ" secondAttribute="width" id="FSV-bX-hAx"/>
-                                    <constraint firstItem="KzY-6j-tab" firstAttribute="top" secondItem="wUC-3o-BK2" secondAttribute="top" constant="5" id="GsS-QD-JJi"/>
-                                    <constraint firstAttribute="centerX" secondItem="1YD-Zh-UAj" secondAttribute="centerX" id="I7G-NU-gT2"/>
-                                    <constraint firstItem="KzY-6j-tab" firstAttribute="width" secondItem="1YD-Zh-UAj" secondAttribute="width" id="Jfk-Pc-WJ3"/>
-                                    <constraint firstItem="KzY-6j-tab" firstAttribute="leading" secondItem="wUC-3o-BK2" secondAttribute="leading" constant="10" id="Pu0-Sc-fIj"/>
-                                    <constraint firstItem="wja-wj-gWZ" firstAttribute="leading" secondItem="1YD-Zh-UAj" secondAttribute="trailing" constant="10" id="buJ-P3-IJg"/>
+                                    <constraint firstItem="wja-wj-gWZ" firstAttribute="top" secondItem="wUC-3o-BK2" secondAttribute="top" constant="5" id="4HY-YJ-Htw"/>
+                                    <constraint firstAttribute="centerX" secondItem="wja-wj-gWZ" secondAttribute="centerX" id="aHr-pa-8S6"/>
                                     <constraint firstAttribute="height" constant="49" id="e2C-AE-q8z"/>
-                                    <constraint firstItem="1YD-Zh-UAj" firstAttribute="leading" secondItem="KzY-6j-tab" secondAttribute="trailing" constant="10" id="qUl-z8-Qha"/>
                                 </constraints>
-                                <variation key="default">
-                                    <mask key="constraints">
-                                        <exclude reference="I7G-NU-gT2"/>
-                                    </mask>
-                                </variation>
                             </view>
                             <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Iai-Le-ElB">
                                 <rect key="frame" x="0.0" y="64" width="600" height="487"/>

@@ -10,8 +10,6 @@
 	<string>Cloud</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>BA139C53A74DF87A76315EC4ACF7DC119DBA99BD</key>
-		<string>https://github.com/alanzhangg/cloud.git</string>
 		<key>C3AF999241017519F3DD0BA9D6EBC19F7ADAAD06</key>
 		<string>https://github.com/alanzhangg/yunpan.git</string>
 	</dict>
@@ -19,8 +17,6 @@
 	<string>Cloud/Cloud.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>BA139C53A74DF87A76315EC4ACF7DC119DBA99BD</key>
-		<string>../../../../cloud</string>
 		<key>C3AF999241017519F3DD0BA9D6EBC19F7ADAAD06</key>
 		<string>../../..</string>
 	</dict>
@@ -32,14 +28,6 @@
 	<string>C3AF999241017519F3DD0BA9D6EBC19F7ADAAD06</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
-		<dict>
-			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
-			<string>public.vcs.git</string>
-			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>BA139C53A74DF87A76315EC4ACF7DC119DBA99BD</string>
-			<key>IDESourceControlWCCName</key>
-			<string>cloud</string>
-		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>

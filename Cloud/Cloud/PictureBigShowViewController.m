@@ -14,6 +14,11 @@
 #import "UIImageView+WebCache.h"
 #import "MBProgressHUD.h"
 #import "UploadData.h"
+#import "ALAlertView.h"
+#import "Alert.h"
+#import "NetWorkingRequest.h"
+#import "SQLCommand.h"
+#import "FilesDownloadManager.h"
 
 @interface PictureBigShowViewController ()<UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
@@ -23,6 +28,7 @@
     UIColor * backcolor;
     UIView * tabbarView;
     UICollectionView * pictureCollectView;
+    NSUInteger currentPage;
 }
 
 - (void)viewDidLoad {
@@ -33,6 +39,7 @@
         self.automaticallyAdjustsScrollViewInsets = NO;
     }
     [self initSubViews];
+    currentPage = 0;
     NSLog(@"%@", _pictureArray);
     
     UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapView:)];
@@ -85,7 +92,7 @@
     pictureCollectView.dataSource = self;
     [pictureCollectView registerClass:[PictureCollectionViewCell class] forCellWithReuseIdentifier:@"cell"];
     [self.view addSubview:pictureCollectView];
-    if (!_isUpload) {
+    if (!_isUpload || !_isDownload) {
         [self addTabbarView];
         NSUInteger index = [_pictureArray indexOfObject:_fileData];
         if (index < _pictureArray.count) {
@@ -95,6 +102,9 @@
     }else{
         NSUInteger index = [_uploadArray indexOfObject:_uploadData];
         pictureCollectView.contentOffset = CGPointMake(index * rect.size.width, 0);
+    }
+    if (_isDownload) {
+        [tabbarView removeFromSuperview];
     }
     
     
@@ -110,10 +120,10 @@
     tabbarView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 49, rect.size.width, 49)];
     tabbarView.backgroundColor = [UIColor darkGrayColor];
     [self.view addSubview:tabbarView];
-    NSArray * titleArray = @[@"下载", @"分享", @"删除"];
-    for (int i = 0; i < 3; i++) {
+    NSArray * titleArray = @[@"下载", @"删除"];
+    for (int i = 0; i < 2; i++) {
         TabberButton * btn = [TabberButton buttonWithType:UIButtonTypeCustom];
-        btn.frame = CGRectMake((rect.size.width - 49 * 3) / 4 * (i + 1) + 49 * i, 0, 49, 49);
+        btn.frame = CGRectMake((rect.size.width - 49 * 2) / 3 * (i + 1) + 49 * i, 0, 49, 49);
         [tabbarView addSubview:btn];
         [btn setTitle:titleArray[i] forState:UIControlStateNormal];
         btn.tag = 200 + i;
@@ -122,7 +132,43 @@
 }
 
 - (void)functionAction:(TabberButton *)sender{
-//    NSLog(@"%d", sender.tag);
+    NSLog(@"%d", sender.tag);
+    if (sender.tag == 200) {
+        FileData * data = _pictureArray[currentPage - 1];
+        
+        if ([[SQLCommand shareSQLCommand] checkIsAddDownloadList:data.fileID]) {
+            [Alert showHUDWihtTitle:@"已在下载队列"];
+            return;
+        }
+        data.filePID = @"";
+        data.isHasDownload = @(1);
+        data.hasDownloadSize = @"0";
+        data.downloadStatus = @(0);
+        data.downloadFolder = @"0";
+        data.downloadQuantity = @(0);
+        NSMutableArray * downArray = [NSMutableArray new];
+        [downArray addObject:data];
+        [[SQLCommand shareSQLCommand] insertDownloadData:downArray];
+        int status = [AFHTTPAPIClient checkNetworkStatus];
+        if (status == 1 || status == 2) {
+            [[FilesDownloadManager sharedFilesDownManage] startRequest:nil];
+            [Alert showHUDWihtTitle:@"已加入下载队列"];
+        }else{
+            UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"提示"
+                                                               message:@"网络不通，请检查网路"
+                                                              delegate:nil
+                                                     cancelButtonTitle:@"确定"
+                                                     otherButtonTitles: nil];
+            [alertView show];
+        }
+    }else if (sender.tag == 201){
+        ALAlertView * alertView = [[ALAlertView alloc] initWithTitle:@"删除后可以在回收站恢复" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+        [alertView show];
+        alertView.indexPath = [NSIndexPath indexPathForRow:currentPage - 1 inSection:0];
+        alertView.tag = 400;
+    }else if (sender.tag == 202) {
+        
+    }
     
 }
 
@@ -131,18 +177,30 @@
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+    [self referenceView];
+}
+
+- (void)referenceView{
     if (!_isUpload) {
+        if (_pictureArray.count == 0) {
+            [self.navigationController popViewControllerAnimated:YES];
+        }
         self.navigationItem.title = [NSString stringWithFormat:@"1/%lu", (unsigned long)_pictureArray.count];
         NSUInteger index = [_pictureArray indexOfObject:_fileData];
-        NSString * str = [NSString stringWithFormat:@"%lu/%lu", index + 1, (unsigned long)_pictureArray.count];
+        NSString * str = [NSString stringWithFormat:@"%u/%lu", index + 1, (unsigned long)_pictureArray.count];
         self.navigationItem.title = str;
+        currentPage = 1;
     }else{
+        if (_uploadArray.count == 0) {
+            [self.navigationController popViewControllerAnimated:YES];
+        }
         self.navigationItem.title = [NSString stringWithFormat:@"1/%lu", (unsigned long)_uploadArray.count];
         NSUInteger index = [_uploadArray indexOfObject:_uploadData];
         NSString * str = [NSString stringWithFormat:@"%d/%lu", index + 1, (unsigned long)_uploadArray.count];
         self.navigationItem.title = str;
+        currentPage = index + 1;
     }
-    
+    [pictureCollectView reloadData];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -250,22 +308,75 @@
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)sscrollView{
+    int scrollViewIndex = sscrollView.contentOffset.x/sscrollView.frame.size.width;
     if (!_isUpload) {
-        int scrollViewIndex = sscrollView.contentOffset.x/sscrollView.frame.size.width;
         NSString * str = [NSString stringWithFormat:@"%d/%lu", scrollViewIndex + 1, (unsigned long)_pictureArray.count];
         self.navigationItem.title = str;
     }else{
-        int scrollViewIndex = sscrollView.contentOffset.x/sscrollView.frame.size.width;
         NSString * str = [NSString stringWithFormat:@"%d/%lu", scrollViewIndex + 1, (unsigned long)_uploadArray.count];
         self.navigationItem.title = str;
     }
-    
+    currentPage = scrollViewIndex + 1;
     [self hiddenNav];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(ALAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if (alertView.tag == 400 && alertView.cancelButtonIndex != buttonIndex) {
+        NSMutableArray * array = [NSMutableArray new];
+        NSMutableArray * indexArray = [NSMutableArray new];
+        if (_isUpload) {
+            [array addObject:_uploadArray[alertView.indexPath.row]];
+        }else{
+            [array addObject:_pictureArray[alertView.indexPath.row]];
+        }
+        [indexArray addObject:@(alertView.indexPath.row)];
+        NSMutableString * idstr = [NSMutableString new];
+        for (FileData * data in array) {
+            NSLog(@"%d    %@", currentPage, data.fileName);
+            [idstr appendFormat:@"%@,", data.fileID];
+        }
+        [idstr deleteCharactersInRange:NSMakeRange(idstr.length - 1, 1)];
+        int status = [AFHTTPAPIClient checkNetworkStatus];
+        if (status == 1 || status == 2) {
+            NSString * param = [NSString stringWithFormat:@"params={\"fileId\":\"%@\"}", idstr];
+            NSDictionary * dic = @{@"param":param, @"aslp":DELETE_FILE};
+            
+            [NetWorkingRequest synthronizationWithString:dic andBlock:^(id data, NSError *error) {
+                if (error) {
+                    NSLog(@"%@", error.description);
+                    [Alert showHUDWihtTitle:error.localizedDescription];
+                }else{
+                    NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+                    //                    NSLog(@"%@", dic);
+                    NSLog(@"%@", [dic objectForKey:@"msg"]);
+                    //                    dic = [dic objectForKey:@"data"];
+                    if ([dic[@"result"] isEqualToString:@"ok"]) {
+                        for (NSNumber * num in indexArray) {
+                            NSUInteger numb = [num integerValue];
+                            if (_isUpload) {
+                                [_uploadArray removeObjectAtIndex:numb];
+                            }else
+                                [_pictureArray removeObjectAtIndex:numb];
+                        }
+                        
+                        [[SQLCommand shareSQLCommand] deleteFileData:array];
+                        [self referenceView];
+                    }else{
+                        [Alert showHUDWihtTitle:[dic objectForKey:@"msg"]];
+                    }
+                }
+            }];
+        }else{
+            [Alert showHUDWihtTitle:@"无网络"];
+        }
+    }
 }
 
 /*
