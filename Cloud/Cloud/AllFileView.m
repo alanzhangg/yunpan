@@ -34,7 +34,7 @@
 @end
 
 @implementation AllFileView{
-    UISearchBar * searchBar;
+    
     NSMutableArray * listArray;
     NSMutableArray * heightArray;
     NSMutableArray * filterData;
@@ -42,7 +42,7 @@
     CGRect rectFrame;
 }
 
-@synthesize searchController = _searchController;
+@synthesize searchController = _searchController, searchBar = _searchBar;
 
 - (id)initWithFrame:(CGRect)frame pullingDelegate:(id<PullingRefreshTableViewDelegate>)aPullingDelegate{
     if (self = [super initWithFrame:frame pullingDelegate:aPullingDelegate]) {
@@ -106,7 +106,7 @@
 
 - (void)setHeadViews:(CGRect)frame{
     self.tableHeaderView = nil;
-    searchBar = nil;
+    _searchBar = nil;
     _searchController = nil;
     if (_categoryType == 1) {
         UIView * headView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, 44)];
@@ -123,12 +123,12 @@
         verLineView.backgroundColor = RGB(224, 224, 224);
         [headView addSubview:verLineView];
         
-        searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(70, 0, frame.size.width - 80, 44)];
-        searchBar.placeholder = @"搜索";
-        searchBar.backgroundColor = [UIColor clearColor];
-        searchBar.delegate = self;
-        searchBar.searchBarStyle = UISearchBarStyleMinimal;
-        [headView addSubview:searchBar];
+        _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(70, 0, frame.size.width - 80, 44)];
+        _searchBar.placeholder = @"搜索";
+        _searchBar.backgroundColor = [UIColor clearColor];
+        _searchBar.delegate = self;
+        _searchBar.searchBarStyle = UISearchBarStyleMinimal;
+        [headView addSubview:_searchBar];
         
         UIButton * addFolderButton = [UIButton buttonWithType:UIButtonTypeCustom];
         addFolderButton.frame = CGRectMake(10, 0, 44, 44);
@@ -137,14 +137,14 @@
         [addFolderButton addTarget:self action:@selector(addNewFolder:) forControlEvents:UIControlEventTouchUpInside];
         
         UIViewController * con = (UIViewController *)_allDelegate;
-        _searchController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar contentsController:con];
+        _searchController = [[UISearchDisplayController alloc] initWithSearchBar:_searchBar contentsController:con];
         _searchController.delegate = self;
         _searchController.searchResultsDelegate = self;
         _searchController.searchResultsDataSource = self;
         _searchController.searchResultsTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         //    searchController.displaysSearchBarInNavigationBar = NO;
         //    searchBar.frame = CGRectMake(70, 0, frame.size.width - 80, 44);
-        [headView addSubview:searchBar];
+        [headView addSubview:_searchBar];
         self.tableHeaderView = headView;
     }else if (_categoryType == 2){
 //        searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, frame.size.width - 80, 44)];
@@ -282,7 +282,7 @@
 
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBars{
     
-    searchBar.frame = CGRectMake(0, 0, self.frame.size.width, 44);
+    _searchBar.frame = CGRectMake(0, 0, self.frame.size.width, 44);
     self.frame = CGRectMake(0, 20, rectFrame.size.width, rectFrame.size.height + 44);
     return YES;
 }
@@ -298,7 +298,7 @@
 
 - (void)changeFrame{
     if (_categoryType == 1) {
-        searchBar.frame = CGRectMake(70, 0, self.frame.size.width - 80, 44);
+        _searchBar.frame = CGRectMake(70, 0, self.frame.size.width - 80, 44);
         self.frame = CGRectMake(0, 64, rectFrame.size.width, rectFrame.size.height);
     }
    
@@ -307,10 +307,13 @@
 #pragma mark - UITableViewDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    [self tableViewDidScroll:scrollView];
-    if (scrollView.contentOffset.y <= 43 && scrollView.contentOffset.y >= 0) {
-        [self setHeadViews:self.frame];
+    if (scrollView != _searchController.searchResultsTableView) {
+        [self tableViewDidScroll:scrollView];
+        if (scrollView.contentOffset.y <= 43 && scrollView.contentOffset.y >= 0) {
+            [self setHeadViews:self.frame];
+        }
     }
+    
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
@@ -341,14 +344,14 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    if (tableView == self) {
+    if (tableView != _searchController.searchResultsTableView) {
         return listArray.count;
     }else
         return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    if (tableView == self) {
+    if (tableView != _searchController.searchResultsTableView) {
         FileData * data = listArray[section];
         if (data.function) {
             return 2;
@@ -369,7 +372,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    if (tableView == self) {
+    if (tableView != _searchController.searchResultsTableView) {
         if (!_isDuoXuan) {
             if (indexPath.row == 0) {
                 ListTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];

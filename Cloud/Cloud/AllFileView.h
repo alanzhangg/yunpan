@@ -20,6 +20,7 @@
 @property (nonatomic, assign) int categoryType;
 @property (nonatomic, assign) BOOL isDuoXuan;
 @property (nonatomic, strong) UISearchDisplayController * searchController;
+@property (nonatomic, strong) UISearchBar * searchBar;
 
 
 - (void)setHeadViews:(CGRect)frame;

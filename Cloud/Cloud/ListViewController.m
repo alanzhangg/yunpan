@@ -40,6 +40,7 @@
     int currentPage;
     NSString * titleString;
     BOOL isDownloadAllData;
+    UISearchDisplayController * searchController;
 }
 
 - (void)viewDidLoad {
@@ -274,6 +275,15 @@
     allFileView.tableFooterView = [UIView new];
     [allFileView setHeadViews:allFileView.frame];
     [self.view addSubview:allFileView];
+    
+//    searchController = [[UISearchDisplayController alloc] initWithSearchBar:allFileView.searchBar contentsController:self];
+//    searchController.delegate = allFileView;
+//    searchController.searchResultsDelegate = allFileView;
+//    searchController.searchResultsDataSource = allFileView;
+//    searchController.searchResultsTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    //    searchController.displaysSearchBarInNavigationBar = NO;
+    //    searchBar.frame = CGRectMake(70, 0, frame.size.width - 80, 44);
+//    [headView addSubview:_searchBar];
     
 }
 

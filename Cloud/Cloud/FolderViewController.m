@@ -332,9 +332,11 @@
 #pragma mark - UITableViewDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    [listTableView tableViewDidScroll:scrollView];
-    if (scrollView.contentOffset.y <= 43 && scrollView.contentOffset.y >= 0) {
-        [self setHeadViews:rectFrame];
+    if (scrollView != searchController.searchResultsTableView) {
+        [listTableView tableViewDidScroll:scrollView];
+        if (scrollView.contentOffset.y <= 43 && scrollView.contentOffset.y >= 0) {
+            [self setHeadViews:rectFrame];
+        }
     }
     
 }
@@ -354,6 +356,10 @@
 - (void)pullingTableViewDidStartRefreshing:(PullingRefreshTableView *)tableView{
     
     [self getNetworkingData];
+    
+}
+
+- (void)pullingTableViewDidStartLoading:(PullingRefreshTableView *)tableView{
     
 }
 
