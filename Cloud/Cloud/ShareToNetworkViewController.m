@@ -98,6 +98,7 @@
             [Alert showHUDWihtTitle:@"无网络"];
         }
     }else{
+        [hud hide:YES];
         [Alert showHUDWihtTitle:@"请选择工作网络"];
     }
 }

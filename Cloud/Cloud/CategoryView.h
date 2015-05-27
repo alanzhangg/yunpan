@@ -27,6 +27,7 @@
 - (void)initSubViews;
 - (void)reloadDatas;
 
+- (void)downloadFiles;
 - (void)removeDuoXuanFiles;
 - (void)shanchuWenjian:(NSIndexPath *)indexPath;
 - (void)yongYuQuanXuan:(BOOL)isSelect;

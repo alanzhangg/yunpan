@@ -53,7 +53,7 @@
 //    NSLog(@"%@", NSHomeDirectory());
 //    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
 //    [ud setObject:@"https://192.168.1.183:443/portal/" forKey:@"server"];
-//    [ud setObject:@"8b420225-4016-43c9-8b59-1a35376d44b6" forKey:@"sid"];
+//    [ud setObject:@"982dfc02-2c70-436e-aa83-e92dd3a5f2bb" forKey:@"sid"];
 //    [ud setObject:@"zhy" forKey:@"uid"];
 //    [ud setObject:@"admin" forKey:@"securityKey"];
 //    [ud synchronize];
@@ -299,6 +299,7 @@
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     [[SQLCommand shareSQLCommand] closeDB];
     [CommonHelper removeShowFolder];
+    exit(0);
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {

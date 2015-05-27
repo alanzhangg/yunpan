@@ -38,11 +38,6 @@
 		D52F7AB61AF2271C005F183E /* UploadingTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D52F7AB51AF2271C005F183E /* UploadingTableViewCell.m */; };
 		D558A5471AD38CF500418CFF /* FolderView.m in Sources */ = {isa = PBXBuildFile; fileRef = D558A5461AD38CF500418CFF /* FolderView.m */; };
 		D558A54A1AD3A9DF00418CFF /* FolderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D558A5491AD3A9DF00418CFF /* FolderViewController.m */; };
-		D568854E1B058DD800C14DEC /* libBase64.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D56885491B058DD800C14DEC /* libBase64.a */; };
-		D568854F1B058DD800C14DEC /* libCyberPlayerController.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D568854A1B058DD800C14DEC /* libCyberPlayerController.a */; };
-		D56885501B058DD800C14DEC /* libCyberPlayerUtils.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D568854B1B058DD800C14DEC /* libCyberPlayerUtils.a */; };
-		D56885511B058DD800C14DEC /* libGzipCompressor.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D568854C1B058DD800C14DEC /* libGzipCompressor.a */; };
-		D56885521B058DD800C14DEC /* libSBJSON.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D568854D1B058DD800C14DEC /* libSBJSON.a */; };
 		D56B6FFC1B0EDE460061C197 /* plus.png in Resources */ = {isa = PBXBuildFile; fileRef = D56B6FFA1B0EDE460061C197 /* plus.png */; };
 		D56B6FFD1B0EDE460061C197 /* plushight.png in Resources */ = {isa = PBXBuildFile; fileRef = D56B6FFB1B0EDE460061C197 /* plushight.png */; };
 		D56B6FFF1B0F0A190061C197 /* more.png in Resources */ = {isa = PBXBuildFile; fileRef = D56B6FFE1B0F0A190061C197 /* more.png */; };
@@ -125,6 +120,11 @@
 		D5A265501AC40A14003789A8 /* arrow-down.png in Resources */ = {isa = PBXBuildFile; fileRef = D5A2654F1AC40A14003789A8 /* arrow-down.png */; };
 		D5A62E461AF06BDE005BE3E4 /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = D5A62E451AF06BDE005BE3E4 /* UIImageView+AFNetworking.m */; };
 		D5A62E491AF0E208005BE3E4 /* UploadListView.m in Sources */ = {isa = PBXBuildFile; fileRef = D5A62E481AF0E208005BE3E4 /* UploadListView.m */; };
+		D5A641C81B15AB39005525C8 /* libBase64.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D5A641C31B15AB39005525C8 /* libBase64.a */; };
+		D5A641C91B15AB39005525C8 /* libCyberPlayerController.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D5A641C41B15AB39005525C8 /* libCyberPlayerController.a */; };
+		D5A641CA1B15AB39005525C8 /* libCyberPlayerUtils.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D5A641C51B15AB39005525C8 /* libCyberPlayerUtils.a */; };
+		D5A641CB1B15AB39005525C8 /* libGzipCompressor.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D5A641C61B15AB39005525C8 /* libGzipCompressor.a */; };
+		D5A641CC1B15AB39005525C8 /* libSBJSON.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D5A641C71B15AB39005525C8 /* libSBJSON.a */; };
 		D5BB9B9F1ADE5A7F00329CC3 /* CircularProgressButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D5BB9B9E1ADE5A7F00329CC3 /* CircularProgressButton.m */; };
 		D5D86C001ACA39B700785A4C /* chevron-with-circle-down.png in Resources */ = {isa = PBXBuildFile; fileRef = D5D86BFE1ACA39B700785A4C /* chevron-with-circle-down.png */; };
 		D5D86C011ACA39B700785A4C /* chevron-with-circle-up.png in Resources */ = {isa = PBXBuildFile; fileRef = D5D86BFF1ACA39B700785A4C /* chevron-with-circle-up.png */; };
@@ -252,12 +252,6 @@
 		D558A5461AD38CF500418CFF /* FolderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FolderView.m; sourceTree = "<group>"; };
 		D558A5481AD3A9DF00418CFF /* FolderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FolderViewController.h; sourceTree = "<group>"; };
 		D558A5491AD3A9DF00418CFF /* FolderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FolderViewController.m; sourceTree = "<group>"; };
-		D56885481B058DD800C14DEC /* CyberPlayerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CyberPlayerController.h; sourceTree = "<group>"; };
-		D56885491B058DD800C14DEC /* libBase64.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libBase64.a; sourceTree = "<group>"; };
-		D568854A1B058DD800C14DEC /* libCyberPlayerController.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libCyberPlayerController.a; sourceTree = "<group>"; };
-		D568854B1B058DD800C14DEC /* libCyberPlayerUtils.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libCyberPlayerUtils.a; sourceTree = "<group>"; };
-		D568854C1B058DD800C14DEC /* libGzipCompressor.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGzipCompressor.a; sourceTree = "<group>"; };
-		D568854D1B058DD800C14DEC /* libSBJSON.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libSBJSON.a; sourceTree = "<group>"; };
 		D56B6FFA1B0EDE460061C197 /* plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plus.png; sourceTree = "<group>"; };
 		D56B6FFB1B0EDE460061C197 /* plushight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plushight.png; sourceTree = "<group>"; };
 		D56B6FFE1B0F0A190061C197 /* more.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = more.png; sourceTree = "<group>"; };
@@ -410,6 +404,12 @@
 		D5A62E451AF06BDE005BE3E4 /* UIImageView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+AFNetworking.m"; sourceTree = "<group>"; };
 		D5A62E471AF0E208005BE3E4 /* UploadListView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadListView.h; sourceTree = "<group>"; };
 		D5A62E481AF0E208005BE3E4 /* UploadListView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadListView.m; sourceTree = "<group>"; };
+		D5A641C21B15AB39005525C8 /* CyberPlayerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CyberPlayerController.h; sourceTree = "<group>"; };
+		D5A641C31B15AB39005525C8 /* libBase64.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libBase64.a; sourceTree = "<group>"; };
+		D5A641C41B15AB39005525C8 /* libCyberPlayerController.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libCyberPlayerController.a; sourceTree = "<group>"; };
+		D5A641C51B15AB39005525C8 /* libCyberPlayerUtils.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libCyberPlayerUtils.a; sourceTree = "<group>"; };
+		D5A641C61B15AB39005525C8 /* libGzipCompressor.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGzipCompressor.a; sourceTree = "<group>"; };
+		D5A641C71B15AB39005525C8 /* libSBJSON.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libSBJSON.a; sourceTree = "<group>"; };
 		D5BB9B9D1ADE5A7F00329CC3 /* CircularProgressButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CircularProgressButton.h; sourceTree = "<group>"; };
 		D5BB9B9E1ADE5A7F00329CC3 /* CircularProgressButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CircularProgressButton.m; sourceTree = "<group>"; };
 		D5D86BFE1ACA39B700785A4C /* chevron-with-circle-down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "chevron-with-circle-down.png"; sourceTree = "<group>"; };
@@ -525,13 +525,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D56885501B058DD800C14DEC /* libCyberPlayerUtils.a in Frameworks */,
+				D5A641CA1B15AB39005525C8 /* libCyberPlayerUtils.a in Frameworks */,
 				D5275B421ADFB5AB005E60EB /* Foundation.framework in Frameworks */,
 				D510E9F21AF7700600A683F8 /* Security.framework in Frameworks */,
-				D568854F1B058DD800C14DEC /* libCyberPlayerController.a in Frameworks */,
-				D56885511B058DD800C14DEC /* libGzipCompressor.a in Frameworks */,
+				D5A641C91B15AB39005525C8 /* libCyberPlayerController.a in Frameworks */,
+				D5A641CB1B15AB39005525C8 /* libGzipCompressor.a in Frameworks */,
 				D510E9F01AF76FF600A683F8 /* AudioToolbox.framework in Frameworks */,
-				D56885521B058DD800C14DEC /* libSBJSON.a in Frameworks */,
+				D5A641CC1B15AB39005525C8 /* libSBJSON.a in Frameworks */,
 				D510E9EE1AF76FE900A683F8 /* libz.dylib in Frameworks */,
 				D510E9EC1AF76FE100A683F8 /* libbz2.1.0.dylib in Frameworks */,
 				D510E9EA1AF76FD100A683F8 /* QuartzCore.framework in Frameworks */,
@@ -541,7 +541,7 @@
 				D510E9E21AF76F9F00A683F8 /* OpenAL.framework in Frameworks */,
 				D5275B541ADFB859005E60EB /* libxml2.dylib in Frameworks */,
 				D5275B521ADFB848005E60EB /* libz.1.2.5.dylib in Frameworks */,
-				D568854E1B058DD800C14DEC /* libBase64.a in Frameworks */,
+				D5A641C81B15AB39005525C8 /* libBase64.a in Frameworks */,
 				D5275B461ADFB5DF005E60EB /* SystemConfiguration.framework in Frameworks */,
 				D5275B441ADFB5CF005E60EB /* MobileCoreServices.framework in Frameworks */,
 				D5275B401ADFB5A2005E60EB /* CFNetwork.framework in Frameworks */,
@@ -589,12 +589,12 @@
 		D510E9D31AF76EEB00A683F8 /* BAIDUSHIPIN */ = {
 			isa = PBXGroup;
 			children = (
-				D56885481B058DD800C14DEC /* CyberPlayerController.h */,
-				D56885491B058DD800C14DEC /* libBase64.a */,
-				D568854A1B058DD800C14DEC /* libCyberPlayerController.a */,
-				D568854B1B058DD800C14DEC /* libCyberPlayerUtils.a */,
-				D568854C1B058DD800C14DEC /* libGzipCompressor.a */,
-				D568854D1B058DD800C14DEC /* libSBJSON.a */,
+				D5A641C21B15AB39005525C8 /* CyberPlayerController.h */,
+				D5A641C31B15AB39005525C8 /* libBase64.a */,
+				D5A641C41B15AB39005525C8 /* libCyberPlayerController.a */,
+				D5A641C51B15AB39005525C8 /* libCyberPlayerUtils.a */,
+				D5A641C61B15AB39005525C8 /* libGzipCompressor.a */,
+				D5A641C71B15AB39005525C8 /* libSBJSON.a */,
 				D59CFE8B1AF8B1850029A713 /* DroidSansFallback.ttf */,
 			);
 			name = BAIDUSHIPIN;

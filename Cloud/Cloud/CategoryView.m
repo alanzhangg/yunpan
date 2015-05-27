@@ -398,9 +398,9 @@
         }
         
     }else{
-        SearchResultTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:@"searchCell"];
+        SearchResultTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:@"searchcaCell"];
         if (!cell) {
-            cell = [[SearchResultTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"searchCell" withViewFrame:tableView.frame];
+            cell = [[SearchResultTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"searchcaCell" withViewFrame:tableView.frame];
         }
         cell.indexPath = indexPath;
         FileData * data = filterData[indexPath.row];
@@ -601,6 +601,9 @@
                     quantity++;
                 }
             }
+            if (array.count <= 0) {
+                data.isHasDownload = @(2);
+            }
             data.downloadQuantity = @(quantity);
             [downArray addObjectsFromArray:array];
             [[SQLCommand shareSQLCommand] insertDownloadData:downArray];
@@ -713,6 +716,75 @@
 }
 
 #pragma mark - forDuoXuan
+
+- (void)downloadFiles{
+    NSMutableArray * array = [NSMutableArray new];
+    for (FileData * data in _listArray) {
+        if (data.isSelected) {
+            [array addObject:data];
+        }
+    }
+    if (array.count == 0) {
+        [Alert showHUDWihtTitle:@"没有选中的文件"];
+        return;
+    }
+    
+    for (FileData * data in array) {
+        if ([[SQLCommand shareSQLCommand] checkIsAddDownloadList:data.fileID]) {
+            [Alert showHUDWihtTitle:@"已在下载队列"];
+            return;
+        }
+        data.filePID = @"";
+        data.isHasDownload = @(1);
+        data.hasDownloadSize = @"0";
+        data.downloadStatus = @(0);
+        data.downloadFolder = @"0";
+        data.downloadQuantity = @(0);
+        NSMutableArray * downArray = [NSMutableArray new];
+        [downArray addObject:data];
+        if (![data.fileFormat isEqualToString:@"f"]) {
+            [[SQLCommand shareSQLCommand] insertDownloadData:downArray];
+        }else{
+            NSArray * array = [[SQLCommand shareSQLCommand] getCloudTableFolderData:data.fileID];
+            int quantity = 0;
+            for (FileData * downdata in array) {
+                if ([downdata.fileFormat isEqualToString:@"f"]) {
+                    downdata.isHasDownload = @(2);
+                }else
+                    downdata.isHasDownload = @(1);
+                
+                downdata.hasDownloadSize = @"0";
+                downdata.downloadStatus = @(0);
+                downdata.downloadFolder = @"0";
+                downdata.downloadQuantity = @(0);
+                if (![downdata.fileFormat isEqualToString:@"f"]) {
+                    quantity++;
+                }
+            }
+            if (array.count <= 0) {
+                data.isHasDownload = @(2);
+            }
+            data.downloadQuantity = @(quantity);
+            [downArray addObjectsFromArray:array];
+            [[SQLCommand shareSQLCommand] insertDownloadData:downArray];
+        }
+    }
+    if (array.count > 0) {
+        int status = [AFHTTPAPIClient checkNetworkStatus];
+        if (status == 1 || status == 2) {
+            
+            [[FilesDownloadManager sharedFilesDownManage] startRequest:nil];
+            [Alert showHUDWihtTitle:@"已加入下载队列"];
+        }else{
+            UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"提示"
+                                                               message:@"网络不通，请检查网路"
+                                                              delegate:nil
+                                                     cancelButtonTitle:@"确定"
+                                                     otherButtonTitles: nil];
+            [alertView show];
+        }
+    }
+}
 
 - (void)yongYuQuanXuan:(BOOL)isSelect{
     for (FileData * data in _listArray) {

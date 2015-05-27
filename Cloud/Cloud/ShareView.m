@@ -128,7 +128,7 @@
             cell.titleLabel.text = [data.dict objectForKey:@"fileName"];
             cell.timeLabel.text = [data.dict objectForKey:@"shareTime"];
             if (![[data.dict objectForKey:@"fileFormat"] isEqualToString:@"f"]) {
-                cell.sizeLabel.text = [cell setLength:[data.dict[@"fileFormat"] floatValue]];
+                cell.sizeLabel.text = [cell setLength:[data.dict[@"fileSize"] floatValue]];
             }else{
                 cell.sizeLabel.text = nil;
             }
@@ -213,6 +213,11 @@
         TrashData * data = listArray[indexPath.section];
         cell.titleLabel.text = [data.dict objectForKey:@"fileName"];
         cell.timeLabel.text = [data.dict objectForKey:@"shareTime"];
+        if (![[data.dict objectForKey:@"fileFormat"] isEqualToString:@"f"]) {
+            cell.sizeLabel.text = [cell setLength:[data.dict[@"fileSize"] floatValue]];
+        }else{
+            cell.sizeLabel.text = nil;
+        }
         switch ([FileCategory fileInformation:[data.dict objectForKey:@"fileFormat"]]) {
             case FileCategoryPicture:{
                 NSString * lenstr = [data.dict objectForKey:@"thumDownloadUrl"];
@@ -521,6 +526,7 @@
         FileData * filedata = [FileData new];
         TrashData * trashData = listArray[indexPath.section];
         [filedata transformDictionary:trashData.dict];
+        filedata.updateTime = [trashData.dict objectForKey:@"shareTime"];
         
         if ([[SQLCommand shareSQLCommand] checkIsAddDownloadList:filedata.fileID]) {
             [Alert showHUDWihtTitle:@"已在下载队列"];
@@ -539,12 +545,10 @@
             [[SQLCommand shareSQLCommand] insertDownloadData:downArray];
             [self startDownload];
         }else{
-            
             int status = [AFHTTPAPIClient checkNetworkStatus];
             if (status == 1 || status == 2) {
-                NSString * param = [NSString stringWithFormat:@"params={\"categoryName\":\"shareme\",\"dirId\":\"%@\",\"searchValue\":\"\"}", filedata.fileID];
-                NSDictionary * dic = @{@"param":param, @"aslp":QUERY_FILE_BY_SEARCH};
-                
+                NSString * param = [NSString stringWithFormat:@"params={\"fileId\":\"%@\"}", filedata.fileID];
+                NSDictionary * dic = @{@"param":param, @"aslp":QUERY_DOWNLOAD_FILE};
                 [NetWorkingRequest synthronizationWithString:dic andBlock:^(id data, NSError *error) {
                     if (error) {
                         NSLog(@"%@", error.description);
@@ -579,6 +583,9 @@
                                         quantity++;
                                     }
                                 }
+                                if (downloadArray.count <= 0) {
+                                    filedata.isHasDownload = @(2);
+                                }
                                 filedata.downloadQuantity = @(quantity);
                                 [downArray addObjectsFromArray:downloadArray];
                                 [[SQLCommand shareSQLCommand] insertDownloadData:downArray];
@@ -587,9 +594,7 @@
                         }else{
                             [Alert showHUDWihtTitle:dic[@"msg"]];
                         }
-                        
                         // NSArray * array = [dic objectForKey:@"fileList"];
-                        
                     }
                 }];
             }else{

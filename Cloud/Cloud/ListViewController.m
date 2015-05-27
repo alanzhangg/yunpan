@@ -93,7 +93,7 @@
                 NSArray * array = [dic objectForKey:@"categoryList"];
                 [categoryArray addObject:@{@"categoryName":@"全部"}];
                 [categoryArray addObjectsFromArray:array];
-                [categoryArray addObject:@{@"categoryName":@"其他"}];
+//                [categoryArray addObject:@{@"categoryName":@"其他"}];
                 [CategoryData shareCategoryData].categoryArray = categoryArray;
                 [self addTitleViews];
             }
@@ -304,10 +304,10 @@
         tabView = [[UIView alloc] initWithFrame:CGRectMake(0, 49, self.view.frame.size.width, 49)];
         tabView.backgroundColor = RGB(53, 53, 53);
         
-        NSArray * array = @[@"下载", @"分享", @"移动", @"删除"];
-        for (int i = 0; i < 4; i++) {
+        NSArray * array = @[@"下载", @"移动", @"删除"];
+        for (int i = 0; i < 3; i++) {
             UIButton * returnBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-            returnBtn.frame = CGRectMake(5 + 5 * (i + 1) + (rect.size.width - 35)/4 * i , 10, (rect.size.width - 35)/4, 29);
+            returnBtn.frame = CGRectMake(5 + 5 * (i + 1) + (rect.size.width - 35)/3 * i , 10, (rect.size.width - 35)/3, 29);
             returnBtn.backgroundColor = RGB(78, 78, 78);
             returnBtn.layer.masksToBounds = YES;
             returnBtn.layer.cornerRadius = 2;
@@ -315,7 +315,7 @@
             returnBtn.titleLabel.font = [UIFont systemFontOfSize:16];
             [returnBtn setTitleColor:RGB(136, 136, 136) forState:UIControlStateNormal];
             [returnBtn addTarget:self action:@selector(deleteOrReturn:) forControlEvents:UIControlEventTouchUpInside];
-            if (i == 3) {
+            if (i == 2) {
                 returnBtn.backgroundColor = RGB(132, 53, 47);
             }
             returnBtn.tag = 100 + i;
@@ -405,14 +405,22 @@
 }
 
 - (void)deleteOrReturn:(UIButton *)sender{
-    if (sender.tag == 102) {
+    NSLog(@"%d", sender.tag);
+    
+    if (sender.tag == 100) {
+        if (currentPage == 1) {
+            [allFileView downloadFiles];
+        }else{
+            [documentsView downloadFiles];
+        }
+    }else if (sender.tag == 101) {
         if (currentPage == 1) {
             [allFileView removeDuoXuanFiles];
         }else{
             [documentsView removeDuoXuanFiles];
         }
         
-    }else if (sender.tag == 103){
+    }else if (sender.tag == 102){
         if (currentPage == 1) {
             [allFileView shanchuWenjian:nil];
         }else{
@@ -420,6 +428,8 @@
         }
     }
 }
+
+
 
 - (void)addDocumentsView:(NSString *)titleString{
     CGRect rect = self.view.frame;
@@ -446,7 +456,7 @@
     }else{
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"byod.portal://"]];
     }
-    
+    exit(0);
 }
 
 - (void)didReceiveMemoryWarning {

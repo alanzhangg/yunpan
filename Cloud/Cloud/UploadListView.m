@@ -367,26 +367,11 @@
 }
 
 - (void)duoxuanShanchu{
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSMutableArray * selectArray = [NSMutableArray new];
-        for (NSMutableArray * array in listArray) {
-            for (int i = 0; i < array.count; i++) {
-                UploadData * data = array[i];
-                if (data.isSelected) {
-                    [selectArray addObject:data];
-                    if ([[SQLCommand shareSQLCommand] checkFileOnly:data]) {
-                        [self shanchuData:data];
-                    }
-                    [array removeObject:data];
-                    i = -1;
-                }
-            }
-        }
-        [[SQLCommand shareSQLCommand] deleteUploadData:selectArray];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [listTableView reloadData];
-        });
-    });
+    
+    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"确定删除" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+    [alertView show];
+    
+    
 }
 
 #pragma mark - UploadFailTableViewCellDelegate
@@ -427,6 +412,34 @@
     
     
 }
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if (alertView.cancelButtonIndex != buttonIndex) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSMutableArray * selectArray = [NSMutableArray new];
+            for (NSMutableArray * array in listArray) {
+                for (int i = 0; i < array.count; i++) {
+                    UploadData * data = array[i];
+                    if (data.isSelected) {
+                        [selectArray addObject:data];
+                        if ([[SQLCommand shareSQLCommand] checkFileOnly:data]) {
+                            [self shanchuData:data];
+                        }
+                        [array removeObject:data];
+                        i = -1;
+                    }
+                }
+            }
+            [[SQLCommand shareSQLCommand] deleteUploadData:selectArray];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [listTableView reloadData];
+            });
+        });
+    }
+}
+
 
 /*
 // Only override drawRect: if you perform custom drawing.

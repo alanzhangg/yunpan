@@ -116,6 +116,8 @@
                 urlstr = [NSString stringWithFormat:@"%@/r/%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
             }
             fileURL = [NSURL URLWithString:urlstr];
+//            NSLog(@"%@", fileURL);
+//            fileURL = [NSURL URLWithString:@"http://192.168.1.183/video/1.mp4"];
         }
     }
 }

@@ -357,11 +357,11 @@
             </objects>
             <point key="canvasLocation" x="-225" y="-957"/>
         </scene>
-        <!--共享-->
+        <!--分享-->
         <scene sceneID="Xd7-7I-K8t">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="tJF-0c-kRy" customClass="NormalNavigationController" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="共享" image="tabShare" id="J6d-YK-vVb"/>
+                    <tabBarItem key="tabBarItem" title="分享" image="tabShare" id="J6d-YK-vVb"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Xr1-ZE-qHs">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>

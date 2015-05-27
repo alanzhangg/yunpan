@@ -50,5 +50,8 @@
 #define SHARE_TO_NETWORK @"aslp://com.actionsoft.apps.mydriver/shareToNetwork"
 //创建一条网盘文件信息
 #define CREATE_FILE_DBDATA @"aslp://com.actionsoft.apps.mydriver/createMyDriverFileDBData"
+//获取需下载的文件列表
+#define QUERY_DOWNLOAD_FILE @"aslp://com.actionsoft.apps.mydriver/queryDownloadFile"
+
 
 #endif

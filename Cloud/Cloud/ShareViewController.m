@@ -105,7 +105,7 @@
     [self.view addSubview:scrollMenu];
     
     NSMutableArray * menuArray = [NSMutableArray new];
-    NSArray * titleArray = @[@"我的分享", @"别人的共享"];
+    NSArray * titleArray = @[@"我的分享", @"别人的分享"];
     for (int i = 0 ; i < 2; i++) {
         XHMenu *menu = [[XHMenu alloc] init];
         menu.title = titleArray[i];
@@ -176,8 +176,6 @@
             view.frame = CGRectMake(menuScrollView.frame.size.width, 0, menuScrollView.frame.size.width, menuScrollView.frame.size.height);
             view.isDuoXuan = YES;
             [view layoutIfNeeded];
-            
-            
         } completion:^(BOOL finished) {
             
         }];
@@ -236,6 +234,8 @@
     if (sender.tag == 100) {
         ShareView * view = (ShareView *)[menuScrollView viewWithTag:200];
         [view quxiaoGongXuan];
+    }else if (sender.tag == 200){
+        
     }
 }
 
@@ -270,10 +270,7 @@
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     CGFloat pageWidth = scrollView.frame.size.width;
     currentPage = floor((scrollView.contentOffset.x - pageWidth/2)/pageWidth)+1;
-    
     [scrollMenu setSelectedIndex:currentPage animated:YES calledDelegate:YES];
-    
-    
 }
 
 - (void)scrollMenuDidSelected:(XHScrollMenu *)scrollMenu menuIndex:(NSUInteger)selectIndex {

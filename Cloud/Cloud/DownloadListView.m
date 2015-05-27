@@ -248,6 +248,7 @@
                     break;
             }
             cell.titleLabel.text = data.fileName;
+            cell.detailLabel.text = @"下载失败";
             cell.indexPath = indexPath;
             [cell layoutSubview:dic];
             return cell;
@@ -664,26 +665,9 @@
 }
 
 - (void)duoxuanShanchu{
-    NSMutableArray * selectArray = [NSMutableArray new];
-    for (NSMutableArray * array in listArray) {
-        for (int i = 0; i < array.count; i++) {
-            FileData * data = array[i];
-            if (data.isSelected) {
-                [selectArray addObject:data];
-                [array removeObject:data];
-                i = -1;
-            }
-        }
-    }
-    NSMutableArray * dicengArray = [NSMutableArray new];
-    for (int i = 0; i < selectArray.count; i++) {
-        FileData * data = selectArray[i];
-        if ([data.fileFormat isEqualToString:@"f"]) {
-            [dicengArray addObjectsFromArray:[[SQLCommand shareSQLCommand] getDeleteDownloadData:data.fileID]];
-        }
-    }
-    [selectArray addObjectsFromArray:dicengArray];
-    [self shanchudata:selectArray];
+    
+    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"确定删除" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+    [alertView show];
 }
 
 -(void)removeASIRequst:(ASIHTTPRequest*)req{
@@ -759,6 +743,34 @@
 //    [upNetwork startUpload];
 //    [self reloadDatas];
 }
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if (alertView.cancelButtonIndex != buttonIndex) {
+        NSMutableArray * selectArray = [NSMutableArray new];
+        for (NSMutableArray * array in listArray) {
+            for (int i = 0; i < array.count; i++) {
+                FileData * data = array[i];
+                if (data.isSelected) {
+                    [selectArray addObject:data];
+                    [array removeObject:data];
+                    i = -1;
+                }
+            }
+        }
+        NSMutableArray * dicengArray = [NSMutableArray new];
+        for (int i = 0; i < selectArray.count; i++) {
+            FileData * data = selectArray[i];
+            if ([data.fileFormat isEqualToString:@"f"]) {
+                [dicengArray addObjectsFromArray:[[SQLCommand shareSQLCommand] getDeleteDownloadData:data.fileID]];
+            }
+        }
+        [selectArray addObjectsFromArray:dicengArray];
+        [self shanchudata:selectArray];
+    }
+}
+
 
 /*
 // Only override drawRect: if you perform custom drawing.

@@ -27,6 +27,7 @@
 #import "ALAlertView.h"
 #import "ShareToNetworkViewController.h"
 #import "FileCategory.h"
+#import "FilesDownloadManager.h"
 
 @interface FolderViewController ()<PullingRefreshTableViewDelegate , UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, UISearchDisplayDelegate, ListFunctionTableViewCellDelegate, ListTableViewCellDelegate>
 
@@ -229,10 +230,10 @@
         tabView = [[UIView alloc] initWithFrame:CGRectMake(0, 49, self.view.frame.size.width, 49)];
         tabView.backgroundColor = RGB(53, 53, 53);
         
-        NSArray * array = @[@"下载", @"分享", @"移动", @"删除"];
-        for (int i = 0; i < 4; i++) {
+        NSArray * array = @[@"下载", @"移动", @"删除"];
+        for (int i = 0; i < 3; i++) {
             UIButton * returnBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-            returnBtn.frame = CGRectMake(5 + 5 * (i + 1) + (rect.size.width - 35)/4 * i , 10, (rect.size.width - 35)/4, 29);
+            returnBtn.frame = CGRectMake(5 + 5 * (i + 1) + (rect.size.width - 35)/3 * i , 10, (rect.size.width - 35)/3, 29);
             returnBtn.backgroundColor = RGB(78, 78, 78);
             returnBtn.layer.masksToBounds = YES;
             returnBtn.layer.cornerRadius = 2;
@@ -240,7 +241,7 @@
             returnBtn.titleLabel.font = [UIFont systemFontOfSize:16];
             [returnBtn setTitleColor:RGB(136, 136, 136) forState:UIControlStateNormal];
             [returnBtn addTarget:self action:@selector(deleteOrReturn:) forControlEvents:UIControlEventTouchUpInside];
-            if (i == 3) {
+            if (i == 2) {
                 returnBtn.backgroundColor = RGB(132, 53, 47);
             }
             returnBtn.tag = 100 + i;
@@ -285,9 +286,11 @@
 }
 
 - (void)deleteOrReturn:(UIButton *)sender{
-    if (sender.tag == 102) {
+    if (sender.tag == 100) {
+        [self downloadFiles];
+    }else if (sender.tag == 101) {
         [self removeDuoXuanFiles];
-    }else if (sender.tag == 103){
+    }else if (sender.tag == 102){
         [self shanchuWenjian:nil];
     }
 
@@ -918,6 +921,74 @@
 }
 
 #pragma mark - forDuoXuan
+
+- (void)downloadFiles{
+    NSMutableArray * array = [NSMutableArray new];
+    for (FileData * data in listArray) {
+        if (data.isSelected) {
+            [array addObject:data];
+        }
+    }
+    if (array.count == 0) {
+        [Alert showHUDWihtTitle:@"没有选中的文件"];
+        return;
+    }
+    for (FileData * data in array) {
+        if ([[SQLCommand shareSQLCommand] checkIsAddDownloadList:data.fileID]) {
+            [Alert showHUDWihtTitle:@"已在下载队列"];
+            return;
+        }
+        data.filePID = @"";
+        data.isHasDownload = @(1);
+        data.hasDownloadSize = @"0";
+        data.downloadStatus = @(0);
+        data.downloadFolder = @"0";
+        data.downloadQuantity = @(0);
+        NSMutableArray * downArray = [NSMutableArray new];
+        [downArray addObject:data];
+        if (![data.fileFormat isEqualToString:@"f"]) {
+            [[SQLCommand shareSQLCommand] insertDownloadData:downArray];
+        }else{
+            NSArray * array = [[SQLCommand shareSQLCommand] getCloudTableFolderData:data.fileID];
+            int quantity = 0;
+            for (FileData * downdata in array) {
+                if ([downdata.fileFormat isEqualToString:@"f"]) {
+                    downdata.isHasDownload = @(2);
+                }else
+                    downdata.isHasDownload = @(1);
+                
+                downdata.hasDownloadSize = @"0";
+                downdata.downloadStatus = @(0);
+                downdata.downloadFolder = @"0";
+                downdata.downloadQuantity = @(0);
+                if (![downdata.fileFormat isEqualToString:@"f"]) {
+                    quantity++;
+                }
+            }if (array.count <= 0) {
+                data.isHasDownload = @(2);
+            }
+            data.downloadQuantity = @(quantity);
+            [downArray addObjectsFromArray:array];
+            [[SQLCommand shareSQLCommand] insertDownloadData:downArray];
+        }
+    }
+    if (array.count > 0) {
+        int status = [AFHTTPAPIClient checkNetworkStatus];
+        if (status == 1 || status == 2) {
+            
+            [[FilesDownloadManager sharedFilesDownManage] startRequest:nil];
+            [Alert showHUDWihtTitle:@"已加入下载队列"];
+        }else{
+            UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"提示"
+                                                               message:@"网络不通，请检查网路"
+                                                              delegate:nil
+                                                     cancelButtonTitle:@"确定"
+                                                     otherButtonTitles: nil];
+            [alertView show];
+        }
+    }
+    
+}
 
 - (void)yongYuQuanXuan:(BOOL)isSelect{
     for (FileData * data in listArray) {

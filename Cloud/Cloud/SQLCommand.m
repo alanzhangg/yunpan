@@ -234,7 +234,7 @@
 //    if (PID.length == 0) {
 //        PID = @"null";
 //    }
-    NSString * sqlStr = [NSString stringWithFormat:@"SELECT * FROM CLOUD WHERE PID = '%@' AND %@  FILEFORMAT = 'f'", PID, str];
+    NSString * sqlStr = [NSString stringWithFormat:@"SELECT * FROM CLOUD WHERE PID = '%@' AND %@  FILEFORMAT = 'f' ORDER BY UPDATETIME DESC", PID, str];
     FMResultSet * set = [db executeQuery:sqlStr];
     return [self getFileData:set];
 }
