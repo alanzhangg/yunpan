@@ -31,12 +31,14 @@
 - (void)initSubViews{
     CGRect rect = [[UIScreen mainScreen] bounds];
     NSArray * imageArray = @[@"download.png", @"move.png", @"renaming.png", @"more.png"];
+    NSArray * imageLightArray = @[@"downloadLight.png", @"moveLight.png", @"renamingLight.png", @"moreLight.png"];
     NSArray * array = @[@"下载", @"移动", @"重命名", @"更多"];
     for (int i = 0; i < 4; i++) {
         FunctionButton * btn = [FunctionButton buttonWithType:UIButtonTypeCustom];
         btn.frame = CGRectMake((rect.size.width - 200)/5 * (i + 1) + 50 * i, 0, 50, 50);
         btn.tag = 100 + (100 * i);
         [btn setImage:[UIImage imageNamed:imageArray[i]] forState:UIControlStateNormal];
+        [btn setImage:[UIImage imageNamed:imageLightArray[i]] forState:UIControlStateHighlighted];
         btn.titleLabel.textAlignment = NSTextAlignmentCenter;
         [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         btn.titleLabel.font = [UIFont systemFontOfSize:13];

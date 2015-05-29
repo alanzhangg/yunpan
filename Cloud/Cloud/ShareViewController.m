@@ -105,7 +105,7 @@
     [self.view addSubview:scrollMenu];
     
     NSMutableArray * menuArray = [NSMutableArray new];
-    NSArray * titleArray = @[@"我的分享", @"别人的分享"];
+    NSArray * titleArray = @[@"我的共享", @"别人的共享"];
     for (int i = 0 ; i < 2; i++) {
         XHMenu *menu = [[XHMenu alloc] init];
         menu.title = titleArray[i];
@@ -235,7 +235,8 @@
         ShareView * view = (ShareView *)[menuScrollView viewWithTag:200];
         [view quxiaoGongXuan];
     }else if (sender.tag == 200){
-        
+        ShareView * view = (ShareView *)[menuScrollView viewWithTag:300];
+        [view duoxuanDownload];
     }
 }
 

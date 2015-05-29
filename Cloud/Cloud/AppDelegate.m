@@ -299,7 +299,7 @@
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     [[SQLCommand shareSQLCommand] closeDB];
     [CommonHelper removeShowFolder];
-//    exit(0);
+    exit(0);
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {

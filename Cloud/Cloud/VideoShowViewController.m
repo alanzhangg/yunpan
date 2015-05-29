@@ -40,7 +40,6 @@
     
     
     [[CyberPlayerController class] setBAEAPIKey:msAK SecretKey:msSK];
-    [self shengchengUrl];
 //    fileURL = [NSURL URLWithString:@"http://devimages.apple.com/iphone/samples/bipbop/gear4/prog_index.m3u8"];
     
     //注册监听，当播放器完成视频播放位置调整后会发送CyberPlayerSeekingDidFinishNotification通知，
@@ -54,6 +53,18 @@
     //开始启动UI刷新
     [self startTimer];
 }
+
+- (void) onpreparedListener: (NSNotification*)aNotification
+{
+    //视频文件完成初始化，开始播放视频并启动刷新timer。
+    [self startTimer];
+}
+
+//- (void) onpreparedListener: (NSNotification*)aNotification
+//{
+//    //视频文件完成初始化，开始播放视频并启动刷新timer。
+//    [self startTimer];
+//}
 
 - (void)finish:(NSNotification *)notification{
     [cbPlayController pause];
@@ -87,11 +98,13 @@
     [self refreshProgress:cbPlayController.currentPlaybackTime totalDuration:cbPlayController.duration];
 }
 - (void)refreshProgress:(int) currentTime totalDuration:(int)allSecond{
-    slide.value = (float)currentTime/(float)allSecond;
     NSLog(@"%d   %d", currentTime, allSecond);
+    slide.value = (float)currentTime/(float)allSecond;
 }
 
 - (void)shengchengUrl{
+
+    
     
     NSString * path = [self getFilesPath];
     NSLog(@"%@ %d", path, [CommonHelper isExistFile:path]);
@@ -106,18 +119,24 @@
         fileURL = [self diskUrl:path];
     }
     else{
+        NSString * formatStr = [_videoData.fileFormat lowercaseString];
+        if ([formatStr isEqualToString:@"mov"]) {
+            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"该视频暂不支持在线播放" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            [alertView show];
+            return;
+        }
         NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
         NSString * lenstr = _videoData.resourceURL;
         if (lenstr.length > 3) {
             NSString * urlstr;
             if ([[lenstr substringToIndex:2] isEqualToString:@".."]) {
-                urlstr = [NSString stringWithFormat:@"%@%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
+                urlstr = [NSString stringWithFormat:@"%@%@&length=%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""], [_videoData.fileSize stringValue]];
             }else{
-                urlstr = [NSString stringWithFormat:@"%@/r/%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""]];
+                urlstr = [NSString stringWithFormat:@"%@/r/%@&length=%@", [ud objectForKey:@"server"], [lenstr stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""], [_videoData.fileSize stringValue]];
             }
             fileURL = [NSURL URLWithString:urlstr];
 //            NSLog(@"%@", fileURL);
-//            fileURL = [NSURL URLWithString:@"http://192.168.1.183/video/1.mp4"];
+//            fileURL = [NSURL URLWithString:@"http://192.168.1.183/video/1.mov"];
         }
     }
 }
@@ -170,10 +189,10 @@
         [alertView show];
     }
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(onpreparedListener:)
-                                                 name: CyberPlayerLoadDidPreparedNotification
-                                               object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(onpreparedListener:)
+//                                                 name: CyberPlayerLoadDidPreparedNotification
+//                                               object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(seekComplete:)
@@ -206,19 +225,15 @@
     
     slide = [[UISlider alloc] initWithFrame:CGRectMake(60, 20, rect.size.width - 100, 10)];
     [tabbarView addSubview:slide];
-    [slide addTarget:self action:@selector(onDragSlideDone:) forControlEvents:UIControlEventValueChanged];
+//    [slide addTarget:self action:@selector(onDragSlideDone:) forControlEvents:UIControlEventValueChanged];
 }
 
-- (void)onDragSlideDone:(id)sender {
-    NSLog(@"++++++++");
-    [cbPlayController seekTo:slide.value * cbPlayController.duration];
-}
+//- (void)onDragSlideDone:(id)sender {
+//    NSLog(@"++++++++");
+//    [cbPlayController seekTo:slide.value * cbPlayController.duration];
+//}
 
-- (void) onpreparedListener: (NSNotification*)aNotification
-{
-    //视频文件完成初始化，开始播放视频并启动刷新timer。
-    [self startTimer];
-}
+
 
 - (void)pause:(UIButton *)sender{
     if (sender.selected) {
@@ -270,6 +285,14 @@
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+    
+    
+    
+}
+
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    [self shengchengUrl];
     [self initSubViews];
 }
 

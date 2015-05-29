@@ -44,6 +44,10 @@
     UIStoryboard * storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     RenameViewController * renameCon = (RenameViewController *)[storyBoard instantiateViewControllerWithIdentifier:@"renameCon"];
     renameCon.isXinjian = YES;
+    FileData * fileData = [[FileData alloc] init];
+    fileData.fileID = _folderId;
+    fileData.fileName = _navTitle;
+    renameCon.fileData = fileData;
     NormalNavigationController * nav = [[NormalNavigationController alloc] initWithRootViewController:renameCon];
     __weak MoveFolderViewController * weakSelf = self;
     renameCon.block = ^(){

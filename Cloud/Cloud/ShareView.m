@@ -196,10 +196,12 @@
             cell.indexPath = indexPath;
             if ([_shareCategory isEqualToString:@"myshare"]) {
                 [cell.deleteButton setTitle:@"取消分享" forState:UIControlStateNormal];
+                [cell.deleteButton setImage:[UIImage imageNamed:@"chedishanchu.png"] forState:UIControlStateNormal];
                 
             }else{
                 [cell.deleteButton setTitle:@"下载" forState:UIControlStateNormal];
                 [cell.deleteButton setImage:[UIImage imageNamed:@"download.png"] forState:UIControlStateNormal];
+                [cell.deleteButton setImage:[UIImage imageNamed:@"downloadLight.png"] forState:UIControlStateHighlighted];
             }
             return cell;
         }
@@ -372,6 +374,8 @@
                 VideoData * vData = [[VideoData alloc] init];
                 vData.resouceName = data.fileName;
                 vData.resourceURL = data.downloadUrl;
+                vData.fileSize = data.fileSize;
+                vData.fileFormat = data.fileFormat;
                 dvc.videoData = vData;
                 dvc.hidesBottomBarWhenPushed = YES;
                 UIViewController * con = (UIViewController *)_parentVC;
@@ -495,6 +499,80 @@
 }
 
 #pragma mark - ShareFunctionTableViewCellDelegate
+
+- (void)duoxuanDownload{
+    NSMutableArray * array = [NSMutableArray new];
+    for (TrashData * data in listArray) {
+        if (data.isSelected) {
+            FileData * filedata = [FileData new];
+            [filedata transformDictionary:data.dict];
+            filedata.updateTime = [data.dict objectForKey:@"shareTime"];
+            [array addObject:filedata];
+        }
+    }
+    if (array.count == 0) {
+        [Alert showHUDWihtTitle:@"没有选中的文件"];
+        return;
+    }
+    
+    
+    
+    for (FileData * data in array) {
+        if ([[SQLCommand shareSQLCommand] checkIsAddDownloadList:data.fileID]) {
+            [Alert showHUDWihtTitle:@"已在下载队列"];
+            return;
+        }
+        data.filePID = @"";
+        data.isHasDownload = @(1);
+        data.hasDownloadSize = @"0";
+        data.downloadStatus = @(0);
+        data.downloadFolder = @"0";
+        data.downloadQuantity = @(0);
+        NSMutableArray * downArray = [NSMutableArray new];
+        [downArray addObject:data];
+        if (![data.fileFormat isEqualToString:@"f"]) {
+            [[SQLCommand shareSQLCommand] insertDownloadData:downArray];
+        }else{
+            NSArray * array = [[SQLCommand shareSQLCommand] getCloudTableFolderData:data.fileID];
+            int quantity = 0;
+            for (FileData * downdata in array) {
+                if ([downdata.fileFormat isEqualToString:@"f"]) {
+                    downdata.isHasDownload = @(2);
+                }else
+                    downdata.isHasDownload = @(1);
+                
+                downdata.hasDownloadSize = @"0";
+                downdata.downloadStatus = @(0);
+                downdata.downloadFolder = @"0";
+                downdata.downloadQuantity = @(0);
+                if (![downdata.fileFormat isEqualToString:@"f"]) {
+                    quantity++;
+                }
+            }
+            if (array.count <= 0) {
+                data.isHasDownload = @(2);
+            }
+            data.downloadQuantity = @(quantity);
+            [downArray addObjectsFromArray:array];
+            [[SQLCommand shareSQLCommand] insertDownloadData:downArray];
+        }
+    }
+    if (array.count > 0) {
+        int status = [AFHTTPAPIClient checkNetworkStatus];
+        if (status == 1 || status == 2) {
+            
+            [[FilesDownloadManager sharedFilesDownManage] startRequest:nil];
+            [Alert showHUDWihtTitle:@"已加入下载队列"];
+        }else{
+            UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"提示"
+                                                               message:@"网络不通，请检查网路"
+                                                              delegate:nil
+                                                     cancelButtonTitle:@"确定"
+                                                     otherButtonTitles: nil];
+            [alertView show];
+        }
+    }
+}
 
 - (void)quxiaoGongXuan{
     NSMutableArray * array = [NSMutableArray new];

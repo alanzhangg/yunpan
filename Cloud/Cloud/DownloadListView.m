@@ -336,7 +336,6 @@
                 cell = [[UploadFinishTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"finishCell" withViewFrame:tableView.frame];
                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
             }
-            
             switch ([FileCategory fileInformation:data.fileFormat]) {
                 case FileCategoryPicture:{
                     NSString * lenstr = data.thumDownloadUrl;
@@ -582,13 +581,14 @@
                 VideoData * vData = [[VideoData alloc] init];
                 vData.resouceName = data.fileName;
                 vData.resourceURL = data.downloadUrl;
+                vData.fileSize = data.fileSize;
+                vData.fileFormat = data.fileFormat;
                 dvc.videoData = vData;
                 dvc.hidesBottomBarWhenPushed = YES;
                 UIViewController * con = (UIViewController *)_parentVC;
                 [con.navigationController presentViewController:vnav animated:NO completion:nil];
             }
         }
-        
     }
 }
 

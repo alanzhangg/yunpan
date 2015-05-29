@@ -37,9 +37,7 @@
     _backView.layer.cornerRadius = 5;
     _backView.layer.borderColor = RGB(224, 224, 224).CGColor;
     _backView.layer.borderWidth = 1;
-    
     [self addImage];
-    
 }
 
 - (void)addImage{
@@ -62,7 +60,6 @@
             _fileImage.image = [UIImage imageNamed:@"folder.png"];
         }
     }
-    
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -79,9 +76,9 @@
     if (_isXinjian) {
         int status = [AFHTTPAPIClient checkNetworkStatus];
         if (status == 1 || status == 2) {
+            NSLog(@"%@    %@", _fileData.fileName, _fileData.fileID);
             NSString * param = [NSString stringWithFormat:@"params={\"dirName\":\"%@\",\"dirId\":\"%@\"}", _textField.text, _fileData ? _fileData.fileID : @""];
             NSDictionary * dic = @{@"param":param, @"aslp":SAVE_FOLDER};
-            
             [NetWorkingRequest synthronizationWithString:dic andBlock:^(id data, NSError *error) {
                 if (error) {
                     NSLog(@"%@", error.description);

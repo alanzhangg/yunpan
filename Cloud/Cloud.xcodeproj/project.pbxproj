@@ -112,7 +112,6 @@
 		D59CFE721AF86ADB0029A713 /* NormalNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = D59CFE711AF86ADB0029A713 /* NormalNavigationController.m */; };
 		D59CFE751AF873E40029A713 /* NormalTabBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D59CFE741AF873E40029A713 /* NormalTabBarViewController.m */; };
 		D59CFE781AF89CB70029A713 /* VideoData.m in Sources */ = {isa = PBXBuildFile; fileRef = D59CFE771AF89CB70029A713 /* VideoData.m */; };
-		D59CFE911AF8B1850029A713 /* DroidSansFallback.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D59CFE8B1AF8B1850029A713 /* DroidSansFallback.ttf */; };
 		D59E6F291AD77F0E00AEA05F /* PictureBigShowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D59E6F281AD77F0E00AEA05F /* PictureBigShowViewController.m */; };
 		D5A265441AC3F720003789A8 /* arrowww.png in Resources */ = {isa = PBXBuildFile; fileRef = D5A265431AC3F720003789A8 /* arrowww.png */; };
 		D5A265481AC3F75E003789A8 /* BackButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D5A265461AC3F75E003789A8 /* BackButton.m */; };
@@ -120,11 +119,17 @@
 		D5A265501AC40A14003789A8 /* arrow-down.png in Resources */ = {isa = PBXBuildFile; fileRef = D5A2654F1AC40A14003789A8 /* arrow-down.png */; };
 		D5A62E461AF06BDE005BE3E4 /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = D5A62E451AF06BDE005BE3E4 /* UIImageView+AFNetworking.m */; };
 		D5A62E491AF0E208005BE3E4 /* UploadListView.m in Sources */ = {isa = PBXBuildFile; fileRef = D5A62E481AF0E208005BE3E4 /* UploadListView.m */; };
-		D5A641C81B15AB39005525C8 /* libBase64.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D5A641C31B15AB39005525C8 /* libBase64.a */; };
-		D5A641C91B15AB39005525C8 /* libCyberPlayerController.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D5A641C41B15AB39005525C8 /* libCyberPlayerController.a */; };
-		D5A641CA1B15AB39005525C8 /* libCyberPlayerUtils.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D5A641C51B15AB39005525C8 /* libCyberPlayerUtils.a */; };
-		D5A641CB1B15AB39005525C8 /* libGzipCompressor.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D5A641C61B15AB39005525C8 /* libGzipCompressor.a */; };
-		D5A641CC1B15AB39005525C8 /* libSBJSON.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D5A641C71B15AB39005525C8 /* libSBJSON.a */; };
+		D5A641D01B16ABCF005525C8 /* downloadLight.png in Resources */ = {isa = PBXBuildFile; fileRef = D5A641CD1B16ABCF005525C8 /* downloadLight.png */; };
+		D5A641D11B16ABCF005525C8 /* moveLight.png in Resources */ = {isa = PBXBuildFile; fileRef = D5A641CE1B16ABCF005525C8 /* moveLight.png */; };
+		D5A641D21B16ABCF005525C8 /* renamingLight.png in Resources */ = {isa = PBXBuildFile; fileRef = D5A641CF1B16ABCF005525C8 /* renamingLight.png */; };
+		D5A641D41B16ABE5005525C8 /* moreLight.png in Resources */ = {isa = PBXBuildFile; fileRef = D5A641D31B16ABE5005525C8 /* moreLight.png */; };
+		D5A641DC1B170820005525C8 /* DroidSansFallback.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D5A641D61B170820005525C8 /* DroidSansFallback.ttf */; };
+		D5A641DD1B170820005525C8 /* libBase64.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D5A641D71B170820005525C8 /* libBase64.a */; };
+		D5A641DE1B170820005525C8 /* libCyberPlayerController.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D5A641D81B170820005525C8 /* libCyberPlayerController.a */; };
+		D5A641DF1B170820005525C8 /* libCyberPlayerUtils.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D5A641D91B170820005525C8 /* libCyberPlayerUtils.a */; };
+		D5A641E01B170820005525C8 /* libGzipCompressor.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D5A641DA1B170820005525C8 /* libGzipCompressor.a */; };
+		D5A641E11B170820005525C8 /* libSBJSON.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D5A641DB1B170820005525C8 /* libSBJSON.a */; };
+		D5A641E31B17135E005525C8 /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D5A641E21B17135E005525C8 /* MultipeerConnectivity.framework */; };
 		D5BB9B9F1ADE5A7F00329CC3 /* CircularProgressButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D5BB9B9E1ADE5A7F00329CC3 /* CircularProgressButton.m */; };
 		D5D86C001ACA39B700785A4C /* chevron-with-circle-down.png in Resources */ = {isa = PBXBuildFile; fileRef = D5D86BFE1ACA39B700785A4C /* chevron-with-circle-down.png */; };
 		D5D86C011ACA39B700785A4C /* chevron-with-circle-up.png in Resources */ = {isa = PBXBuildFile; fileRef = D5D86BFF1ACA39B700785A4C /* chevron-with-circle-up.png */; };
@@ -391,7 +396,6 @@
 		D59CFE741AF873E40029A713 /* NormalTabBarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NormalTabBarViewController.m; sourceTree = "<group>"; };
 		D59CFE761AF89CB70029A713 /* VideoData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoData.h; sourceTree = "<group>"; };
 		D59CFE771AF89CB70029A713 /* VideoData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoData.m; sourceTree = "<group>"; };
-		D59CFE8B1AF8B1850029A713 /* DroidSansFallback.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = DroidSansFallback.ttf; sourceTree = "<group>"; };
 		D59E6F271AD77F0E00AEA05F /* PictureBigShowViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictureBigShowViewController.h; sourceTree = "<group>"; };
 		D59E6F281AD77F0E00AEA05F /* PictureBigShowViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PictureBigShowViewController.m; sourceTree = "<group>"; wrapsLines = 1; };
 		D5A265431AC3F720003789A8 /* arrowww.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrowww.png; sourceTree = "<group>"; };
@@ -404,12 +408,18 @@
 		D5A62E451AF06BDE005BE3E4 /* UIImageView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+AFNetworking.m"; sourceTree = "<group>"; };
 		D5A62E471AF0E208005BE3E4 /* UploadListView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadListView.h; sourceTree = "<group>"; };
 		D5A62E481AF0E208005BE3E4 /* UploadListView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadListView.m; sourceTree = "<group>"; };
-		D5A641C21B15AB39005525C8 /* CyberPlayerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CyberPlayerController.h; sourceTree = "<group>"; };
-		D5A641C31B15AB39005525C8 /* libBase64.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libBase64.a; sourceTree = "<group>"; };
-		D5A641C41B15AB39005525C8 /* libCyberPlayerController.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libCyberPlayerController.a; sourceTree = "<group>"; };
-		D5A641C51B15AB39005525C8 /* libCyberPlayerUtils.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libCyberPlayerUtils.a; sourceTree = "<group>"; };
-		D5A641C61B15AB39005525C8 /* libGzipCompressor.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGzipCompressor.a; sourceTree = "<group>"; };
-		D5A641C71B15AB39005525C8 /* libSBJSON.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libSBJSON.a; sourceTree = "<group>"; };
+		D5A641CD1B16ABCF005525C8 /* downloadLight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = downloadLight.png; sourceTree = "<group>"; };
+		D5A641CE1B16ABCF005525C8 /* moveLight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = moveLight.png; sourceTree = "<group>"; };
+		D5A641CF1B16ABCF005525C8 /* renamingLight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = renamingLight.png; sourceTree = "<group>"; };
+		D5A641D31B16ABE5005525C8 /* moreLight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = moreLight.png; sourceTree = "<group>"; };
+		D5A641D51B170820005525C8 /* CyberPlayerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CyberPlayerController.h; sourceTree = "<group>"; };
+		D5A641D61B170820005525C8 /* DroidSansFallback.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = DroidSansFallback.ttf; sourceTree = "<group>"; };
+		D5A641D71B170820005525C8 /* libBase64.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libBase64.a; sourceTree = "<group>"; };
+		D5A641D81B170820005525C8 /* libCyberPlayerController.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libCyberPlayerController.a; sourceTree = "<group>"; };
+		D5A641D91B170820005525C8 /* libCyberPlayerUtils.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libCyberPlayerUtils.a; sourceTree = "<group>"; };
+		D5A641DA1B170820005525C8 /* libGzipCompressor.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGzipCompressor.a; sourceTree = "<group>"; };
+		D5A641DB1B170820005525C8 /* libSBJSON.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libSBJSON.a; sourceTree = "<group>"; };
+		D5A641E21B17135E005525C8 /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
 		D5BB9B9D1ADE5A7F00329CC3 /* CircularProgressButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CircularProgressButton.h; sourceTree = "<group>"; };
 		D5BB9B9E1ADE5A7F00329CC3 /* CircularProgressButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CircularProgressButton.m; sourceTree = "<group>"; };
 		D5D86BFE1ACA39B700785A4C /* chevron-with-circle-down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "chevron-with-circle-down.png"; sourceTree = "<group>"; };
@@ -525,13 +535,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D5A641CA1B15AB39005525C8 /* libCyberPlayerUtils.a in Frameworks */,
+				D5A641E31B17135E005525C8 /* MultipeerConnectivity.framework in Frameworks */,
+				D5A641DF1B170820005525C8 /* libCyberPlayerUtils.a in Frameworks */,
 				D5275B421ADFB5AB005E60EB /* Foundation.framework in Frameworks */,
 				D510E9F21AF7700600A683F8 /* Security.framework in Frameworks */,
-				D5A641C91B15AB39005525C8 /* libCyberPlayerController.a in Frameworks */,
-				D5A641CB1B15AB39005525C8 /* libGzipCompressor.a in Frameworks */,
+				D5A641DE1B170820005525C8 /* libCyberPlayerController.a in Frameworks */,
+				D5A641E01B170820005525C8 /* libGzipCompressor.a in Frameworks */,
 				D510E9F01AF76FF600A683F8 /* AudioToolbox.framework in Frameworks */,
-				D5A641CC1B15AB39005525C8 /* libSBJSON.a in Frameworks */,
+				D5A641E11B170820005525C8 /* libSBJSON.a in Frameworks */,
 				D510E9EE1AF76FE900A683F8 /* libz.dylib in Frameworks */,
 				D510E9EC1AF76FE100A683F8 /* libbz2.1.0.dylib in Frameworks */,
 				D510E9EA1AF76FD100A683F8 /* QuartzCore.framework in Frameworks */,
@@ -541,7 +552,7 @@
 				D510E9E21AF76F9F00A683F8 /* OpenAL.framework in Frameworks */,
 				D5275B541ADFB859005E60EB /* libxml2.dylib in Frameworks */,
 				D5275B521ADFB848005E60EB /* libz.1.2.5.dylib in Frameworks */,
-				D5A641C81B15AB39005525C8 /* libBase64.a in Frameworks */,
+				D5A641DD1B170820005525C8 /* libBase64.a in Frameworks */,
 				D5275B461ADFB5DF005E60EB /* SystemConfiguration.framework in Frameworks */,
 				D5275B441ADFB5CF005E60EB /* MobileCoreServices.framework in Frameworks */,
 				D5275B401ADFB5A2005E60EB /* CFNetwork.framework in Frameworks */,
@@ -589,13 +600,13 @@
 		D510E9D31AF76EEB00A683F8 /* BAIDUSHIPIN */ = {
 			isa = PBXGroup;
 			children = (
-				D5A641C21B15AB39005525C8 /* CyberPlayerController.h */,
-				D5A641C31B15AB39005525C8 /* libBase64.a */,
-				D5A641C41B15AB39005525C8 /* libCyberPlayerController.a */,
-				D5A641C51B15AB39005525C8 /* libCyberPlayerUtils.a */,
-				D5A641C61B15AB39005525C8 /* libGzipCompressor.a */,
-				D5A641C71B15AB39005525C8 /* libSBJSON.a */,
-				D59CFE8B1AF8B1850029A713 /* DroidSansFallback.ttf */,
+				D5A641D51B170820005525C8 /* CyberPlayerController.h */,
+				D5A641D61B170820005525C8 /* DroidSansFallback.ttf */,
+				D5A641D71B170820005525C8 /* libBase64.a */,
+				D5A641D81B170820005525C8 /* libCyberPlayerController.a */,
+				D5A641D91B170820005525C8 /* libCyberPlayerUtils.a */,
+				D5A641DA1B170820005525C8 /* libGzipCompressor.a */,
+				D5A641DB1B170820005525C8 /* libSBJSON.a */,
 			);
 			name = BAIDUSHIPIN;
 			sourceTree = "<group>";
@@ -833,6 +844,10 @@
 		D5A265421AC3F6FD003789A8 /* resources */ = {
 			isa = PBXGroup;
 			children = (
+				D5A641D31B16ABE5005525C8 /* moreLight.png */,
+				D5A641CD1B16ABCF005525C8 /* downloadLight.png */,
+				D5A641CE1B16ABCF005525C8 /* moveLight.png */,
+				D5A641CF1B16ABCF005525C8 /* renamingLight.png */,
 				D56B70041B0F1B090061C197 /* pictureLight.png */,
 				D56B70011B0F17BA0061C197 /* videoLight.png */,
 				D56B6FFE1B0F0A190061C197 /* more.png */,
@@ -981,6 +996,7 @@
 		D5ED17141ABBAFCE00CC4A93 = {
 			isa = PBXGroup;
 			children = (
+				D5A641E21B17135E005525C8 /* MultipeerConnectivity.framework */,
 				D5ED171F1ABBAFCE00CC4A93 /* Cloud */,
 				D5ED17391ABBAFCF00CC4A93 /* CloudTests */,
 				D5ED171E1ABBAFCE00CC4A93 /* Products */,
@@ -1166,13 +1182,17 @@
 				D5ED17311ABBAFCF00CC4A93 /* LaunchScreen.xib in Resources */,
 				D5E951A31B0C803500DC0FD5 /* outing.png in Resources */,
 				D5E951A71B0C808800DC0FD5 /* file_pause_normal.png in Resources */,
+				D5A641D41B16ABE5005525C8 /* moreLight.png in Resources */,
+				D5A641D11B16ABCF005525C8 /* moveLight.png in Resources */,
 				D5E951911B0C5D9700DC0FD5 /* word.png in Resources */,
 				D584E3691ABFC5D60033083D /* blueArrowDown@2x.png in Resources */,
 				D5D86C0E1ACA9FD200785A4C /* check-box.png in Resources */,
+				D5A641DC1B170820005525C8 /* DroidSansFallback.ttf in Resources */,
 				D59C8C321B0DCFC400DFDBD2 /* out.png in Resources */,
 				D59C8C361B0DE5CB00DFDBD2 /* selectVideo.png in Resources */,
 				D56B6FFC1B0EDE460061C197 /* plus.png in Resources */,
 				D56B6FFD1B0EDE460061C197 /* plushight.png in Resources */,
+				D5A641D01B16ABCF005525C8 /* downloadLight.png in Resources */,
 				D5E9519F1B0C753300DC0FD5 /* renaming.png in Resources */,
 				D584E3671ABFC5D60033083D /* blueArrow@2x.png in Resources */,
 				D5ED172E1ABBAFCE00CC4A93 /* Images.xcassets in Resources */,
@@ -1185,6 +1205,7 @@
 				D5E9518D1B0C5D9700DC0FD5 /* pdf.png in Resources */,
 				D56B70031B0F17BA0061C197 /* videoLight.png in Resources */,
 				D5F74B941AEE1CD800B88BF9 /* untitled.png in Resources */,
+				D5A641D21B16ABCF005525C8 /* renamingLight.png in Resources */,
 				D59C8C351B0DE5CB00DFDBD2 /* selectPicture.png in Resources */,
 				D584E3661ABFC5D60033083D /* blueArrow.png in Resources */,
 				D5FED9DC1AE7993800DE5D39 /* lefsan.png in Resources */,
@@ -1193,7 +1214,6 @@
 				D5FED9E01AE79B7700DE5D39 /* lef02.png in Resources */,
 				D56B6FFF1B0F0A190061C197 /* more.png in Resources */,
 				D5E9518F1B0C5D9700DC0FD5 /* txt.png in Resources */,
-				D59CFE911AF8B1850029A713 /* DroidSansFallback.ttf in Resources */,
 				D58A149D1AC8FC3E00724D97 /* folder.png in Resources */,
 				D5E951901B0C5D9700DC0FD5 /* video.png in Resources */,
 				D5FED9DE1AE79B6F00DE5D39 /* sectionHeader.png in Resources */,

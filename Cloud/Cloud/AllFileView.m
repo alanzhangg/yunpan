@@ -691,6 +691,8 @@
             VideoData * vData = [[VideoData alloc] init];
             vData.resouceName = data.fileName;
             vData.resourceURL = data.downloadUrl;
+            vData.fileSize = data.fileSize;
+            vData.fileFormat = data.fileFormat;
             dvc.videoData = vData;
             dvc.hidesBottomBarWhenPushed = YES;
             UIViewController * con = (UIViewController *)_allDelegate;

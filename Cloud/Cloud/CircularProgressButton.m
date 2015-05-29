@@ -26,7 +26,8 @@
       //  UIImage *imgDown =
       //  [[UIImage alloc]initWithContentsOfFile:[[NSBundle alloc]pathForResource:@"file_download_normal" ofType:@"png"]];
          UIImage *imgPause = [UIImage imageNamed:@"outing.png"];
-//         UIImage *imgDown =[UIImage imageNamed:@"file_download_normal.png"];
+//        UIImage *imgPause = [UIImage imageNamed:@"file_pause_normal.png"];
+//        UIImage *imgDown =[UIImage imageNamed:@"file_download_normal.png"];
         [self setBackgroundImage:imgPause forState:UIControlStateNormal];
 //        [self setBackgroundImage:imgDown  forState:UIControlStateSelected];
         _progressColor = progressColor;

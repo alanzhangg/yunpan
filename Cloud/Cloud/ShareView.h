@@ -17,5 +17,6 @@
 - (void)launchView;
 - (BOOL)duoxuan:(BOOL)isYes;
 - (void)quxiaoGongXuan;
+- (void)duoxuanDownload;
 
 @end

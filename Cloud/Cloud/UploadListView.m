@@ -310,6 +310,7 @@
                 VideoData * vData = [[VideoData alloc] init];
                 vData.resouceName = data.fileName;
                 vData.resourceURL = @"";
+                vData.fileFormat = @"";
                 dvc.videoData = vData;
                 dvc.hidesBottomBarWhenPushed = YES;
                 UIViewController * con = (UIViewController *)_parentVc;

@@ -294,8 +294,6 @@ static double zhongjianshijian = 0;
         }else{
             fileInfo.hasDownloadSize =[NSString stringWithFormat:@"%lld", bytes];
         }
-        
-        
     }
     else if(!fileInfo.isFirstReceived)
     {

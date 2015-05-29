@@ -12,5 +12,7 @@
 
 @property (nonatomic, copy) NSString * resouceName;
 @property (nonatomic, copy) NSString * resourceURL;
+@property (nonatomic, strong) NSNumber * fileSize;
+@property (nonatomic, copy) NSString * fileFormat;
 
 @end
