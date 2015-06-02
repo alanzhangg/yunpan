@@ -48,7 +48,7 @@ static FilesDownloadManager * sharedFilesDownManage = nil;
 
 - (void)getSqlData{
     if ([AFHTTPAPIClient checkNetworkStatus] == ReachableViaWWAN) {
-        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"非wifi环境确认上传" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"上传", nil];
+        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"您现在使用的是运营商网络，继续下载会产生流量费用" message:nil delegate:self cancelButtonTitle:@"取消下载" otherButtonTitles:@"确定下载", nil];
         [alertView show];
     }else{
         [self download];

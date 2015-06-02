@@ -103,8 +103,6 @@
 }
 
 - (void)shengchengUrl{
-
-    
     
     NSString * path = [self getFilesPath];
     NSLog(@"%@ %d", path, [CommonHelper isExistFile:path]);
@@ -183,6 +181,9 @@
         [cbPlayController.view setFrame:rect];
         cbPlayController.scalingMode = CBPMovieScalingModeAspectFit;
         [self.view addSubview:cbPlayController.view];
+        
+        
+        
         [cbPlayController play];
     }else{
         UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"加载失败" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
